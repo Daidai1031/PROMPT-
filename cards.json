@@ -1,0 +1,234 @@
+[
+  {
+    "id": 1,
+    "category": "real_vs_fake",
+    "question": "A headline says: 'Drinking coffee cures all viral infections, scientists confirm.' Is this real, fake, or partly true?",
+    "options": {
+      "A": "Real",
+      "B": "Fake",
+      "C": "Partly true"
+    },
+    "correct_answer": "B",
+    "accepted_keywords": [
+      "fake",
+      "not real",
+      "no evidence",
+      "misinformation"
+    ],
+    "partial_keywords": [
+      "sounds wrong",
+      "not sure",
+      "seems false"
+    ],
+    "explanation": "There is no scientific evidence that coffee cures viral infections. This is misinformation.",
+    "misconception": "Confusing a sensational health claim with scientific evidence.",
+    "teaching_focus": "Check whether a strong claim has reliable evidence behind it.",
+    "source_note": "Health claims should be checked against trusted medical or scientific sources, not just dramatic headlines.",
+    "verification_tip": "Look for evidence from trusted health organizations before believing a medical claim.",
+    "difficulty": "easy"
+  },
+  {
+    "id": 2,
+    "category": "real_vs_fake",
+    "question": "A post claims: 'This image shows a real protest yesterday.' The image is actually from 2018. What is the issue?",
+    "options": {
+      "A": "The image is fake",
+      "B": "The image is real but misleading",
+      "C": "The image is edited",
+      "D": "There is no issue"
+    },
+    "correct_answer": "B",
+    "accepted_keywords": [
+      "misleading",
+      "out of context",
+      "old image",
+      "wrong context"
+    ],
+    "partial_keywords": [
+      "not fully true",
+      "used incorrectly",
+      "wrong date"
+    ],
+    "explanation": "The image is real, but using it in a different context makes it misleading.",
+    "misconception": "Assuming a real image is always truthful in every context.",
+    "teaching_focus": "Check when and where media originally came from.",
+    "source_note": "A real image can still mislead people if it is shared with the wrong date, place, or story.",
+    "verification_tip": "Ask: when was this image first posted, and what was it originally about?",
+    "difficulty": "easy"
+  },
+  {
+    "id": 3,
+    "category": "ai_best_practices",
+    "question": "You ask an AI: 'Tell me everything about history.' Why is this a bad prompt?",
+    "options": {
+      "A": "Too vague",
+      "B": "Too short",
+      "C": "Too specific",
+      "D": "Too correct"
+    },
+    "correct_answer": "A",
+    "accepted_keywords": [
+      "vague",
+      "not specific",
+      "too broad",
+      "unclear"
+    ],
+    "partial_keywords": [
+      "too general",
+      "needs more detail"
+    ],
+    "explanation": "Good prompts are specific and focused. Vague prompts lead to poor answers.",
+    "misconception": "Believing AI will infer exactly what you want from a broad request.",
+    "teaching_focus": "More specific prompts usually lead to more useful answers.",
+    "source_note": "AI tools often respond better when the task, topic, or format is clearly described.",
+    "verification_tip": "Try adding a topic, time period, or format to make your prompt clearer.",
+    "difficulty": "easy"
+  },
+  {
+    "id": 4,
+    "category": "ai_best_practices",
+    "question": "An AI confidently gives you a wrong answer with a citation that does not exist. What should you do?",
+    "options": {
+      "A": "Trust it",
+      "B": "Verify the source",
+      "C": "Share it immediately",
+      "D": "Ignore all AI forever"
+    },
+    "correct_answer": "B",
+    "accepted_keywords": [
+      "verify",
+      "check source",
+      "fact check",
+      "double check"
+    ],
+    "partial_keywords": [
+      "check it",
+      "look it up",
+      "confirm"
+    ],
+    "explanation": "AI can hallucinate. Always verify important information.",
+    "misconception": "Equating confidence with accuracy.",
+    "teaching_focus": "A confident tone is not evidence.",
+    "source_note": "AI systems can sound sure even when they are wrong or when a source is invented.",
+    "verification_tip": "Open the source yourself and make sure it really exists.",
+    "difficulty": "easy"
+  },
+  {
+    "id": 5,
+    "category": "bad_actors",
+    "question": "A viral post spreads false information about a candidate right before an election. Who might benefit?",
+    "options": {
+      "A": "A political opponent",
+      "B": "A random student",
+      "C": "A weather station",
+      "D": "A library"
+    },
+    "correct_answer": "A",
+    "accepted_keywords": [
+      "opponent",
+      "politics",
+      "influence election",
+      "manipulate"
+    ],
+    "partial_keywords": [
+      "someone political",
+      "someone who wants power",
+      "campaign"
+    ],
+    "explanation": "Misinformation can be used to influence public opinion and elections.",
+    "misconception": "Treating misinformation as random noise instead of something spread for advantage.",
+    "teaching_focus": "Ask who benefits when false information spreads.",
+    "source_note": "Some false stories are spread on purpose to shape what people think, especially during major public events.",
+    "verification_tip": "Ask who gains power, attention, or advantage if people believe this claim.",
+    "difficulty": "medium"
+  },
+  {
+    "id": 6,
+    "category": "bad_actors",
+    "question": "A shocking conspiracy video spreads quickly online. Why might someone create this?",
+    "options": {
+      "A": "To inform the public",
+      "B": "To gain attention and clicks",
+      "C": "To improve education",
+      "D": "To help science"
+    },
+    "correct_answer": "B",
+    "accepted_keywords": [
+      "attention",
+      "clicks",
+      "money",
+      "engagement",
+      "profit"
+    ],
+    "partial_keywords": [
+      "views",
+      "go viral",
+      "fame"
+    ],
+    "explanation": "Many misinformation campaigns are driven by attention, clicks, or profit.",
+    "misconception": "Assuming widely shared content must have an honest purpose.",
+    "teaching_focus": "Virality often rewards sensational content, even when it is false.",
+    "source_note": "Online platforms often reward content that gets attention, even when that content is misleading.",
+    "verification_tip": "If something feels shocking on purpose, pause and ask why it was made that way.",
+    "difficulty": "medium"
+  },
+  {
+    "id": 7,
+    "category": "real_vs_fake",
+    "question": "A headline reads: 'Scientists discover water on Mars.' The article cites NASA. What should you do first?",
+    "options": {
+      "A": "Believe it immediately",
+      "B": "Check the source",
+      "C": "Ignore it",
+      "D": "Share it"
+    },
+    "correct_answer": "B",
+    "accepted_keywords": [
+      "check source",
+      "verify",
+      "confirm",
+      "look it up"
+    ],
+    "partial_keywords": [
+      "be careful",
+      "read more",
+      "double check"
+    ],
+    "explanation": "Even credible claims should be verified before accepting or sharing.",
+    "misconception": "Assuming a scientific reference always guarantees accurate reporting.",
+    "teaching_focus": "Verification matters even when a claim sounds plausible.",
+    "source_note": "A headline may mention a trusted organization, but you should still check the original source.",
+    "verification_tip": "See whether the article links to the real NASA report or announcement.",
+    "difficulty": "easy"
+  },
+  {
+    "id": 8,
+    "category": "ai_best_practices",
+    "question": "You upload private personal data into an AI tool. What is the risk?",
+    "options": {
+      "A": "Nothing happens",
+      "B": "It may be stored or misused",
+      "C": "It improves speed",
+      "D": "It deletes your data"
+    },
+    "correct_answer": "B",
+    "accepted_keywords": [
+      "privacy",
+      "data risk",
+      "stored",
+      "misused",
+      "sensitive"
+    ],
+    "partial_keywords": [
+      "not safe",
+      "private info",
+      "data problem"
+    ],
+    "explanation": "AI systems may store or process sensitive data. Be careful with private information.",
+    "misconception": "Assuming convenience means there is no data risk.",
+    "teaching_focus": "Think before uploading sensitive information to AI tools.",
+    "source_note": "Some AI tools keep or process user data, so private details should be shared carefully.",
+    "verification_tip": "Before uploading private information, check what the tool says about data use and storage.",
+    "difficulty": "easy"
+  }
+]
