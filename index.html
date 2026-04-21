@@ -63,7 +63,7 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 #game{flex-direction:row;padding:0;background:radial-gradient(ellipse at 20% 50%,rgba(77,171,247,0.04) 0%,transparent 50%);}
 
 /* Left: card side */
-.card-side{width:58%;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 14px 10px 18px;position:relative;}
+.card-side{width:58%;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 14px 10px 18px;position:relative;}
 .game-top-bar{position:absolute;top:7px;left:14px;right:14px;display:flex;align-items:center;justify-content:space-between;z-index:2;}
 .game-logo{font-family:'Baloo 2',cursive;font-size:15px;font-weight:800;color:var(--accent-gold);}
 .top-info{display:flex;align-items:center;gap:7px;}
@@ -76,17 +76,18 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 .dot.current{border-color:var(--accent-sky);box-shadow:0 0 6px rgba(77,171,247,0.55);}
 .score-pill{font-family:'Baloo 2',cursive;font-size:12px;font-weight:700;color:var(--accent-gold);background:rgba(255,200,87,0.08);padding:2px 10px;border-radius:12px;border:1px solid rgba(255,200,87,0.15);}
 
+.card-meta-bar{width:100%;max-width:420px;display:flex;justify-content:space-between;align-items:center;margin-top:36px;margin-bottom:8px;gap:10px;}
+.card-id-pill,.progress-pill{font-size:11px;font-weight:700;letter-spacing:1px;padding:6px 10px;border-radius:12px;background:rgba(255,255,255,0.04);border:1px solid var(--card-border);color:var(--text-dim);}
+.card-id-pill strong,.progress-pill strong{color:var(--text);}
+
 /* Flip card */
-.card-container{width:100%;max-width:420px;height:88%;max-height:540px;perspective:1200px;}
+.card-container{width:100%;max-width:420px;height:82%;max-height:560px;perspective:1200px;}
 .card-flipper{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 0.7s cubic-bezier(0.4,0,0.2,1);}
 .card-flipper.flipped{transform:rotateY(180deg);}
 .card-face{position:absolute;inset:0;border-radius:var(--r-lg);backface-visibility:hidden;overflow:hidden;}
 
 .card-front{background:linear-gradient(155deg,var(--card-front) 0%,#1e3355 100%);border:2px solid var(--card-border);box-shadow:0 10px 40px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.04);display:flex;flex-direction:column;padding:14px 18px 12px;}
 .card-front::before{content:'';position:absolute;top:0;right:0;width:120px;height:120px;background:radial-gradient(circle at top right,rgba(77,171,247,0.07) 0%,transparent 70%);pointer-events:none;}
-.card-corner{position:absolute;font-family:'Baloo 2',cursive;font-size:10px;font-weight:700;color:var(--text-dim);opacity:0.4;letter-spacing:1px;}
-.card-corner.tl{top:6px;left:10px;}
-.card-corner.br{bottom:6px;right:10px;}
 
 .card-header-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:2px 0 8px;flex-shrink:0;}
 .card-cat{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;padding:3px 10px;border-radius:10px;}
@@ -124,6 +125,12 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 .back-section.sugg{border-color:rgba(177,151,252,0.2);background:rgba(177,151,252,0.04);}
 .back-section.sugg .back-section-label{color:var(--accent-violet);}
 .back-section.sugg .back-section-text{font-style:italic;}
+.back-section.refs{border-color:rgba(81,207,152,0.22);background:rgba(81,207,152,0.04);}
+.back-section.refs .back-section-label{color:var(--accent-mint);}
+.refs-list{display:flex;flex-direction:column;gap:6px;}
+.ref-item a{color:#bdebd2;text-decoration:none;font-size:12px;line-height:1.35;}
+.ref-item a:hover{text-decoration:underline;}
+.ref-item .ref-url{font-size:10px;color:var(--text-dim);word-break:break-all;}
 
 /* Right: voice panel */
 .voice-side{width:42%;height:100vh;background:var(--panel-bg);border-left:1px solid rgba(255,255,255,0.04);display:flex;flex-direction:column;align-items:center;padding:22px 16px 18px;gap:10px;position:relative;justify-content:space-between;}
@@ -133,7 +140,6 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 .voice-label{font-family:'Baloo 2',cursive;font-size:11px;font-weight:700;color:var(--text-dim);letter-spacing:2px;text-transform:uppercase;}
 .prompt-bubble{width:100%;background:var(--card-front);border:1.5px solid var(--card-border);border-radius:var(--r-md);padding:10px 13px;font-size:12.5px;color:var(--text);line-height:1.4;text-align:center;min-height:48px;display:flex;align-items:center;justify-content:center;}
 .prompt-bubble.tip{border-color:rgba(255,200,87,0.3);background:rgba(255,200,87,0.04);color:#ffe5a3;font-style:italic;}
-.prompt-hint{font-size:11px;color:var(--text-dim);line-height:1.4;text-align:center;max-width:90%;}
 
 .voice-mid{display:flex;flex-direction:column;align-items:center;gap:10px;position:relative;z-index:1;}
 .mic-ring{width:104px;height:104px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle,rgba(77,171,247,0.07) 0%,transparent 70%);position:relative;cursor:pointer;transition:transform .2s;}
@@ -159,7 +165,13 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 
 .action-btn{width:100%;padding:12px 0;font-family:'Baloo 2',cursive;font-size:16px;font-weight:700;color:#fff;border:none;border-radius:12px;cursor:pointer;transition:transform .15s, opacity .15s;}
 .action-btn.skip{background:transparent;border:1.5px solid var(--card-border);color:var(--text-dim);font-size:13px;padding:9px 0;}
-.action-btn.next{background:linear-gradient(135deg,var(--accent-mint),var(--accent-sky));box-shadow:0 4px 16px rgba(81,207,152,0.22);display:none;}
+.action-btn.next{
+  background:linear-gradient(135deg,var(--accent-mint),var(--accent-sky));
+  box-shadow:0 4px 16px rgba(81,207,152,0.22);
+  display:none;
+  visibility:hidden;
+  opacity:0;
+}
 .action-btn:active{transform:scale(0.97);}
 
 /* Loading */
@@ -189,7 +201,6 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 </head>
 <body>
 
-<!-- HOME -->
 <div id="home" class="screen active">
   <div class="logo">PROMPT!</div>
   <div class="logo-sub">AI Literacy · Spoken Reflection</div>
@@ -216,7 +227,6 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
   <div class="home-hint">say what you think · no multiple choice · every answer counts</div>
 </div>
 
-<!-- GAME -->
 <div id="game" class="screen">
   <div class="card-side">
     <div class="game-top-bar">
@@ -227,12 +237,14 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
       </div>
     </div>
 
+    <div class="card-meta-bar">
+      <div class="card-id-pill">Card ID: <strong id="card-id-display">—</strong></div>
+      <div class="progress-pill"><strong id="card-progress-display">1 / 6</strong></div>
+    </div>
+
     <div class="card-container">
       <div class="card-flipper" id="card-flipper">
-        <!-- FRONT -->
         <div class="card-face card-front" id="card-front">
-          <div class="card-corner tl" id="card-num-tl">01</div>
-          <div class="card-corner br" id="card-num-br">01</div>
           <div class="card-header-row">
             <div class="card-cat" id="card-cat"></div>
             <div class="card-diff" id="card-diff"></div>
@@ -241,7 +253,7 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
           <div class="ptype-label" id="card-ptype"></div>
           <div class="body-area" id="body-area"></div>
         </div>
-        <!-- BACK -->
+
         <div class="card-face card-back" id="card-back">
           <div class="back-top">
             <div class="back-icon" id="back-icon">🎉</div>
@@ -259,6 +271,10 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
           <div class="back-section sugg" id="back-sugg-wrap" style="display:none;">
             <div class="back-section-label">A Strong Prompt Looks Like</div>
             <div class="back-section-text" id="back-sugg"></div>
+          </div>
+          <div class="back-section refs" id="back-refs-wrap" style="display:none;">
+            <div class="back-section-label">References</div>
+            <div class="refs-list" id="back-refs"></div>
           </div>
         </div>
       </div>
@@ -294,10 +310,8 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
   </div>
 </div>
 
-<!-- LOADING -->
 <div id="loading"><div class="spinner"></div><div class="loading-text" id="loading-text">Thinking...</div></div>
 
-<!-- SUMMARY -->
 <div id="summary" class="screen">
   <div class="sum-trophy" id="sum-trophy">🏆</div>
   <div class="sum-title">Game Complete!</div>
@@ -308,9 +322,6 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 </div>
 
 <script>
-/* ============================================================
-   PROMPT! v2 client — mode select + open-ended voice reflection
-   ============================================================ */
 const API = '';
 
 const CAT_LABELS = { discernment:'Discernment', usage:'AI Usage' };
@@ -338,14 +349,13 @@ const TIER_UI = {
   silent:  { icon:'🤫', title:'Skipped',        cls:'incorrect' },
 };
 
-/* ─── State ─── */
 let sessionId = null;
 let currentCard = null;
 let currentIdx = 0;
 let totalCards = 0;
 let totalScore = 0;
 let maxScore = 0;
-let results = [];          // list of tiers, one per answered card
+let results = [];
 let answered = false;
 let isRecording = false;
 let mediaRecorder = null;
@@ -353,7 +363,13 @@ let audioChunks = [];
 let selectedMode = 'mixed';
 let audioPlayer = null;
 
-/* ─── Screen helpers ─── */
+let micStream = null;
+let audioContext = null;
+let analyser = null;
+let silenceCheckTimer = null;
+let silenceStartedAt = null;
+let stopRequested = false;
+
 function showScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
@@ -364,7 +380,6 @@ function showLoading(m){
 }
 function hideLoading(){ document.getElementById('loading').classList.remove('active'); }
 
-/* ─── Home ─── */
 function selectMode(mode, el){
   selectedMode = mode;
   document.querySelectorAll('.mode-card').forEach(c=>c.classList.remove('selected'));
@@ -375,7 +390,6 @@ function goHome(){
   showScreen('home');
 }
 
-/* ─── TTS playback ─── */
 async function stopAudio(){
   if (audioPlayer){
     try { audioPlayer.pause(); audioPlayer.src = ''; } catch(e){}
@@ -405,16 +419,40 @@ async function speak(text, tone='narrator'){
   } catch(e){}
 }
 
-/* Chain multiple (text, tone) segments */
-async function speakChain(segments){
-  for (const [text, tone] of segments){
-    if (text && text.trim()){
-      await speak(text, tone);
-    }
+async function speakChain(segments, fallbackTone='narrator'){
+  const valid = (segments || []).filter(s => s && s[0] && s[0].trim());
+  if (!valid.length) return;
+
+  const tone = valid[0][1] || fallbackTone;
+  const mergedText = valid.map(([text]) => text.trim()).join(' ');
+
+  try {
+    const r = await fetch(`${API}/api/tts_multi`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        segments: [{ text: mergedText, tone }]
+      }),
+    });
+
+    if (!r.ok) throw new Error('tts_multi failed');
+
+    const blob = await r.blob();
+    await stopAudio();
+    const url = URL.createObjectURL(blob);
+    const audio = new Audio(url);
+    audioPlayer = audio;
+
+    return new Promise(res => {
+      audio.onended = ()=>{ URL.revokeObjectURL(url); res(); };
+      audio.onerror = ()=>{ URL.revokeObjectURL(url); res(); };
+      audio.play().catch(()=>res());
+    });
+  } catch(e){
+    await speak(mergedText, tone);
   }
 }
 
-/* ─── Start game ─── */
 async function startGame(){
   document.getElementById('start-btn').disabled = true;
   showLoading('Shuffling the deck...');
@@ -436,7 +474,9 @@ async function startGame(){
     hideLoading();
     showScreen('game');
     renderCard();
-    await speak('Welcome to PROMPT! Listen carefully, then tell me what you see.', 'celebrate');
+    await speakChain([
+      ['Welcome to PROMPT! Listen carefully, then tell me what you notice.', 'narrator']
+    ], 'narrator');
     await readCardAloud();
   } catch(e){
     hideLoading();
@@ -445,15 +485,13 @@ async function startGame(){
   }
 }
 
-/* ─── Render a card ─── */
 function renderCard(){
   const c = currentCard;
   answered = false;
   document.getElementById('card-flipper').classList.remove('flipped');
 
-  const num = String(currentIdx + 1).padStart(2, '0');
-  document.getElementById('card-num-tl').textContent = `${c.id}`;
-  document.getElementById('card-num-br').textContent = `${num}/${String(totalCards).padStart(2,'0')}`;
+  document.getElementById('card-id-display').textContent = c.card_id || c.id || '—';
+  document.getElementById('card-progress-display').textContent = `${currentIdx + 1} / ${totalCards}`;
 
   const catEl = document.getElementById('card-cat');
   catEl.textContent = `${CAT_EMOJI[c.category]||''} ${CAT_LABELS[c.category]||c.category}`;
@@ -463,7 +501,6 @@ function renderCard(){
   document.getElementById('card-title').textContent = c.title;
   document.getElementById('card-ptype').textContent = PTYPE_LABEL[c.problem_type] || c.problem_type;
 
-  /* Body: 2 bubbles for perspective_lens_audit (Lens A vs Lens B), 1 for others */
   const body = document.getElementById('body-area');
   body.innerHTML = '';
   const texts = Array.isArray(c.body) ? c.body : [String(c.body||'')];
@@ -474,7 +511,6 @@ function renderCard(){
     texts.forEach((t, i) => body.appendChild(makeBubble(t, 'solo', i === 0 ? 'The Post' : 'More')));
   }
 
-  /* Dots + score pill */
   const dotsEl = document.getElementById('dots');
   dotsEl.innerHTML = '';
   for (let i=0; i<totalCards; i++){
@@ -486,19 +522,23 @@ function renderCard(){
   }
   document.getElementById('score-pill').textContent = `${totalScore} pts`;
 
-  /* Prompt bubble = question suited to the problem type */
   const pb = document.getElementById('prompt-bubble');
   pb.className = 'prompt-bubble';
   pb.textContent = PTYPE_QUESTION[c.problem_type] || "Say what you notice out loud.";
 
-  /* Right panel reset */
   document.getElementById('reaction-bubble').style.display = 'none';
   document.getElementById('habit-bubble').style.display = 'none';
   document.getElementById('voice-status').textContent = 'Tap to speak · up to 15s';
   document.getElementById('voice-status').className = 'voice-status';
   document.getElementById('voice-transcript').textContent = '';
   document.getElementById('skip-btn').style.display = '';
-  document.getElementById('next-btn').style.display = 'none';
+  const nextBtn = document.getElementById('next-btn');
+  nextBtn.style.display = 'none';
+  nextBtn.style.visibility = 'hidden';
+  nextBtn.style.opacity = '0';
+  nextBtn.disabled = true;
+  document.getElementById('back-refs-wrap').style.display = 'none';
+  document.getElementById('back-refs').innerHTML = '';
   resetMicBtn();
 }
 
@@ -515,22 +555,81 @@ function makeBubble(text, variant, lensLabel){
   return el;
 }
 
-/* Read the card aloud: narrator reads title + body, curious reads the prompt question. */
 async function readCardAloud(){
   const c = currentCard;
-  const segments = [];
-  segments.push([c.title, 'narrator']);
+  const parts = [];
+
+  parts.push(`Card ${c.card_id || c.id}.`);
+  parts.push(c.title);
+
   if (Array.isArray(c.body)){
-    for (const t of c.body) segments.push([t, 'narrator']);
+    for (const t of c.body) parts.push(t);
   } else if (c.body){
-    segments.push([String(c.body), 'narrator']);
+    parts.push(String(c.body));
   }
+
   const q = PTYPE_QUESTION[c.problem_type];
-  if (q) segments.push([q, 'curious']);
-  await speakChain(segments);
+  if (q) parts.push(q);
+
+  await speakChain(parts.map(t => [t, 'narrator']), 'narrator');
 }
 
-/* ─── Mic / recording ─── */
+function cleanupAudioMonitoring(){
+  if (silenceCheckTimer){
+    clearInterval(silenceCheckTimer);
+    silenceCheckTimer = null;
+  }
+  silenceStartedAt = null;
+
+  if (audioContext){
+    try { audioContext.close(); } catch(e){}
+    audioContext = null;
+  }
+
+  analyser = null;
+}
+
+function getAverageVolume(dataArray){
+  let sum = 0;
+  for (let i = 0; i < dataArray.length; i++){
+    const centered = dataArray[i] - 128;
+    sum += Math.abs(centered);
+  }
+  return sum / dataArray.length;
+}
+
+function startSilenceDetection(){
+  if (!analyser) return;
+
+  const dataArray = new Uint8Array(analyser.fftSize);
+  const SILENCE_THRESHOLD = 6;
+  const SILENCE_DURATION_MS = 1200;
+  const MIN_RECORDING_MS = 800;
+  const startedAt = Date.now();
+
+  silenceCheckTimer = setInterval(() => {
+    if (!isRecording || !mediaRecorder || mediaRecorder.state !== 'recording') return;
+
+    analyser.getByteTimeDomainData(dataArray);
+    const volume = getAverageVolume(dataArray);
+    const now = Date.now();
+
+    if (now - startedAt < MIN_RECORDING_MS){
+      return;
+    }
+
+    if (volume < SILENCE_THRESHOLD){
+      if (!silenceStartedAt){
+        silenceStartedAt = now;
+      } else if (now - silenceStartedAt >= SILENCE_DURATION_MS){
+        stopRecording();
+      }
+    } else {
+      silenceStartedAt = null;
+    }
+  }, 150);
+}
+
 function resetMicBtn(){
   const ring = document.getElementById('mic-ring');
   ring.className = 'mic-ring';
@@ -545,33 +644,61 @@ async function toggleRecording(){
 
 async function startRecording(){
   try {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio:true });
-    mediaRecorder = new MediaRecorder(stream, { mimeType:'audio/webm' });
+    micStream = await navigator.mediaDevices.getUserMedia({ audio:true });
+    mediaRecorder = new MediaRecorder(micStream, { mimeType:'audio/webm' });
     audioChunks = [];
-    mediaRecorder.ondataavailable = e => { if (e.data.size>0) audioChunks.push(e.data); };
-    mediaRecorder.onstop = () => { stream.getTracks().forEach(t=>t.stop()); processVoice(); };
+    stopRequested = false;
+
+    mediaRecorder.ondataavailable = e => {
+      if (e.data.size > 0) audioChunks.push(e.data);
+    };
+
+    mediaRecorder.onstop = () => {
+      if (micStream){
+        micStream.getTracks().forEach(t => t.stop());
+        micStream = null;
+      }
+      cleanupAudioMonitoring();
+      processVoice();
+    };
+
     mediaRecorder.start();
     isRecording = true;
+
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const source = audioContext.createMediaStreamSource(micStream);
+    analyser = audioContext.createAnalyser();
+    analyser.fftSize = 2048;
+    source.connect(analyser);
+    startSilenceDetection();
+
     const ring = document.getElementById('mic-ring');
     ring.classList.add('recording');
     document.getElementById('mic-icon').textContent = '⏹';
+
     const st = document.getElementById('voice-status');
-    st.textContent = '🎤 Listening... say what you notice';
+    st.textContent = '🎤 Listening... pause when you are done';
     st.className = 'voice-status highlight';
-    setTimeout(() => { if (isRecording) stopRecording(); }, 15000);
   } catch(e) {
     document.getElementById('voice-status').textContent = 'Mic access denied';
   }
 }
 
 function stopRecording(){
-  if (mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.stop();
+  if (!mediaRecorder || mediaRecorder.state !== 'recording' || stopRequested) return;
+
+  stopRequested = true;
   isRecording = false;
+  cleanupAudioMonitoring();
+
   const ring = document.getElementById('mic-ring');
   ring.classList.remove('recording');
   ring.classList.add('processing');
+
   document.getElementById('mic-icon').textContent = '⏳';
   document.getElementById('voice-status').textContent = 'Transcribing...';
+
+  mediaRecorder.stop();
 }
 
 async function processVoice(){
@@ -600,7 +727,7 @@ async function processVoice(){
 
 async function skipAnswer(){
   if (answered) return;
-  await submitSpokenAnswer(''); // empty = silent tier
+  await submitSpokenAnswer('');
 }
 
 async function submitSpokenAnswer(text){
@@ -623,19 +750,44 @@ async function submitSpokenAnswer(text){
   }
 }
 
-/* ─── Reveal flow ─── */
+function renderReferences(refs){
+  const wrap = document.getElementById('back-refs-wrap');
+  const list = document.getElementById('back-refs');
+  list.innerHTML = '';
+
+  if (!refs || !refs.length){
+    wrap.style.display = 'none';
+    return;
+  }
+
+  wrap.style.display = '';
+  refs.forEach(ref => {
+    const item = document.createElement('div');
+    item.className = 'ref-item';
+
+    const title = ref.title || ref.url || 'Reference';
+    const url = ref.url || '#';
+
+    item.innerHTML = `
+      <a href="${url}" target="_blank" rel="noopener noreferrer">${title}</a>
+      <div class="ref-url">${url}</div>
+    `;
+    list.appendChild(item);
+  });
+}
+
 async function revealAnswer(data){
   const tier = data.tier || 'off';
   const ui = TIER_UI[tier] || TIER_UI.off;
 
-  /* Back of card */
   document.getElementById('back-icon').textContent = ui.icon;
   const bt = document.getElementById('back-title');
   bt.textContent = ui.title;
   bt.className = `back-title ${ui.cls}`;
   document.getElementById('back-score').textContent = `+${data.score}`;
   document.getElementById('back-insight').textContent = data.card_back.deep_insight || '—';
-  document.getElementById('back-habit').textContent   = data.card_back.habit        || '—';
+  document.getElementById('back-habit').textContent   = data.card_back.habit || '—';
+
   if (data.card_back.suggested_prompt){
     document.getElementById('back-sugg-wrap').style.display = '';
     document.getElementById('back-sugg').textContent = data.card_back.suggested_prompt;
@@ -643,7 +795,8 @@ async function revealAnswer(data){
     document.getElementById('back-sugg-wrap').style.display = 'none';
   }
 
-  /* Score tracking */
+  renderReferences(data.card_back.references || []);
+
   totalScore = data.current_total_score;
   results.push(tier);
   document.getElementById('score-pill').textContent = `${totalScore} pts`;
@@ -653,10 +806,8 @@ async function revealAnswer(data){
     dots[currentIdx].classList.add('tier-' + tier);
   }
 
-  /* Flip with a small delay so it feels intentional */
   setTimeout(()=> document.getElementById('card-flipper').classList.add('flipped'), 350);
 
-  /* Right panel: coach speaks + next button */
   const rBubble = document.getElementById('reaction-bubble');
   const hBubble = document.getElementById('habit-bubble');
   document.getElementById('reaction-text').textContent = data.feedback.reaction || '';
@@ -664,25 +815,25 @@ async function revealAnswer(data){
   rBubble.style.display = data.feedback.reaction ? '' : 'none';
   hBubble.style.display = data.feedback.habit ? '' : 'none';
 
-  document.getElementById('next-btn').style.display = '';
-  document.getElementById('next-btn').textContent = data.has_next ? 'Next Card →' : 'See Results 🏆';
-  document.getElementById('voice-status').textContent = 'Coach is talking...';
-  document.getElementById('voice-status').className = 'voice-status speaking';
-  resetMicBtn();
-  document.getElementById('mic-ring').classList.add('disabled');
+  const nextBtn = document.getElementById('next-btn');
+  console.log('show next button', data.has_next);
 
-  /* Preload next card for speed */
-  if (data.has_next && data.next_card) currentCard = data.next_card;
+  nextBtn.style.display = 'block';
+  nextBtn.style.visibility = 'visible';
+  nextBtn.style.opacity = '1';
+  nextBtn.disabled = false;
+  nextBtn.textContent = data.has_next ? 'Next Card →' : 'Finish Game →';
 
-  /* Speak: warm reaction -> curious habit. Celebrate if deep score. */
   const segments = [];
   if (tier === 'deep' || tier === 'mid'){
-    segments.push(['Nice one!', 'celebrate']);
+    segments.push(['Nice catch.', 'warm']);
   }
   if (data.feedback.reaction) segments.push([data.feedback.reaction, 'warm']);
-  if (data.feedback.habit)    segments.push([data.feedback.habit,    'curious']);
-  await speakChain(segments);
-  document.getElementById('voice-status').textContent = 'Tap Next when you\'re ready.';
+  if (data.feedback.habit) segments.push([data.feedback.habit, 'warm']);
+
+  await speakChain(segments, 'warm');
+
+  document.getElementById('voice-status').textContent = 'Tap the button when you are ready.';
   document.getElementById('voice-status').className = 'voice-status';
 }
 
@@ -698,7 +849,6 @@ async function nextCard(){
   await readCardAloud();
 }
 
-/* ─── Summary ─── */
 async function showSummary(){
   showLoading('Wrapping up...');
   try {
@@ -732,8 +882,9 @@ async function showSummary(){
     }
     document.getElementById('sum-tip').textContent = `💡 ${d.tip}`;
     showScreen('summary');
-    await speak(`Game over! You scored ${d.score} out of ${d.max_score}.`, 'celebrate');
-    await speak(d.tip, 'curious');
+    await speakChain([
+      [`Game over. You scored ${d.score} out of ${d.max_score}. ${d.tip}`, 'narrator']
+    ], 'narrator');
   } catch(e){
     hideLoading();
     showScreen('summary');

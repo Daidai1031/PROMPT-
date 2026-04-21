@@ -11,7 +11,7 @@ cmd="${1:-run}"
 case "$cmd" in
   install)
     echo "[install] Python dependencies..."
-    pip install --break-system-packages \
+    python -m pip install --break-system-packages \
         fastapi "uvicorn[standard]" python-multipart \
         openai-whisper ollama \
         ChatTTS torch torchaudio numpy
@@ -22,12 +22,13 @@ case "$cmd" in
 
   run)
     echo "[run] Starting PROMPT! server on :8000 ..."
-    uvicorn server:app --host 0.0.0.0 --port 8000 --reload
+    pkill -f "uvicorn server:app" || true
+    python -m uvicorn server:app --host 0.0.0.0 --port 8000
     ;;
 
   tts-test)
     echo "[tts-test] Generating one sample per tone..."
-    python3 -c "
+    python -c "
 import tts
 for tone in ['narrator', 'curious', 'warm', 'celebrate']:
     p = tts.synthesize(f'Hello! This is the {tone} voice speaking.', tone=tone,
