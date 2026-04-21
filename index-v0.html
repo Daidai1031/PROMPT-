@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=no">
+<title>PROMPT! — AI Literacy Game</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #1a1a2e;
+    --bg-card: #16213e;
+    --bg-card-light: #1c2a4a;
+    --accent-pink: #ff6b9d;
+    --accent-yellow: #ffd166;
+    --accent-green: #06d6a0;
+    --accent-blue: #118ab2;
+    --accent-purple: #9b5de5;
+    --accent-orange: #f77f00;
+    --text-main: #f0f0f0;
+    --text-dim: #8892a4;
+    --correct: #06d6a0;
+    --partial: #ffd166;
+    --incorrect: #ef476f;
+    --radius: 14px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg);
+    color: var(--text-main);
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: -100px; right: -100px;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(155,93,229,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: -80px; left: -60px;
+    width: 260px; height: 260px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(6,214,160,0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .screen {
+    display: none;
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    top: 0; left: 0;
+  }
+  .screen.active { display: flex; }
+
+  /* HOME */
+  #home {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    text-align: center;
+  }
+  .mascot { font-size: 48px; animation: bounce 2s ease-in-out infinite; }
+  @keyframes bounce {
+    0%,100%{transform:scale(1) rotate(0deg);}
+    25%{transform:scale(1.1) rotate(-5deg);}
+    75%{transform:scale(1.05) rotate(3deg);}
+  }
+  .logo-container { animation: float 3s ease-in-out infinite; }
+  @keyframes float { 0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);} }
+  .logo {
+    font-family:'Fredoka',sans-serif; font-size:56px; font-weight:700;
+    background:linear-gradient(135deg,var(--accent-pink),var(--accent-yellow),var(--accent-green));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    letter-spacing:3px; filter:drop-shadow(0 3px 8px rgba(255,107,157,0.3));
+  }
+  .logo-sub { font-size:14px; color:var(--text-dim); font-weight:600; letter-spacing:3px; text-transform:uppercase; margin-top:-4px; }
+  .start-btn {
+    margin-top:10px; padding:14px 52px; font-family:'Fredoka',sans-serif; font-size:24px; font-weight:700; color:#fff;
+    background:linear-gradient(135deg,var(--accent-pink),var(--accent-purple)); border:none; border-radius:50px; cursor:pointer;
+    box-shadow:0 4px 18px rgba(155,93,229,0.4); transition:transform 0.15s;
+  }
+  .start-btn:active{transform:scale(0.95);}
+  .home-info{font-size:12px;color:var(--text-dim);}
+
+  /* GAME */
+  #game { flex-direction:column; padding:8px 16px 10px; }
+  .game-header { display:flex; align-items:center; justify-content:space-between; height:32px; flex-shrink:0; }
+  .game-logo-sm {
+    font-family:'Fredoka',sans-serif; font-size:18px; font-weight:700;
+    background:linear-gradient(135deg,var(--accent-pink),var(--accent-yellow));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  }
+  .progress-area{display:flex;align-items:center;gap:8px;}
+  .progress-dots{display:flex;gap:5px;}
+  .dot{width:10px;height:10px;border-radius:50%;background:var(--bg-card-light);border:2px solid #2a3a5e;transition:all .3s;}
+  .dot.correct{background:var(--correct);border-color:var(--correct);}
+  .dot.partial{background:var(--partial);border-color:var(--partial);}
+  .dot.incorrect{background:var(--incorrect);border-color:var(--incorrect);}
+  .dot.current{border-color:var(--accent-purple);box-shadow:0 0 6px rgba(155,93,229,0.5);animation:pulse-dot 1.2s ease-in-out infinite;}
+  @keyframes pulse-dot{0%,100%{box-shadow:0 0 6px rgba(155,93,229,0.3);}50%{box-shadow:0 0 10px rgba(155,93,229,0.6);}}
+  .score-badge{font-family:'Fredoka',sans-serif;font-size:15px;font-weight:600;color:var(--accent-yellow);background:rgba(255,209,102,0.1);padding:2px 10px;border-radius:16px;border:1px solid rgba(255,209,102,0.2);}
+
+  .question-area{flex:1;display:flex;flex-direction:column;gap:6px;min-height:0;overflow:hidden;}
+  .category-tag{display:inline-block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;padding:2px 10px;border-radius:16px;margin-top:4px;flex-shrink:0;align-self:flex-start;}
+  .cat-real_vs_fake{background:rgba(239,71,111,0.15);color:var(--incorrect);}
+  .cat-ai_best_practices{background:rgba(17,138,178,0.15);color:var(--accent-blue);}
+  .cat-bad_actors{background:rgba(247,127,0,0.15);color:var(--accent-orange);}
+  .question-text{font-family:'Fredoka',sans-serif;font-size:16px;font-weight:600;line-height:1.35;color:#fff;padding:4px 0 2px;flex-shrink:0;}
+
+  .options-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;flex:1;min-height:0;align-content:start;}
+  .option-btn{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--bg-card);border:2px solid #2a3a5e;border-radius:var(--radius);cursor:pointer;transition:all .15s;font-size:14px;font-weight:600;color:var(--text-main);text-align:left;min-height:0;}
+  .option-btn:active{transform:scale(0.97);}
+  .option-btn.selected{border-color:var(--accent-purple);background:rgba(155,93,229,0.15);box-shadow:0 0 12px rgba(155,93,229,0.2);}
+  .option-btn.reveal-correct{border-color:var(--correct);background:rgba(6,214,160,0.15);}
+  .option-btn.reveal-incorrect{border-color:var(--incorrect);background:rgba(239,71,111,0.1);opacity:0.6;}
+  .option-letter{font-family:'Fredoka',sans-serif;font-size:15px;font-weight:700;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:8px;background:rgba(255,255,255,0.06);flex-shrink:0;}
+  .option-text{flex:1;line-height:1.25;}
+
+  .confirm-btn{margin-top:6px;padding:10px 0;width:100%;font-family:'Fredoka',sans-serif;font-size:18px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--accent-blue),var(--accent-purple));border:none;border-radius:12px;cursor:pointer;box-shadow:0 3px 14px rgba(17,138,178,0.3);transition:transform .15s,opacity .15s;flex-shrink:0;}
+  .confirm-btn:disabled{opacity:0.35;cursor:default;}
+  .confirm-btn:not(:disabled):active{transform:scale(0.97);}
+
+  /* FEEDBACK */
+  #feedback-overlay{display:none;position:absolute;top:0;left:0;width:100vw;height:100vh;background:rgba(10,10,20,0.9);backdrop-filter:blur(6px);flex-direction:column;align-items:center;justify-content:center;gap:10px;z-index:10;padding:20px 48px;text-align:center;}
+  #feedback-overlay.active{display:flex;}
+  .feedback-icon{font-size:48px;}
+  .feedback-title{font-family:'Fredoka',sans-serif;font-size:26px;font-weight:700;}
+  .feedback-title.correct{color:var(--correct);}
+  .feedback-title.partial{color:var(--partial);}
+  .feedback-title.incorrect{color:var(--incorrect);}
+  .feedback-explanation{font-size:15px;line-height:1.4;color:var(--text-dim);max-width:580px;}
+  .feedback-tip{font-size:13px;color:var(--accent-yellow);background:rgba(255,209,102,0.08);border:1px solid rgba(255,209,102,0.15);border-radius:10px;padding:8px 20px;max-width:500px;}
+  .feedback-tip::before{content:'💡 ';}
+  .next-btn{margin-top:6px;padding:12px 44px;font-family:'Fredoka',sans-serif;font-size:18px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--accent-green),var(--accent-blue));border:none;border-radius:40px;cursor:pointer;box-shadow:0 3px 14px rgba(6,214,160,0.3);transition:transform .15s;}
+  .next-btn:active{transform:scale(0.95);}
+
+  /* SUMMARY */
+  #summary{flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:16px 32px;text-align:center;}
+  .summary-trophy{font-size:44px;}
+  .summary-title{font-family:'Fredoka',sans-serif;font-size:28px;font-weight:700;background:linear-gradient(135deg,var(--accent-yellow),var(--accent-green));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+  .summary-score{font-family:'Fredoka',sans-serif;font-size:40px;font-weight:700;color:#fff;}
+  .summary-score span{color:var(--text-dim);font-size:22px;}
+  .summary-categories{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;}
+  .summary-cat{background:var(--bg-card);border-radius:12px;padding:8px 16px;text-align:center;min-width:120px;border:1px solid #2a3a5e;}
+  .summary-cat-name{font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--text-dim);margin-bottom:2px;}
+  .summary-cat-score{font-family:'Fredoka',sans-serif;font-size:18px;font-weight:700;}
+  .summary-tip{font-size:14px;color:var(--accent-yellow);max-width:460px;line-height:1.3;}
+  .play-again-btn{padding:12px 40px;font-family:'Fredoka',sans-serif;font-size:20px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--accent-pink),var(--accent-purple));border:none;border-radius:40px;cursor:pointer;box-shadow:0 4px 18px rgba(155,93,229,0.4);transition:transform .15s;}
+  .play-again-btn:active{transform:scale(0.95);}
+
+  .fade-in{animation:fadeIn .3s ease-out;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+  .pop-in{animation:popIn .35s cubic-bezier(0.34,1.56,0.64,1);}
+  @keyframes popIn{from{opacity:0;transform:scale(0.8);}to{opacity:1;transform:scale(1);}}
+</style>
+</head>
+<body>
+
+<div id="home" class="screen active">
+  <div class="mascot">🤖</div>
+  <div class="logo-container"><div class="logo">PROMPT!</div></div>
+  <div class="logo-sub">AI Literacy Game</div>
+  <button class="start-btn" onclick="startGame()">Play!</button>
+  <div class="home-info">8 cards · tap to answer · learn to spot fakes</div>
+</div>
+
+<div id="game" class="screen">
+  <div class="game-header">
+    <div class="game-logo-sm">PROMPT!</div>
+    <div class="progress-area">
+      <div class="progress-dots" id="progress-dots"></div>
+      <div class="score-badge" id="score-badge">⭐ 0</div>
+    </div>
+  </div>
+  <div class="question-area">
+    <div class="category-tag" id="category-tag"></div>
+    <div class="question-text" id="question-text"></div>
+    <div class="options-grid" id="options-grid"></div>
+    <button class="confirm-btn" id="confirm-btn" disabled onclick="confirmAnswer()">Choose an answer</button>
+  </div>
+</div>
+
+<div id="feedback-overlay">
+  <div class="feedback-icon" id="feedback-icon"></div>
+  <div class="feedback-title" id="feedback-title"></div>
+  <div class="feedback-explanation" id="feedback-explanation"></div>
+  <div class="feedback-tip" id="feedback-tip"></div>
+  <button class="next-btn" id="next-btn" onclick="nextCard()">Next →</button>
+</div>
+
+<div id="summary" class="screen">
+  <div class="summary-trophy" id="summary-trophy"></div>
+  <div class="summary-title">Game Complete!</div>
+  <div class="summary-score" id="summary-score"></div>
+  <div class="summary-categories" id="summary-categories"></div>
+  <div class="summary-tip" id="summary-tip"></div>
+  <button class="play-again-btn" onclick="restartGame()">Play Again 🔄</button>
+</div>
+
+<script>
+const CARDS=[
+  {id:1,category:"real_vs_fake",question:"A headline says: 'Drinking coffee cures all viral infections, scientists confirm.' Is this real, fake, or partly true?",options:{A:"Real",B:"Fake",C:"Partly true"},correct_answer:"B",explanation:"There is no scientific evidence that coffee cures viral infections. This is misinformation.",verification_tip:"Look for evidence from trusted health organizations before believing a medical claim."},
+  {id:2,category:"real_vs_fake",question:"A post claims: 'This image shows a real protest yesterday.' The image is actually from 2018. What is the issue?",options:{A:"The image is fake",B:"The image is real but misleading",C:"The image is edited",D:"There is no issue"},correct_answer:"B",explanation:"The image is real, but using it in a different context makes it misleading.",verification_tip:"Ask: when was this image first posted, and what was it originally about?"},
+  {id:3,category:"ai_best_practices",question:"You ask an AI: 'Tell me everything about history.' Why is this a bad prompt?",options:{A:"Too vague",B:"Too short",C:"Too specific",D:"Too correct"},correct_answer:"A",explanation:"Good prompts are specific and focused. Vague prompts lead to poor answers.",verification_tip:"Try adding a topic, time period, or format to make your prompt clearer."},
+  {id:4,category:"ai_best_practices",question:"An AI confidently gives you a wrong answer with a citation that does not exist. What should you do?",options:{A:"Trust it",B:"Verify the source",C:"Share it immediately",D:"Ignore all AI forever"},correct_answer:"B",explanation:"AI can hallucinate. Always verify important information.",verification_tip:"Open the source yourself and make sure it really exists."},
+  {id:5,category:"bad_actors",question:"A viral post spreads false information about a candidate right before an election. Who might benefit?",options:{A:"A political opponent",B:"A random student",C:"A weather station",D:"A library"},correct_answer:"A",explanation:"Misinformation can be used to influence public opinion and elections.",verification_tip:"Ask who gains power, attention, or advantage if people believe this claim."},
+  {id:6,category:"bad_actors",question:"A shocking conspiracy video spreads quickly online. Why might someone create this?",options:{A:"To inform the public",B:"To gain attention and clicks",C:"To improve education",D:"To help science"},correct_answer:"B",explanation:"Many misinformation campaigns are driven by attention, clicks, or profit.",verification_tip:"If something feels shocking on purpose, pause and ask why it was made that way."},
+  {id:7,category:"real_vs_fake",question:"A headline reads: 'Scientists discover water on Mars.' The article cites NASA. What should you do first?",options:{A:"Believe it immediately",B:"Check the source",C:"Ignore it",D:"Share it"},correct_answer:"B",explanation:"Even credible claims should be verified before accepting or sharing.",verification_tip:"See whether the article links to the real NASA report or announcement."},
+  {id:8,category:"ai_best_practices",question:"You upload private personal data into an AI tool. What is the risk?",options:{A:"Nothing happens",B:"It may be stored or misused",C:"It improves speed",D:"It deletes your data"},correct_answer:"B",explanation:"AI systems may store or process sensitive data. Be careful with private information.",verification_tip:"Before uploading private information, check what the tool says about data use and storage."}
+];
+const CATEGORY_LABELS={real_vs_fake:"Real vs Fake",ai_best_practices:"AI Best Practices",bad_actors:"Bad Actors & Motive"};
+const CATEGORY_EMOJIS={real_vs_fake:"🔍",ai_best_practices:"🤖",bad_actors:"🎭"};
+
+let gameCards=[],currentIndex=0,selectedOption=null,score=0,results=[],categoryStats={};
+
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function startGame(){gameCards=shuffle([...CARDS]);currentIndex=0;selectedOption=null;score=0;results=[];categoryStats={};showScreen('game');renderCard();}
+function restartGame(){showScreen('home');}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+function renderCard(){
+  const card=gameCards[currentIndex];selectedOption=null;
+  const dotsEl=document.getElementById('progress-dots');dotsEl.innerHTML='';
+  for(let i=0;i<gameCards.length;i++){const d=document.createElement('div');d.className='dot';if(i<results.length)d.classList.add(results[i]);if(i===currentIndex)d.classList.add('current');dotsEl.appendChild(d);}
+  document.getElementById('score-badge').textContent=`⭐ ${score}`;
+  const catEl=document.getElementById('category-tag');catEl.textContent=`${CATEGORY_EMOJIS[card.category]||''} ${CATEGORY_LABELS[card.category]||card.category}`;catEl.className=`category-tag cat-${card.category}`;
+  document.getElementById('question-text').textContent=card.question;
+  const grid=document.getElementById('options-grid');grid.innerHTML='';
+  Object.keys(card.options).forEach(key=>{const btn=document.createElement('button');btn.className='option-btn fade-in';btn.innerHTML=`<div class="option-letter">${key}</div><div class="option-text">${card.options[key]}</div>`;btn.onclick=()=>selectOption(key,btn);grid.appendChild(btn);});
+  const cb=document.getElementById('confirm-btn');cb.disabled=true;cb.textContent='Choose an answer';
+}
+
+function selectOption(key,btn){selectedOption=key;document.querySelectorAll('.option-btn').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');const cb=document.getElementById('confirm-btn');cb.disabled=false;cb.textContent=`Lock in ${key}! 🔒`;}
+
+function confirmAnswer(){
+  if(!selectedOption)return;const card=gameCards[currentIndex],correct=card.correct_answer,isCorrect=selectedOption===correct,judgement=isCorrect?'correct':'incorrect';
+  if(isCorrect)score+=1;results.push(judgement);const cat=card.category;if(!categoryStats[cat])categoryStats[cat]={total:0,correct:0};categoryStats[cat].total+=1;if(isCorrect)categoryStats[cat].correct+=1;
+  document.querySelectorAll('.option-btn').forEach((btn,i)=>{const key=Object.keys(card.options)[i];btn.onclick=null;if(key===correct){btn.classList.remove('selected');btn.classList.add('reveal-correct');}else if(key===selectedOption&&!isCorrect){btn.classList.remove('selected');btn.classList.add('reveal-incorrect');}else{btn.style.opacity='0.4';}});
+  document.getElementById('score-badge').textContent=`⭐ ${score}`;const dots=document.querySelectorAll('.dot');if(dots[currentIndex]){dots[currentIndex].classList.remove('current');dots[currentIndex].classList.add(judgement);}
+  document.getElementById('confirm-btn').disabled=true;document.getElementById('confirm-btn').textContent=isCorrect?'Correct! ✅':'Not quite ❌';
+  setTimeout(()=>showFeedback(card,judgement),500);
+}
+
+function showFeedback(card,judgement){
+  const icons={correct:'🎉',partial:'🤔',incorrect:'💡'},titles={correct:'Awesome!',partial:'Almost there!',incorrect:'Good try!'};
+  document.getElementById('feedback-icon').textContent=icons[judgement];document.getElementById('feedback-icon').className='feedback-icon pop-in';
+  const t=document.getElementById('feedback-title');t.textContent=titles[judgement];t.className=`feedback-title ${judgement} fade-in`;
+  document.getElementById('feedback-explanation').textContent=card.explanation;document.getElementById('feedback-tip').textContent=card.verification_tip;
+  document.getElementById('next-btn').textContent=currentIndex>=gameCards.length-1?'See Results 🏆':'Next →';
+  document.getElementById('feedback-overlay').classList.add('active');
+}
+
+function nextCard(){document.getElementById('feedback-overlay').classList.remove('active');currentIndex++;if(currentIndex>=gameCards.length)showSummary();else renderCard();}
+
+function showSummary(){
+  const total=gameCards.length,pct=Math.round((score/total)*100);
+  let trophy='💪';if(pct===100)trophy='🏆';else if(pct>=75)trophy='🥇';else if(pct>=50)trophy='🥈';
+  document.getElementById('summary-trophy').textContent=trophy;document.getElementById('summary-score').innerHTML=`${score} <span>/ ${total}</span>`;
+  const catEl=document.getElementById('summary-categories');catEl.innerHTML='';
+  for(const[cat,stats]of Object.entries(categoryStats)){const div=document.createElement('div');div.className='summary-cat fade-in';const p=Math.round((stats.correct/stats.total)*100);div.innerHTML=`<div class="summary-cat-name">${CATEGORY_EMOJIS[cat]||''} ${CATEGORY_LABELS[cat]||cat}</div><div class="summary-cat-score" style="color:${p>=75?'var(--correct)':p>=50?'var(--partial)':'var(--incorrect)'}">${stats.correct}/${stats.total}</div>`;catEl.appendChild(div);}
+  const tips=["Always check who wrote it and why before you share!","A confident voice doesn't mean a correct answer — verify!","If it sounds too amazing to be true, it probably is.","Good questions lead to good answers — be specific with AI!","Think like a detective: who benefits from this story?"];
+  document.getElementById('summary-tip').textContent='💡 '+tips[Math.floor(Math.random()*tips.length)];showScreen('summary');
+}
+</script>
+</body>
+</html>

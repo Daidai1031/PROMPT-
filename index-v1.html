@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=no">
+<title>PROMPT! — AI Literacy Game</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f1729;
+    --bg-card: #162039;
+    --bg-card-light: #1c2a4a;
+    --accent-pink: #ff6b9d;
+    --accent-yellow: #ffd166;
+    --accent-green: #06d6a0;
+    --accent-blue: #118ab2;
+    --accent-purple: #9b5de5;
+    --accent-orange: #f77f00;
+    --text-main: #f0f0f0;
+    --text-dim: #7a869a;
+    --correct: #06d6a0;
+    --partial: #ffd166;
+    --incorrect: #ef476f;
+    --radius: 14px;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body {
+    width:100vw; height:100vh; overflow:hidden;
+    font-family:'Nunito',sans-serif; background:var(--bg); color:var(--text-main);
+    -webkit-tap-highlight-color:transparent; user-select:none;
+  }
+
+  .ambient { position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:0; }
+  .ambient .orb { position:absolute; border-radius:50%; filter:blur(80px); opacity:0.15; }
+  .ambient .orb1 { width:300px; height:300px; top:-80px; right:-60px; background:var(--accent-purple); }
+  .ambient .orb2 { width:250px; height:250px; bottom:-60px; left:-40px; background:var(--accent-green); }
+  .ambient .orb3 { width:200px; height:200px; top:50%; left:50%; transform:translate(-50%,-50%); background:var(--accent-blue); opacity:0.08; }
+
+  .screen { display:none; width:100vw; height:100vh; position:absolute; top:0; left:0; z-index:1; }
+  .screen.active { display:flex; }
+
+  /* HOME */
+  #home { flex-direction:column; align-items:center; justify-content:center; gap:12px; text-align:center; }
+  .mascot { font-size:52px; animation:bounce 2.5s ease-in-out infinite; }
+  @keyframes bounce { 0%,100%{transform:scale(1) rotate(0)}30%{transform:scale(1.12) rotate(-6deg)}70%{transform:scale(1.06) rotate(4deg)} }
+  .logo-wrap { animation:float 3s ease-in-out infinite; }
+  @keyframes float { 0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)} }
+  .logo { font-family:'Fredoka',sans-serif; font-size:58px; font-weight:700; background:linear-gradient(135deg,var(--accent-pink),var(--accent-yellow),var(--accent-green)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; letter-spacing:3px; }
+  .logo-sub { font-size:13px; color:var(--text-dim); font-weight:700; letter-spacing:4px; text-transform:uppercase; }
+  .start-btn { margin-top:14px; padding:16px 56px; font-family:'Fredoka',sans-serif; font-size:26px; font-weight:700; color:#fff; background:linear-gradient(135deg,var(--accent-pink),var(--accent-purple)); border:none; border-radius:50px; cursor:pointer; box-shadow:0 6px 28px rgba(155,93,229,0.45); transition:transform .15s; }
+  .start-btn:active{transform:scale(0.94);}
+  .home-hint { font-size:12px; color:var(--text-dim); margin-top:2px; }
+
+  /* GAME */
+  #game { flex-direction:column; padding:8px 16px 10px; }
+  .game-top { display:flex; align-items:center; justify-content:space-between; height:30px; flex-shrink:0; }
+  .game-logo { font-family:'Fredoka',sans-serif; font-size:17px; font-weight:700; background:linear-gradient(135deg,var(--accent-pink),var(--accent-yellow)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .top-right { display:flex; align-items:center; gap:8px; }
+  .dots { display:flex; gap:4px; }
+  .dot { width:10px; height:10px; border-radius:50%; background:#1e2d4d; border:2px solid #2a3a5e; transition:all .3s; }
+  .dot.correct{background:var(--correct);border-color:var(--correct);}
+  .dot.partial{background:var(--partial);border-color:var(--partial);}
+  .dot.incorrect{background:var(--incorrect);border-color:var(--incorrect);}
+  .dot.current{border-color:var(--accent-purple);box-shadow:0 0 6px rgba(155,93,229,0.5);}
+  .score-pill { font-family:'Fredoka',sans-serif; font-size:14px; font-weight:600; color:var(--accent-yellow); background:rgba(255,209,102,0.08); padding:2px 10px; border-radius:14px; border:1px solid rgba(255,209,102,0.15); }
+
+  .q-area { flex:1; display:flex; flex-direction:column; gap:5px; min-height:0; overflow:hidden; margin-top:4px; }
+  .cat-tag { align-self:flex-start; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; padding:2px 10px; border-radius:14px; }
+  .cat-real_vs_fake{background:rgba(239,71,111,0.12);color:var(--incorrect);}
+  .cat-ai_best_practices{background:rgba(17,138,178,0.12);color:var(--accent-blue);}
+  .cat-bad_actors{background:rgba(247,127,0,0.12);color:var(--accent-orange);}
+  .q-text { font-family:'Fredoka',sans-serif; font-size:16px; font-weight:600; line-height:1.3; color:#fff; padding:2px 0; flex-shrink:0; }
+
+  .opts { display:grid; grid-template-columns:1fr 1fr; gap:8px; align-content:start; }
+  .opt { display:flex; align-items:center; gap:10px; padding:10px 14px; background:var(--bg-card); border:2px solid #243052; border-radius:var(--radius); cursor:pointer; font-size:14px; font-weight:600; color:var(--text-main); text-align:left; transition:all .15s; }
+  .opt:active{transform:scale(0.97);}
+  .opt.selected{border-color:var(--accent-purple);background:rgba(155,93,229,0.12);box-shadow:0 0 14px rgba(155,93,229,0.15);}
+  .opt.reveal-correct{border-color:var(--correct);background:rgba(6,214,160,0.12);}
+  .opt.reveal-incorrect{border-color:var(--incorrect);background:rgba(239,71,111,0.08);opacity:0.55;}
+  .opt.reveal-dim{opacity:0.35;}
+  .opt-ltr { font-family:'Fredoka',sans-serif; font-size:15px; font-weight:700; width:30px; height:30px; display:flex; align-items:center; justify-content:center; border-radius:8px; background:rgba(255,255,255,0.05); flex-shrink:0; }
+  .opt-txt { flex:1; line-height:1.25; }
+
+  .status-bar { font-size:12px; color:var(--accent-yellow); text-align:center; min-height:18px; opacity:0; transition:opacity .3s; }
+  .status-bar.visible { opacity:1; }
+
+  .bottom-bar { display:flex; gap:8px; margin-top:4px; flex-shrink:0; }
+  .confirm-btn { flex:1; padding:10px 0; font-family:'Fredoka',sans-serif; font-size:17px; font-weight:700; color:#fff; background:linear-gradient(135deg,var(--accent-blue),var(--accent-purple)); border:none; border-radius:12px; cursor:pointer; transition:transform .15s,opacity .15s; }
+  .confirm-btn:disabled{opacity:0.3;cursor:default;}
+  .confirm-btn:not(:disabled):active{transform:scale(0.97);}
+
+  .mic-btn { width:44px; height:44px; border-radius:50%; border:2px solid var(--accent-pink); background:rgba(255,107,157,0.08); color:var(--accent-pink); font-size:20px; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all .2s; flex-shrink:0; }
+  .mic-btn.recording { border-color:var(--incorrect); background:rgba(239,71,111,0.2); animation:mic-pulse 1s ease-in-out infinite; }
+  @keyframes mic-pulse { 0%,100%{box-shadow:0 0 0 0 rgba(239,71,111,0.3);}50%{box-shadow:0 0 0 10px rgba(239,71,111,0);} }
+  .mic-btn.processing { border-color:var(--accent-yellow); background:rgba(255,209,102,0.15); }
+
+  /* FEEDBACK */
+  #feedback { display:none; position:absolute; top:0; left:0; width:100vw; height:100vh; background:rgba(8,10,22,0.92); backdrop-filter:blur(8px); flex-direction:column; align-items:center; justify-content:center; gap:10px; z-index:10; padding:20px 44px; text-align:center; }
+  #feedback.active{display:flex;}
+  .fb-icon { font-size:48px; }
+  .fb-title { font-family:'Fredoka',sans-serif; font-size:26px; font-weight:700; }
+  .fb-title.correct{color:var(--correct);} .fb-title.partial{color:var(--partial);} .fb-title.incorrect{color:var(--incorrect);}
+  .fb-feedback { font-size:15px; line-height:1.4; color:var(--text-main); max-width:560px; font-style:italic; margin:4px 0; }
+  .fb-text { font-size:14px; line-height:1.4; color:var(--text-dim); max-width:560px; }
+  .fb-tip { font-size:13px; color:var(--accent-yellow); background:rgba(255,209,102,0.06); border:1px solid rgba(255,209,102,0.12); border-radius:10px; padding:8px 18px; max-width:480px; }
+  .next-btn { margin-top:6px; padding:12px 44px; font-family:'Fredoka',sans-serif; font-size:18px; font-weight:700; color:#fff; background:linear-gradient(135deg,var(--accent-green),var(--accent-blue)); border:none; border-radius:40px; cursor:pointer; box-shadow:0 3px 14px rgba(6,214,160,0.3); transition:transform .15s; }
+  .next-btn:active{transform:scale(0.95);}
+
+  /* LOADING */
+  #loading { display:none; position:absolute; top:0; left:0; width:100vw; height:100vh; background:rgba(8,10,22,0.85); backdrop-filter:blur(4px); flex-direction:column; align-items:center; justify-content:center; gap:14px; z-index:20; }
+  #loading.active{display:flex;}
+  .spinner { width:40px; height:40px; border:4px solid #243052; border-top-color:var(--accent-purple); border-radius:50%; animation:spin .8s linear infinite; }
+  @keyframes spin { to{transform:rotate(360deg)} }
+  .loading-text { font-family:'Fredoka',sans-serif; font-size:16px; color:var(--text-dim); }
+
+  /* SUMMARY */
+  #summary { flex-direction:column; align-items:center; justify-content:center; gap:10px; padding:16px 32px; text-align:center; }
+  .sum-trophy{font-size:48px;}
+  .sum-title{font-family:'Fredoka',sans-serif;font-size:30px;font-weight:700;background:linear-gradient(135deg,var(--accent-yellow),var(--accent-green));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+  .sum-score{font-family:'Fredoka',sans-serif;font-size:42px;font-weight:700;color:#fff;}
+  .sum-score span{color:var(--text-dim);font-size:22px;}
+  .sum-cats{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;}
+  .sum-cat{background:var(--bg-card);border-radius:12px;padding:8px 16px;text-align:center;min-width:110px;border:1px solid #243052;}
+  .sum-cat-name{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim);margin-bottom:2px;}
+  .sum-cat-score{font-family:'Fredoka',sans-serif;font-size:18px;font-weight:700;}
+  .sum-tip{font-size:14px;color:var(--accent-yellow);max-width:440px;line-height:1.3;}
+  .replay-btn{padding:14px 44px;font-family:'Fredoka',sans-serif;font-size:20px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--accent-pink),var(--accent-purple));border:none;border-radius:40px;cursor:pointer;box-shadow:0 4px 18px rgba(155,93,229,0.4);transition:transform .15s;}
+  .replay-btn:active{transform:scale(0.95);}
+
+  .fade-in{animation:fadeIn .3s ease-out;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+  .pop-in{animation:popIn .35s cubic-bezier(.34,1.56,.64,1);}
+  @keyframes popIn{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:scale(1)}}
+</style>
+</head>
+<body>
+
+<div class="ambient"><div class="orb orb1"></div><div class="orb orb2"></div><div class="orb orb3"></div></div>
+
+<div id="home" class="screen active">
+  <div class="mascot">🤖</div>
+  <div class="logo-wrap"><div class="logo">PROMPT!</div></div>
+  <div class="logo-sub">AI Literacy Game</div>
+  <button class="start-btn" onclick="startGame()">Play!</button>
+  <div class="home-hint">touch to choose · or speak your answer</div>
+</div>
+
+<div id="game" class="screen">
+  <div class="game-top">
+    <div class="game-logo">PROMPT!</div>
+    <div class="top-right"><div class="dots" id="dots"></div><div class="score-pill" id="score-pill">⭐ 0</div></div>
+  </div>
+  <div class="q-area">
+    <div class="cat-tag" id="cat-tag"></div>
+    <div class="q-text" id="q-text"></div>
+    <div class="opts" id="opts"></div>
+    <div class="status-bar" id="status-bar"></div>
+    <div class="bottom-bar">
+      <button class="confirm-btn" id="confirm-btn" disabled onclick="submitAnswer()">Choose an answer</button>
+      <button class="mic-btn" id="mic-btn" onclick="toggleRecording()">🎤</button>
+    </div>
+  </div>
+</div>
+
+<div id="feedback">
+  <div class="fb-icon pop-in" id="fb-icon"></div>
+  <div class="fb-title fade-in" id="fb-title"></div>
+  <div class="fb-feedback fade-in" id="fb-feedback"></div>
+  <div class="fb-text fade-in" id="fb-text"></div>
+  <div class="fb-tip fade-in" id="fb-tip"></div>
+  <button class="next-btn" id="next-btn" onclick="nextCard()">Next →</button>
+</div>
+
+<div id="loading"><div class="spinner"></div><div class="loading-text" id="loading-text">Thinking...</div></div>
+
+<div id="summary" class="screen">
+  <div class="sum-trophy" id="sum-trophy"></div>
+  <div class="sum-title">Game Complete!</div>
+  <div class="sum-score" id="sum-score"></div>
+  <div class="sum-cats" id="sum-cats"></div>
+  <div class="sum-tip" id="sum-tip"></div>
+  <button class="replay-btn" onclick="goHome()">Play Again 🔄</button>
+</div>
+
+<script>
+const API = '';
+const CAT_LABELS = {real_vs_fake:'Real vs Fake',ai_best_practices:'AI Best Practices',bad_actors:'Bad Actors & Motive'};
+const CAT_EMOJI = {real_vs_fake:'🔍',ai_best_practices:'🤖',bad_actors:'🎭'};
+
+let sessionId=null, currentCard=null, selectedOpt=null, totalCards=0, currentIdx=0, score=0, results=[];
+let isRecording=false, mediaRecorder=null, audioChunks=[];
+
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function showLoading(m){document.getElementById('loading-text').textContent=m||'Thinking...';document.getElementById('loading').classList.add('active');}
+function hideLoading(){document.getElementById('loading').classList.remove('active');}
+function showStatus(m){const b=document.getElementById('status-bar');b.textContent=m;b.classList.add('visible');}
+function hideStatus(){document.getElementById('status-bar').classList.remove('visible');}
+
+// TTS via server
+async function speak(text){
+  try{
+    const r=await fetch(`${API}/api/tts`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text})});
+    if(!r.ok)return;
+    const blob=await r.blob();
+    const url=URL.createObjectURL(blob);
+    const a=new Audio(url);
+    return new Promise(res=>{a.onended=()=>{URL.revokeObjectURL(url);res();};a.onerror=()=>{URL.revokeObjectURL(url);res();};a.play().catch(()=>res());});
+  }catch(e){}
+}
+
+async function startGame(){
+  showLoading('Setting up the game...');
+  try{
+    const r=await fetch(`${API}/api/start`,{method:'POST'});
+    const d=await r.json();
+    sessionId=d.session_id; totalCards=d.total_cards; currentCard=d.card; currentIdx=0; score=0; results=[];
+    hideLoading(); showScreen('game'); renderCard();
+    await speak('Welcome to PROMPT! Let us begin!');
+    speakQuestion();
+  }catch(e){hideLoading();alert('Cannot connect to server. Is it running?');}
+}
+
+function goHome(){showScreen('home');}
+
+function renderCard(){
+  selectedOpt=null;
+  const c=currentCard;
+  const dotsEl=document.getElementById('dots');dotsEl.innerHTML='';
+  for(let i=0;i<totalCards;i++){const d=document.createElement('div');d.className='dot';if(i<results.length)d.classList.add(results[i]);if(i===currentIdx)d.classList.add('current');dotsEl.appendChild(d);}
+  document.getElementById('score-pill').textContent=`⭐ ${score}`;
+  const cat=document.getElementById('cat-tag');cat.textContent=`${CAT_EMOJI[c.category]||''} ${CAT_LABELS[c.category]||c.category}`;cat.className=`cat-tag cat-${c.category}`;
+  document.getElementById('q-text').textContent=c.question;
+  const grid=document.getElementById('opts');grid.innerHTML='';
+  for(const k of Object.keys(c.options)){
+    const b=document.createElement('div');b.className='opt fade-in';b.dataset.key=k;
+    b.innerHTML=`<div class="opt-ltr">${k}</div><div class="opt-txt">${c.options[k]}</div>`;
+    b.onclick=()=>selectOption(k,b);grid.appendChild(b);
+  }
+  const cb=document.getElementById('confirm-btn');cb.disabled=true;cb.textContent='Choose an answer';
+  resetMicBtn();hideStatus();
+}
+
+async function speakQuestion(){
+  const c=currentCard;
+  const o=Object.entries(c.options).map(([k,v])=>`${k}, ${v}`).join('. ');
+  await speak(`Question ${currentIdx+1}. ${c.question} Your options are: ${o}`);
+}
+
+function selectOption(k,btn){
+  selectedOpt=k;
+  document.querySelectorAll('.opt').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  const cb=document.getElementById('confirm-btn');cb.disabled=false;cb.textContent=`Lock in ${k}! 🔒`;
+}
+
+async function submitAnswer(){
+  if(!selectedOpt)return;
+  document.getElementById('confirm-btn').disabled=true;
+  showLoading('Checking your answer...');
+  try{
+    const r=await fetch(`${API}/api/answer`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({session_id:sessionId,selected_option:selectedOpt})});
+    const d=await r.json(); hideLoading(); revealAnswer(d);
+  }catch(e){hideLoading();showStatus('Error submitting answer');}
+}
+
+// Voice
+async function toggleRecording(){if(isRecording)stopRecording();else startRecording();}
+
+async function startRecording(){
+  try{
+    const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+    mediaRecorder=new MediaRecorder(stream,{mimeType:'audio/webm'});
+    audioChunks=[];
+    mediaRecorder.ondataavailable=e=>{if(e.data.size>0)audioChunks.push(e.data);};
+    mediaRecorder.onstop=()=>{stream.getTracks().forEach(t=>t.stop());processVoice();};
+    mediaRecorder.start();isRecording=true;
+    document.getElementById('mic-btn').classList.add('recording');
+    document.getElementById('mic-btn').innerHTML='⏹';
+    showStatus('🎤 Listening... tap mic to stop');
+    setTimeout(()=>{if(isRecording)stopRecording();},8000);
+  }catch(e){showStatus('Microphone access denied');}
+}
+
+function stopRecording(){
+  if(mediaRecorder&&mediaRecorder.state==='recording')mediaRecorder.stop();
+  isRecording=false;
+  document.getElementById('mic-btn').classList.remove('recording');
+  document.getElementById('mic-btn').classList.add('processing');
+  document.getElementById('mic-btn').innerHTML='⏳';
+  showStatus('Processing your voice...');
+}
+
+async function processVoice(){
+  const blob=new Blob(audioChunks,{type:'audio/webm'});
+  const fd=new FormData();fd.append('audio',blob,'recording.webm');
+  showLoading('Transcribing your answer...');
+  try{
+    const tr=await fetch(`${API}/api/transcribe`,{method:'POST',body:fd});
+    const td=await tr.json();
+    const text=td.text||'';
+    if(!text){hideLoading();showStatus('No speech detected — try again or tap an option');resetMicBtn();return;}
+    showStatus(`You said: "${text}"`);
+    const matched=matchVoiceToOption(text);
+    if(matched){
+      selectedOpt=matched;
+      document.querySelectorAll('.opt').forEach(el=>{el.classList.remove('selected');if(el.dataset.key===matched)el.classList.add('selected');});
+      const r=await fetch(`${API}/api/answer`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({session_id:sessionId,selected_option:matched})});
+      const d=await r.json();hideLoading();
+      await speak(`I heard: ${text}`);
+      revealAnswer(d);
+    }else{
+      hideLoading();showStatus(`Heard: "${text}" — try again or tap an option`);resetMicBtn();
+    }
+  }catch(e){hideLoading();showStatus('Voice processing failed');resetMicBtn();}
+}
+
+function matchVoiceToOption(text){
+  const t=text.toLowerCase().trim();
+  const c=currentCard;
+  const lp={A:[/\ba\b/,/option a/i],B:[/\bb\b/,/option b/i],C:[/\bc\b/,/option c/i],D:[/\bd\b/,/option d/i]};
+  for(const[k,ps]of Object.entries(lp)){if(!(k in c.options))continue;for(const p of ps){if(p.test(t))return k;}}
+  for(const[k,v]of Object.entries(c.options)){if(t.includes(v.toLowerCase()))return k;}
+  if(c.accepted_keywords){for(const kw of c.accepted_keywords){if(t.includes(kw.toLowerCase()))return c.correct_answer;}}
+  return null;
+}
+
+function resetMicBtn(){const b=document.getElementById('mic-btn');b.className='mic-btn';b.innerHTML='🎤';}
+
+async function revealAnswer(data){
+  const c=currentCard;
+  document.querySelectorAll('.opt').forEach(el=>{
+    const k=el.dataset.key;el.onclick=null;el.classList.remove('selected');
+    if(k===c.correct_answer)el.classList.add('reveal-correct');
+    else if(k===selectedOpt&&data.judgement!=='correct')el.classList.add('reveal-incorrect');
+    else el.classList.add('reveal-dim');
+  });
+  score=data.current_score;results.push(data.judgement);
+  document.getElementById('score-pill').textContent=`⭐ ${score}`;
+  const dots=document.querySelectorAll('.dot');if(dots[currentIdx]){dots[currentIdx].classList.remove('current');dots[currentIdx].classList.add(data.judgement);}
+  const cb=document.getElementById('confirm-btn');cb.disabled=true;cb.textContent=data.judgement==='correct'?'Correct! ✅':'Not quite ❌';
+  if(data.has_next&&data.next_card)currentCard=data.next_card;
+  setTimeout(()=>showFeedback(data),500);
+}
+
+async function showFeedback(data){
+  const icons={correct:'🎉',partial:'🤔',incorrect:'💡'},titles={correct:'Awesome!',partial:'Almost there!',incorrect:'Good try!'};
+  document.getElementById('fb-icon').textContent=icons[data.judgement];
+  const t=document.getElementById('fb-title');t.textContent=titles[data.judgement];t.className=`fb-title ${data.judgement} fade-in`;
+  document.getElementById('fb-feedback').textContent=data.feedback;
+  document.getElementById('fb-text').textContent=data.explanation;
+  document.getElementById('fb-tip').textContent=`💡 ${data.verification_tip}`;
+  document.getElementById('next-btn').textContent=data.has_next?'Next →':'See Results 🏆';
+  document.getElementById('feedback').classList.add('active');
+  const lb={correct:'Correct!',partial:'Almost there!',incorrect:'Not quite.'};
+  await speak(`${lb[data.judgement]} ${data.feedback}`);
+}
+
+async function nextCard(){
+  document.getElementById('feedback').classList.remove('active');
+  resetMicBtn();hideStatus();currentIdx++;
+  if(currentIdx>=totalCards)await showSummary();
+  else{renderCard();speakQuestion();}
+}
+
+async function showSummary(){
+  showLoading('Preparing your results...');
+  try{
+    const r=await fetch(`${API}/api/summary?session_id=${sessionId}`,{method:'POST'});
+    const d=await r.json();hideLoading();
+    const pct=Math.round((d.score/d.total)*100);
+    let trophy='💪';if(pct===100)trophy='🏆';else if(pct>=75)trophy='🥇';else if(pct>=50)trophy='🥈';
+    document.getElementById('sum-trophy').textContent=trophy;
+    document.getElementById('sum-score').innerHTML=`${d.score} <span>/ ${d.total}</span>`;
+    const ce=document.getElementById('sum-cats');ce.innerHTML='';
+    for(const[cat,s]of Object.entries(d.category_stats)){
+      const p=Math.round((s.correct/s.total)*100);
+      const div=document.createElement('div');div.className='sum-cat fade-in';
+      div.innerHTML=`<div class="sum-cat-name">${CAT_EMOJI[cat]||''} ${CAT_LABELS[cat]||cat}</div><div class="sum-cat-score" style="color:${p>=75?'var(--correct)':p>=50?'var(--partial)':'var(--incorrect)'}">${s.correct}/${s.total}</div>`;
+      ce.appendChild(div);
+    }
+    document.getElementById('sum-tip').textContent=`💡 ${d.tip}`;
+    showScreen('summary');
+    await speak(`Game over! You scored ${d.score} out of ${d.total}. ${d.tip}`);
+  }catch(e){hideLoading();showScreen('summary');}
+}
+</script>
+</body>
+</html>

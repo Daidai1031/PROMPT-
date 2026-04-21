@@ -1,0 +1,860 @@
+[
+  {
+    "card_id": "#27",
+    "category": "usage",
+    "problem_type": "bias_inverter",
+    "difficulty": "easy",
+    "front": {
+      "title": "Mascot Remix",
+      "card_text": [
+        "\"The new school mascot should be picked by teachers because they know what looks serious and respectable.\""
+      ]
+    },
+    "back": {
+      "verdict": "Add student voice",
+      "scoring_anchors": {
+        "suggested_prompt": "Can you rewrite this from students' view too? Show what teachers care about, what kids care about, and make the final choice feel fair."
+      },
+      "reality_anchor": "school mascot student voice"
+    },
+    "teacher_notes": {
+      "deep_insight": "This works because it makes the model compare two groups with different goals instead of treating one adult view as automatic common sense.",
+      "habit": "Ask whose choice it is and who gets left out.",
+      "references": [
+        {
+          "title": "The New York Times Search: School Mascot",
+          "url": "https://www.nytimes.com/search?query=school%20mascot"
+        },
+        {
+          "title": "NPR Search: School Mascot",
+          "url": "https://www.npr.org/search?query=school%20mascot"
+        }
+      ]
+    }
+  },
+  {
+    "card_id": "#28",
+    "category": "usage",
+    "problem_type": "bias_inverter",
+    "difficulty": "easy",
+    "front": {
+      "title": "Comic Shelf Fight",
+      "card_text": [
+        "\"The library should buy fewer comics and more real books because comics are mostly distractions.\""
+      ]
+    },
+    "back": {
+      "verdict": "Challenge the label",
+      "scoring_anchors": {
+        "suggested_prompt": "Can you rewrite this from a comic-loving kid's point of view too? Compare reading joy and learning with the idea that comics don't count."
+      },
+      "reality_anchor": "comics count as reading"
+    },
+    "teacher_notes": {
+      "deep_insight": "The original frame hides a value judgment inside the phrase real books. A good prompt asks the model to expose that assumption and compare it with another reading goal.",
+      "habit": "Spot loaded labels like real, serious, or proper.",
+      "references": [
+        {
+          "title": "The New York Times Search: Graphic Novels Reading",
+          "url": "https://www.nytimes.com/search?query=graphic%20novels%20reading"
+        },
+        {
+          "title": "NPR Search: Comics Reading",
+          "url": "https://www.npr.org/search?query=comics%20reading"
+        }
+      ]
+    }
+  },
+  {
+    "card_id": "#29",
+    "category": "usage",
+    "problem_type": "bias_inverter",
+    "difficulty": "easy",
+    "front": {
+      "title": "Recess Race",
+      "card_text": [
+        "\"The playground game should follow the fastest kids, since slowing down makes it boring.\""
+      ]
+    },
+    "back": {
+      "verdict": "Make room",
+      "scoring_anchors": {
+        "suggested_prompt": "Can you rewrite this for kids who are slower or newer at the game? Compare speed with fun, fairness, and everyone getting to play."
+      },
+      "reality_anchor": "inclusive playground games"
+    },
+    "teacher_notes": {
+      "deep_insight": "This reframing works because it changes success from winning quickly to making the activity work for more people.",
+      "habit": "Ask who the rules help and who they push out.",
+      "references": [
+        {
+          "title": "The New York Times Search: Inclusive Sports Kids",
+          "url": "https://www.nytimes.com/search?query=inclusive%20sports%20kids"
+        },
+        {
+          "title": "NPR Search: Inclusive Play",
+          "url": "https://www.npr.org/search?query=inclusive%20play"
+        }
+      ]
+    }
+  },
+  {
+    "card_id": "#30",
+    "category": "usage",
+    "problem_type": "bias_inverter",
+    "difficulty": "easy",
+    "front": {
+      "title": "Taco Day Take",
+      "card_text": [
+        "\"Spicy taco day is great because adults say students should learn to like stronger flavors.\""
+      ]
+    },
+    "back": {
+      "verdict": "Reframe the taste",
+      "scoring_anchors": {
+        "suggested_prompt": "Can you rewrite this from students' taste and comfort point of view too? Compare trying new foods with actually enjoying lunch."
+      },
+      "reality_anchor": "school lunch taste student choice"
+    },
+    "teacher_notes": {
+      "deep_insight": "The original answer centers what adults want students to become, not what students need right now. The prompt adds missing user experience.",
+      "habit": "Ask what the real users experience, not just what adults prefer.",
+      "references": [
+        {
+          "title": "The New York Times Search: School Lunch Taste",
+          "url": "https://www.nytimes.com/search?query=school%20lunch%20taste"
+        },
+        {
+          "title": "NPR Search: School Lunch Students",
+          "url": "https://www.npr.org/search?query=school%20lunch%20students"
+        }
+      ]
+    }
+  },
+  {
+    "card_id": "#31",
+    "category": "usage",
+    "problem_type": "bias_inverter",
+    "difficulty": "easy",
+    "front": {
+      "title": "Class Pet Pick",
+      "card_text": [
+        "\"The class pet should be a quiet fish because messy animals are too much trouble for teachers.\""
+      ]
+    },
+    "back": {
+      "verdict": "Add another need",
+      "scoring_anchors": {
+        "suggested_prompt": "Can you rewrite this from students' view too? Compare teacher convenience with what kind of pet helps kids learn and stay interested."
+      },
+      "reality_anchor": "class pet learning benefits"
+    },
+    "teacher_notes": {
+      "deep_insight": "Bias often appears when convenience for one group becomes the only design goal. A better prompt asks what educational value got ignored.",
+      "habit": "Compare convenience with purpose.",
+      "references": [
+        {
+          "title": "The New York Times Search: Classroom Pets",
+          "url": "https://www.nytimes.com/search?query=classroom%20pets"
+        },
+        {
+          "title": "NPR Search: Classroom Pets",
+          "url": "https://www.npr.org/search?query=classroom%20pets"
+        }
+      ]
+    }
+  },
+  {
+    "card_id": "#32",
+    "category": "usage",
+    "problem_type": "bias_inverter",
+    "difficulty": "easy",
+    "front": {
+      "title": "Boss Battle Patch",
+      "card_text": [
+        "\"This game update is awesome because expert players finally get harder boss fights.\""
+      ]
+    },
+    "back": {
+      "verdict": "Change the audience",
+      "scoring_anchors": {
+        "suggested_prompt": "Can you rewrite this for beginners too? Show what expert players want, what newer players might struggle with, and make it feel balanced."
+      },
+      "reality_anchor": "video game updates beginners"
+    },
+    "teacher_notes": {
+      "deep_insight": "A strong bias-inverter prompt changes the audience and the success criteria at the same time. That reveals who the original answer was secretly written for.",
+      "habit": "Ask who this advice is really for.",
+      "references": [
+        {
+          "title": "The New York Times Search: Video Game Updates",
+          "url": "https://www.nytimes.com/search?query=video%20game%20updates"
+        },
+        {
+          "title": "NPR Search: Video Games",
+          "url": "https://www.npr.org/search?query=video%20games"
+        }
+      ]
+    }
+  },
+  {
+    "card_id": "#33",
+    "category": "usage",
+    "problem_type": "bias_inverter",
+    "difficulty": "medium",
+    "front": {
+      "title": "Monument Many Ways",
+      "card_text": [
+        "\"This monument mainly celebrates national pride and progress, so controversy around it is a distraction.\""
+      ]
+    },
+    "back": {
+      "verdict": "Center omitted history",
+      "scoring_anchors": {
+        "suggested_prompt": "Rewrite this using Indigenous and local historian perspectives too. Compare what the pride frame includes and what it leaves out."
+      },
+      "reality_anchor": "monuments Indigenous perspectives history"
+    },
+    "teacher_notes": {
+      "deep_insight": "Cultural bias often appears through who gets centered and who gets erased. A multi-lens prompt helps the model compare meanings instead of just adding one token paragraph.",
+      "habit": "Ask whose history is present and absent.",
+      "references": [
+        {
+          "title": "National Geographic Search: Indigenous History",
+          "url": "https://www.nationalgeographic.com/search?q=Indigenous%20history"
+        },
+        {
+          "title": "Smithsonian Magazine Search: Monuments",
+          "url": "https://www.smithsonianmag.com/search/?q=monuments"
+        }
+      ]
+    }
+  },
+  {
+    "card_id": "#34",
+    "category": "usage",
+    "problem_type": "bias_inverter",
+    "difficulty": "medium",
+    "front": {
+      "title": "Screen Time Frame",
+      "card_text": [
+        "\"Too much screen time is mostly a self-control problem, not something platforms are responsible for.\""
+      ]
+    },
+    "back": {
+      "verdict": "Shift responsibility",
+      "scoring_anchors": {
+        "suggested_prompt": "Rewrite this through platform design and teen wellbeing. Compare self-control explanations with system-design explanations and shared responsibility."
+      },
+      "reality_anchor": "teen social media platform design wellbeing"
+    },
+    "teacher_notes": {
+      "deep_insight": "Many answers default to blaming individuals. A better perspective prompt adds systems, incentives, and design choices so the model can compare causes more honestly.",
+      "habit": "When blame is personal, ask about the system.",
+      "references": [
+        {
+          "title": "Scientific American Search: Social Media Teen Wellbeing",
+          "url": "https://www.scientificamerican.com/search/?q=social%20media%20teen%20wellbeing"
+        },
+        {
+          "title": "Reuters Search: Social Media Teens",
+          "url": "https://www.reuters.com/site-search/?query=social%20media%20teens"
+        }
+      ]
+    }
+  },
+  {
+    "card_id": "#35",
+    "category": "usage",
+    "problem_type": "bias_inverter",
+    "difficulty": "medium",
+    "front": {
+      "title": "Robot Jobs Lens",
+      "card_text": [
+        "\"Automation is good because efficiency matters most, and job losses are just part of progress.\""
+      ]
+    },
+    "back": {
+      "verdict": "Expose the tradeoff",
+      "scoring_anchors": {
+        "suggested_prompt": "Rewrite this from worker and community perspectives too. Compare efficiency with retraining, transition costs, and who absorbs the downside."
+      },
+      "reality_anchor": "automation worker retraining community impact"
+    },
+    "teacher_notes": {
+      "deep_insight": "Economic answers often hide a value choice. Reframing helps the model compare productivity with distribution, timing, and who gains or loses from the change.",
+      "habit": "Ask who benefits, who pays, and when.",
+      "references": [
+        {
+          "title": "Scientific American Search: Automation Jobs",
+          "url": "https://www.scientificamerican.com/search/?q=automation%20jobs"
+        },
+        {
+          "title": "Reuters Search: Automation Workers",
+          "url": "https://www.reuters.com/site-search/?query=automation%20workers"
+        }
+      ]
+    }
+  },
+  {
+    "card_id": "#36",
+    "category": "usage",
+    "problem_type": "bias_inverter",
+    "difficulty": "medium",
+    "front": {
+      "title": "Stadium Spending Lens",
+      "card_text": [
+        "\"A new stadium is a smart investment because tourism and civic excitement will boost the city.\""
+      ]
+    },
+    "back": {
+      "verdict": "Add local stakes",
+      "scoring_anchors": {
+        "suggested_prompt": "Rewrite this from neighborhood resident and public-school budget perspectives too. Compare civic excitement with displacement, taxes, and opportunity costs."
+      },
+      "reality_anchor": "stadium funding neighborhood impact taxes"
+    },
+    "teacher_notes": {
+      "deep_insight": "Public projects are often framed through citywide excitement while local costs disappear. A strong prompt names nearby stakeholders and asks what else the money could do.",
+      "habit": "For big projects, ask who nearby pays.",
+      "references": [
+        {
+          "title": "Reuters Search: Stadium Funding",
+          "url": "https://www.reuters.com/site-search/?query=stadium%20funding"
+        },
+        {
+          "title": "The New York Times Search: Stadium Taxes",
+          "url": "https://www.nytimes.com/search?query=stadium%20taxes"
+        }
+      ]
+    }
+  },
+  {
+    "card_id": "#37",
+    "category": "usage",
+    "problem_type": "bias_inverter",
+    "difficulty": "hard",
+    "front": {
+      "title": "Protest Coverage",
+      "card_text": [
+        "\"The main story of the protests is disruption to traffic, businesses, and daily routines.\""
+      ]
+    },
+    "back": {
+      "verdict": "Widen the frame",
+      "scoring_anchors": {
+        "suggested_prompt": "Rewrite this using civil liberties, public safety, and resident perspectives. Keep disruption visible, but compare it with why people protest and what officials owe."
+      },
+      "reality_anchor": "protest media framing civil liberties public safety"
+    },
+    "teacher_notes": {
+      "deep_insight": "Hard-topic reframing should widen the frame, not just flip sides. Named stakeholders and explicit comparison keep the model balanced and specific.",
+      "habit": "Use multiple lenses, then compare them directly.",
+      "references": [
+        {
+          "title": "Reuters Search: Protest Coverage",
+          "url": "https://www.reuters.com/site-search/?query=protest%20coverage"
+        },
+        {
+          "title": "AP News Search: Protests",
+          "url": "https://apnews.com/search?q=protests"
+        }
+      ]
+    }
+  },
+  {
+    "card_id": "#38",
+    "category": "usage",
+    "problem_type": "bias_inverter",
+    "difficulty": "hard",
+    "front": {
+      "title": "Camera Debate",
+      "card_text": [
+        "\"Public cameras are mostly a safety upgrade, and privacy worries are an overreaction.\""
+      ]
+    },
+    "back": {
+      "verdict": "Balance rights and safety",
+      "scoring_anchors": {
+        "suggested_prompt": "Rewrite this through privacy rights, bias risk, and oversight. Compare safety benefits with safeguards the original answer barely considered."
+      },
+      "reality_anchor": "surveillance cameras privacy bias oversight"
+    },
+    "teacher_notes": {
+      "deep_insight": "Safety-only framing can hide rights questions and uneven harms. Good prompts ask the model to compare benefits with risks, rules, and accountability.",
+      "habit": "When you hear benefits, ask for rights and rules.",
+      "references": [
+        {
+          "title": "Reuters Search: Surveillance Privacy",
+          "url": "https://www.reuters.com/site-search/?query=surveillance%20privacy"
+        },
+        {
+          "title": "Scientific American Search: Surveillance Bias",
+          "url": "https://www.scientificamerican.com/search/?q=surveillance%20bias"
+        }
+      ]
+    }
+  },
+  {
+    "card_id": "#39",
+    "category": "usage",
+    "problem_type": "bias_inverter",
+    "difficulty": "hard",
+    "front": {
+      "title": "Hiring Bot Lens",
+      "card_text": [
+        "\"An AI hiring tool is valuable because it screens applicants faster and reduces human messiness.\""
+      ]
+    },
+    "back": {
+      "verdict": "Test hidden assumptions",
+      "scoring_anchors": {
+        "suggested_prompt": "Rewrite this from an applicant fairness and transparency lens. Compare speed with explainability, bias risk, and appeal rights."
+      },
+      "reality_anchor": "AI hiring fairness transparency bias"
+    },
+    "teacher_notes": {
+      "deep_insight": "Technology answers often treat speed as neutral progress. Reframing surfaces hidden assumptions about fairness, explainability, and the rights of people affected by automated decisions.",
+      "habit": "For AI systems, ask who gets judged and how.",
+      "references": [
+        {
+          "title": "Reuters Search: AI Hiring",
+          "url": "https://www.reuters.com/site-search/?query=AI%20hiring"
+        },
+        {
+          "title": "Scientific American Search: Algorithmic Bias Hiring",
+          "url": "https://www.scientificamerican.com/search/?q=algorithmic%20bias%20hiring"
+        }
+      ]
+    }
+  },
+  {
+    "card_id": "#40",
+    "category": "usage",
+    "problem_type": "task_decomposition_map",
+    "difficulty": "easy",
+    "front": {
+      "title": "Volcano Quest",
+      "card_text": [
+        "Create a volcano fair project in one week: question, materials, experiment, display board, and short talk."
+      ]
+    },
+    "back": {
+      "verdict": "Break it down",
+      "scoring_anchors": {
+        "suggested_prompt": "1) Pick a focused question. 2) Make a schedule and materials list. 3) Plan the experiment. 4) Draft board sections. 5) Review with a checklist."
+      },
+      "reality_anchor": "science fair project steps"
+    },
+    "teacher_notes": {
+      "deep_insight": "Large school tasks become manageable when the model handles one output at a time. Sequencing stops it from jumping to a messy final answer too early.",
+      "habit": "Plan, build, check, revise, package.",
+      "references": [
+        {
+          "title": "National Geographic Search: Volcanoes",
+          "url": "https://www.nationalgeographic.com/search?q=volcanoes"
+        },
+        {
+          "title": "Scientific American Search: Science Fair",
+          "url": "https://www.scientificamerican.com/search/?q=science%20fair"
+        }
+      ]
+    }
+  },
+  {
+    "card_id": "#41",
+    "category": "usage",
+    "problem_type": "task_decomposition_map",
+    "difficulty": "easy",
+    "front": {
+      "title": "Party Quest",
+      "card_text": [
+        "Plan a birthday party for 12 people: theme, budget, shopping list, schedule, and invitation."
+      ]
+    },
+    "back": {
+      "verdict": "Make stages",
+      "scoring_anchors": {
+        "suggested_prompt": "1) Brainstorm themes. 2) Choose one and build a budget. 3) Make the shopping list. 4) Create the timeline. 5) Draft the invitation."
+      },
+      "reality_anchor": "birthday party planning checklist"
+    },
+    "teacher_notes": {
+      "deep_insight": "Planning, budgeting, and writing are different jobs. Multiple prompts keep the model from mixing them into one cluttered answer.",
+      "habit": "Separate planning prompts from writing prompts.",
+      "references": [
+        {
+          "title": "The New York Times Search: Party Planning",
+          "url": "https://www.nytimes.com/search?query=party%20planning"
+        },
+        {
+          "title": "NPR Search: Party Planning",
+          "url": "https://www.npr.org/search?query=party%20planning"
+        }
+      ]
+    }
+  },
+  {
+    "card_id": "#42",
+    "category": "usage",
+    "problem_type": "task_decomposition_map",
+    "difficulty": "easy",
+    "front": {
+      "title": "Book Report Map",
+      "card_text": [
+        "Finish a book report: notes, theme evidence, outline, discussion questions, and final editing pass."
+      ]
+    },
+    "back": {
+      "verdict": "Build in steps",
+      "scoring_anchors": {
+        "suggested_prompt": "1) Organize notes. 2) Pull theme evidence. 3) Make an outline. 4) Create discussion questions. 5) Do a final edit checklist."
+      },
+      "reality_anchor": "book report outline checklist"
+    },
+    "teacher_notes": {
+      "deep_insight": "A model should not leap straight to polished writing. Stepwise prompts support note gathering, structure, and revision first.",
+      "habit": "Collect evidence before asking for polish.",
+      "references": [
+        {
+          "title": "The New York Times Learning Network: Writing Prompts",
+          "url": "https://www.nytimes.com/column/learning-writing-prompts"
+        },
+        {
+          "title": "Scientific American Search: Reading",
+          "url": "https://www.scientificamerican.com/search/?q=reading"
+        }
+      ]
+    }
+  },
+  {
+    "card_id": "#43",
+    "category": "usage",
+    "problem_type": "task_decomposition_map",
+    "difficulty": "easy",
+    "front": {
+      "title": "Quiz Game Build",
+      "card_text": [
+        "Build a simple quiz game: choose features, write code, test bugs, and explain how it works."
+      ]
+    },
+    "back": {
+      "verdict": "Stage the build",
+      "scoring_anchors": {
+        "suggested_prompt": "1) Define the features. 2) Make pseudocode. 3) Write the code. 4) Check for bugs. 5) Explain it simply."
+      },
+      "reality_anchor": "build simple Python quiz game"
+    },
+    "teacher_notes": {
+      "deep_insight": "Coding improves when the model designs first, implements second, and tests third. That order prevents messy code and makes debugging easier.",
+      "habit": "Design, code, test, explain.",
+      "references": [
+        {
+          "title": "Python Docs: Tutorial",
+          "url": "https://docs.python.org/3/tutorial/index.html"
+        },
+        {
+          "title": "The New York Times Search: Learn Coding",
+          "url": "https://www.nytimes.com/search?query=learn%20coding"
+        }
+      ]
+    }
+  },
+  {
+    "card_id": "#44",
+    "category": "usage",
+    "problem_type": "task_decomposition_map",
+    "difficulty": "easy",
+    "front": {
+      "title": "Backpack Rescue",
+      "card_text": [
+        "Handle a lost backpack situation: search plan, checklists, messages to adults, and a place-tracker."
+      ]
+    },
+    "back": {
+      "verdict": "Sort the tasks",
+      "scoring_anchors": {
+        "suggested_prompt": "1) Make a search plan. 2) Turn it into a checklist. 3) Draft messages to adults. 4) Build a tracker. 5) Suggest next steps."
+      },
+      "reality_anchor": "lost backpack search checklist"
+    },
+    "teacher_notes": {
+      "deep_insight": "Everyday problems also benefit from prompt sequencing. Splitting action planning, messages, and tracking keeps the model organized and useful.",
+      "habit": "Separate tasks, messages, and trackers.",
+      "references": [
+        {
+          "title": "The New York Times Search: Lost and Found",
+          "url": "https://www.nytimes.com/search?query=lost%20and%20found"
+        },
+        {
+          "title": "NPR Search: Checklists",
+          "url": "https://www.npr.org/search?query=checklists"
+        }
+      ]
+    }
+  },
+  {
+    "card_id": "#45",
+    "category": "usage",
+    "problem_type": "task_decomposition_map",
+    "difficulty": "easy",
+    "front": {
+      "title": "Talent Show Plan",
+      "card_text": [
+        "Run a school talent show: sign-ups, schedule, stage rules, host script, and finale."
+      ]
+    },
+    "back": {
+      "verdict": "Map the workflow",
+      "scoring_anchors": {
+        "suggested_prompt": "1) List needed info. 2) Build sign-ups and timing. 3) Draft stage rules. 4) Write the host script. 5) Review the flow."
+      },
+      "reality_anchor": "school talent show planning"
+    },
+    "teacher_notes": {
+      "deep_insight": "Event planning works better when information gathering happens before writing final scripts or schedules. Each stage creates input for the next one.",
+      "habit": "Gather details first, polish later.",
+      "references": [
+        {
+          "title": "The New York Times Search: School Events",
+          "url": "https://www.nytimes.com/search?query=school%20events"
+        },
+        {
+          "title": "NPR Search: School Performance",
+          "url": "https://www.npr.org/search?query=school%20performance"
+        }
+      ]
+    }
+  },
+  {
+    "card_id": "#46",
+    "category": "usage",
+    "problem_type": "task_decomposition_map",
+    "difficulty": "medium",
+    "front": {
+      "title": "Podcast Path",
+      "card_text": [
+        "Produce a five-minute podcast episode: choose audience, outline, script, fact-check, and show notes."
+      ]
+    },
+    "back": {
+      "verdict": "Build the sequence",
+      "scoring_anchors": {
+        "suggested_prompt": "1) Define the audience. 2) Make an outline. 3) Draft the script. 4) List facts to check. 5) Revise and write show notes."
+      },
+      "reality_anchor": "podcast episode planning checklist"
+    },
+    "teacher_notes": {
+      "deep_insight": "Creative work still benefits from decomposition. Audience planning, drafting, checking, and packaging are different kinds of thinking and should happen in sequence.",
+      "habit": "Audience first, publish last.",
+      "references": [
+        {
+          "title": "Reuters Institute Search: Podcast",
+          "url": "https://reutersinstitute.politics.ox.ac.uk/search?search_api_fulltext=podcast"
+        },
+        {
+          "title": "NPR Training",
+          "url": "https://training.npr.org/"
+        }
+      ]
+    }
+  },
+  {
+    "card_id": "#47",
+    "category": "usage",
+    "problem_type": "task_decomposition_map",
+    "difficulty": "medium",
+    "front": {
+      "title": "Debate Ladder",
+      "card_text": [
+        "Prepare for a school debate: research questions, claims, counterclaims, rebuttal drills, and closing notes."
+      ]
+    },
+    "back": {
+      "verdict": "Chain the steps",
+      "scoring_anchors": {
+        "suggested_prompt": "1) Generate research questions. 2) Build claims. 3) Predict counterclaims. 4) Practice rebuttals. 5) Turn it into speaking notes."
+      },
+      "reality_anchor": "debate preparation claim counterclaim rebuttal"
+    },
+    "teacher_notes": {
+      "deep_insight": "Argument prep is more than making talking points. Sequential prompting helps the model gather questions, build claims, test opposition, and improve the final case.",
+      "habit": "Research, argue, challenge, revise, rehearse.",
+      "references": [
+        {
+          "title": "The New York Times Learning Network: Student Debate",
+          "url": "https://www.nytimes.com/column/learning-student-debate"
+        },
+        {
+          "title": "NPR Search: Debate",
+          "url": "https://www.npr.org/search?query=debate"
+        }
+      ]
+    }
+  },
+  {
+    "card_id": "#48",
+    "category": "usage",
+    "problem_type": "task_decomposition_map",
+    "difficulty": "medium",
+    "front": {
+      "title": "Trip Planning Map",
+      "card_text": [
+        "Plan a weekend trip for three friends: budget choices, destination options, tradeoffs, itinerary, and backup plan."
+      ]
+    },
+    "back": {
+      "verdict": "Sequence the choices",
+      "scoring_anchors": {
+        "suggested_prompt": "1) List constraints. 2) Suggest destinations. 3) Compare tradeoffs. 4) Build the itinerary. 5) Add a backup plan."
+      },
+      "reality_anchor": "weekend trip budget itinerary checklist"
+    },
+    "teacher_notes": {
+      "deep_insight": "Travel planning gets messy when discovery, budgeting, and scheduling happen all at once. Decomposition lets the model compare before committing.",
+      "habit": "Compare options before locking the schedule.",
+      "references": [
+        {
+          "title": "National Geographic Travel Search",
+          "url": "https://www.nationalgeographic.com/search?q=travel"
+        },
+        {
+          "title": "Reuters Search: Travel Budget",
+          "url": "https://www.reuters.com/site-search/?query=travel%20budget"
+        }
+      ]
+    }
+  },
+  {
+    "card_id": "#49",
+    "category": "usage",
+    "problem_type": "task_decomposition_map",
+    "difficulty": "medium",
+    "front": {
+      "title": "Garden Proposal Map",
+      "card_text": [
+        "Pitch a school garden: goals, costs, space plan, volunteer roles, and a short presentation."
+      ]
+    },
+    "back": {
+      "verdict": "Plan before pitch",
+      "scoring_anchors": {
+        "suggested_prompt": "1) Define the goal. 2) Estimate costs. 3) Sketch roles and layout. 4) Draft the pitch. 5) Review weak spots."
+      },
+      "reality_anchor": "school garden proposal budget"
+    },
+    "teacher_notes": {
+      "deep_insight": "Proposal writing improves when the model gathers goals, evidence, and logistics before drafting persuasive language. That sequence creates stronger, more grounded pitches.",
+      "habit": "Build the plan before the pitch.",
+      "references": [
+        {
+          "title": "National Geographic Search: School Garden",
+          "url": "https://www.nationalgeographic.com/search?q=school%20garden"
+        },
+        {
+          "title": "The New York Times Search: School Gardens",
+          "url": "https://www.nytimes.com/search?query=school%20gardens"
+        }
+      ]
+    }
+  },
+  {
+    "card_id": "#50",
+    "category": "usage",
+    "problem_type": "task_decomposition_map",
+    "difficulty": "hard",
+    "front": {
+      "title": "Phone Ban Brief",
+      "card_text": [
+        "Draft a balanced school phone-ban brief: stakeholders, evidence questions, tradeoffs, recommendation options, and summary."
+      ]
+    },
+    "back": {
+      "verdict": "Design the workflow",
+      "scoring_anchors": {
+        "suggested_prompt": "1) Map stakeholders. 2) Generate evidence questions. 3) Compare benefits and risks. 4) Draft options. 5) Review for balance and summarize."
+      },
+      "reality_anchor": "school phone bans policy evidence"
+    },
+    "teacher_notes": {
+      "deep_insight": "High-stakes writing needs process, not one giant prompt. Breaking a policy brief into stakeholder, evidence, tradeoff, and revision stages makes the model more balanced and transparent.",
+      "habit": "Map stakeholders before recommendations.",
+      "references": [
+        {
+          "title": "Reuters Search: School Phone Bans",
+          "url": "https://www.reuters.com/site-search/?query=school%20phone%20bans"
+        },
+        {
+          "title": "Scientific American Search: Phone Use Schools",
+          "url": "https://www.scientificamerican.com/search/?q=phone%20use%20schools"
+        }
+      ]
+    }
+  },
+  {
+    "card_id": "#51",
+    "category": "usage",
+    "problem_type": "task_decomposition_map",
+    "difficulty": "hard",
+    "front": {
+      "title": "Storm News Desk",
+      "card_text": [
+        "Build a breaking-weather newsroom workflow: verify facts, mark uncertainty, update safely, and package the latest version."
+      ]
+    },
+    "back": {
+      "verdict": "Set update rules",
+      "scoring_anchors": {
+        "suggested_prompt": "1) Separate confirmed facts from reports. 2) Create uncertainty labels. 3) Build update rules. 4) Review safety. 5) Package the latest version."
+      },
+      "reality_anchor": "breaking weather coverage verification uncertainty"
+    },
+    "teacher_notes": {
+      "deep_insight": "Breaking-news tasks demand staged prompting because facts can change quickly. Good workflows make the model verify first, label uncertainty, revise safely, and only then publish.",
+      "habit": "Verify, label, update, publish.",
+      "references": [
+        {
+          "title": "Reuters Search: Extreme Weather",
+          "url": "https://www.reuters.com/site-search/?query=extreme%20weather"
+        },
+        {
+          "title": "National Geographic Search: Extreme Weather",
+          "url": "https://www.nationalgeographic.com/search?q=extreme%20weather"
+        }
+      ]
+    }
+  },
+  {
+    "card_id": "#52",
+    "category": "usage",
+    "problem_type": "task_decomposition_map",
+    "difficulty": "hard",
+    "front": {
+      "title": "AI Policy Explainer",
+      "card_text": [
+        "Create a public explainer on city AI rules: key terms, stakeholders, risks, safeguards, examples, and a plain-language summary."
+      ]
+    },
+    "back": {
+      "verdict": "Layer the work",
+      "scoring_anchors": {
+        "suggested_prompt": "1) Define key terms. 2) Map stakeholders. 3) List risks and safeguards. 4) Add examples. 5) Rewrite in plain language."
+      },
+      "reality_anchor": "city AI policy public explainer"
+    },
+    "teacher_notes": {
+      "deep_insight": "Complex policy communication improves when the model defines terms before explaining debates. Layering the work helps keep the final explainer accurate and readable.",
+      "habit": "Define, map, compare, simplify.",
+      "references": [
+        {
+          "title": "Reuters Search: AI Regulation",
+          "url": "https://www.reuters.com/site-search/?query=AI%20regulation"
+        },
+        {
+          "title": "Scientific American Search: AI Policy",
+          "url": "https://www.scientificamerican.com/search/?q=AI%20policy"
+        }
+      ]
+    }
+  }
+]

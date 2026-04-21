@@ -1,0 +1,885 @@
+[
+  {
+    "card_id": "#1",
+    "category": "discernment",
+    "problem_type": "perspective_lens_audit",
+    "difficulty": "easy",
+    "front": {
+      "title": "Orbital Relics",
+      "card_text": [
+        "Glittering stardust clouds orbit Earth, beautiful relics of our greatest space adventures.",
+        "Jagged metal shards zip through the void, threatening to crush our newest satellites."
+      ]
+    },
+    "back": {
+      "verdict": "Awe vs. Danger Lens",
+      "scoring_anchors": {
+        "3_pts": "Identified relic vs. shard contrast.",
+        "7_pts": "Detected 'adventure' vs. 'threat' framing.",
+        "10_pts": "Check for 'Space Junk' vs 'Space Heritage' terminology."
+      },
+      "reality_anchor": "NASA orbital debris vs space archaeology"
+    },
+    "teacher_notes": {
+      "deep_insight": "Science reporting often chooses between an 'Explorer's Lens' (focusing on history) and a 'Safety Lens' (focusing on risk). Both describe the same satellite fragments, but one makes you feel nostalgic while the other makes you feel worried.",
+      "habit": "When you see something called a 'relic,' ask if it’s actually 'trash.'",
+      "references": [
+        {
+          "title": "Scientific American: Space Junk",
+          "url": "https://www.scientificamerican.com/article/space-junk-is-a-huge-problem-and-its-only-getting-worse/"
+        },
+        {
+          "title": "BBC: The Archaeology of Space",
+          "url": "https://www.bbc.com/future/article/20230214-the-archaeology-of-space-junk"
+        }
+      ]
+    }
+  },
+  {
+    "card_id": "#2",
+    "category": "discernment",
+    "problem_type": "perspective_lens_audit",
+    "difficulty": "easy",
+    "front": {
+      "title": "Ant City Secrets",
+      "card_text": [
+        "A brilliant empire of tiny architects builds a complex city beneath your feet.",
+        "A relentless army of millions marches across the yard, destroying every leaf in sight."
+      ]
+    },
+    "back": {
+      "verdict": "Architect vs. Invader Audit",
+      "scoring_anchors": {
+        "3_pts": "Note city-building vs. army marching.",
+        "7_pts": "Analyze 'brilliant' vs. 'relentless' descriptors.",
+        "10_pts": "Scan for 'civilization' vs 'pest' framing."
+      },
+      "reality_anchor": "Ant colony intelligence vs invasive species reports"
+    },
+    "teacher_notes": {
+      "deep_insight": "Nature writers use 'Civic' language to build respect for insects and 'Military' language to justify getting rid of them. The behavior—moving leaves and building tunnels—is the same in both accounts.",
+      "habit": "Identify the 'Role.' Is the insect being cast as a worker or a soldier?",
+      "references": [
+        {
+          "title": "National Geographic: Ants",
+          "url": "https://www.nationalgeographic.com/animals/invertebrates/facts/ants"
+        },
+        {
+          "title": "Smithsonian: The Benefit of Ants",
+          "url": "https://www.si.edu/spotlight/ants"
+        }
+      ]
+    }
+  },
+  {
+    "card_id": "#3",
+    "category": "discernment",
+    "problem_type": "perspective_lens_audit",
+    "difficulty": "easy",
+    "front": {
+      "title": "Earth’s Chimney",
+      "card_text": [
+        "Giant vents recycle the planet's crust, cooling the Earth and creating fertile islands.",
+        "Molten rock explodes from the peak, burying entire forests under a river of fire."
+      ]
+    },
+    "back": {
+      "verdict": "Recycling vs. Destruction Audit",
+      "scoring_anchors": {
+        "3_pts": "Note 'vent' vs. 'explosion' contrast.",
+        "7_pts": "Detect planetary health vs. local disaster focus.",
+        "10_pts": "Compare long-term geological vs short-term human impact."
+      },
+      "reality_anchor": "Volcanic soil fertility vs eruption damage"
+    },
+    "teacher_notes": {
+      "deep_insight": "This is a lens of 'Time.' A geologist looks at millions of years and sees life-giving 'recycling.' A news reporter looks at 24 hours and sees 'fire and death.' Both are accurate for their specific timeframe.",
+      "habit": "Ask: 'Is this story about the next ten minutes or the next ten thousand years?'",
+      "references": [
+        {
+          "title": "USGS: Volcano Benefits",
+          "url": "https://www.usgs.gov/faqs/what-are-some-benefits-volcanic-eruptions"
+        },
+        {
+          "title": "BBC: The Deadly Power of Volcanoes",
+          "url": "https://www.bbc.com/news/world-60011931"
+        }
+      ]
+    }
+  },
+  {
+    "card_id": "#4",
+    "category": "discernment",
+    "problem_type": "perspective_lens_audit",
+    "difficulty": "easy",
+    "front": {
+      "title": "Clean Wind",
+      "card_text": [
+        "Elegant white sails catch the breeze to light up homes without any smoke.",
+        "Steel towers spin heavy blades, casting shadows and blocking the mountain view."
+      ]
+    },
+    "back": {
+      "verdict": "Function vs. Aesthetics Audit",
+      "scoring_anchors": {
+        "3_pts": "Note 'sails' vs. 'steel towers.'",
+        "7_pts": "Analyze 'clean' vs. 'view-blocking' framing.",
+        "10_pts": "Identify benefit for 'city' vs. cost for 'local'."
+      },
+      "reality_anchor": "Wind turbine efficiency vs visual impact"
+    },
+    "teacher_notes": {
+      "deep_insight": "The 'Green' narrative focuses on the invisible benefit (carbon reduction), while the 'Local' narrative focuses on the visible change (the view). Outlets often pick one, making the project seem like a pure gift or a pure theft.",
+      "habit": "If a report only mentions 'clean air,' search for what the neighbors of the project think.",
+      "references": [
+        {
+          "title": "Scientific American: Wind Power",
+          "url": "https://www.scientificamerican.com/article/wind-power-is-growing-but-so-is-opposition/"
+        },
+        {
+          "title": "Energy.gov: Wind Basics",
+          "url": "https://www.energy.gov/eere/wind/advantages-and-challenges-wind-energy"
+        }
+      ]
+    }
+  },
+  {
+    "card_id": "#5",
+    "category": "discernment",
+    "problem_type": "perspective_lens_audit",
+    "difficulty": "easy",
+    "front": {
+      "title": "The Library Portal",
+      "card_text": [
+        "A glowing portal gives every child the keys to the world’s knowledge.",
+        "A buzzing hive of loud voices fights for every second of your attention."
+      ]
+    },
+    "back": {
+      "verdict": "Access vs. Attention Audit",
+      "scoring_anchors": {
+        "3_pts": "Note 'knowledge' vs. 'attention' contrast.",
+        "7_pts": "Detect 'portal' vs. 'hive' imagery.",
+        "10_pts": "Check if user is treated as a student or a product."
+      },
+      "reality_anchor": "Internet educational benefits vs attention economy"
+    },
+    "teacher_notes": {
+      "deep_insight": "Educational media frames the internet as a 'Library' (you choose the info). Media literacy reports frame it as a 'Casino' (the info chooses you). Both describe the same screen and the same internet connection.",
+      "habit": "Ask: 'Am I searching for something, or is the app trying to find me?'",
+      "references": [
+        {
+          "title": "UNESCO: ICT in Education",
+          "url": "https://www.unesco.org/en/digital-education"
+        },
+        {
+          "title": "The Guardian: The Attention Economy",
+          "url": "https://www.theguardian.com/technology/2021/oct/11/the-attention-economy-how-it-works-and-how-to-escape-it"
+        }
+      ]
+    }
+  },
+  {
+    "card_id": "#6",
+    "category": "discernment",
+    "problem_type": "perspective_lens_audit",
+    "difficulty": "medium",
+    "front": {
+      "title": "Battery Floor",
+      "card_text": [
+        "Minerals from the seafloor provide batteries for millions of clean cars.",
+        "Industrial machines crush undiscovered species in the last untouched wilderness."
+      ]
+    },
+    "back": {
+      "verdict": "Trade-off Logic Audit",
+      "scoring_anchors": {
+        "3_pts": "Note batteries vs. wilderness contrast.",
+        "7_pts": "Identify 'climate solution' vs. 'habitat destruction' framing.",
+        "10_pts": "Trace which 'Green' value is being prioritized."
+      },
+      "reality_anchor": "Deep sea mining ISA regulations debate"
+    },
+    "teacher_notes": {
+      "deep_insight": "This is a conflict between two environmental goals: 'Stopping Climate Change' vs. 'Preserving Biodiversity.' Outlets will often frame the choice so that only one goal seems to exist, making the decision seem much easier than it actually is.",
+      "habit": "When a solution is 'Green,' ask: 'What color is the habitat it's replacing?'",
+      "references": [
+        {
+          "title": "Reuters: Mining the Deep",
+          "url": "https://www.reuters.com/business/environment/un-agency-debates-deep-sea-mining-rules-2024-03-18/"
+        },
+        {
+          "title": "Nature: Deep-sea mining impact",
+          "url": "https://www.nature.com/articles/d41586-023-02290-5"
+        }
+      ]
+    }
+  },
+  {
+    "card_id": "#7",
+    "category": "discernment",
+    "problem_type": "perspective_lens_audit",
+    "difficulty": "medium",
+    "front": {
+      "title": "Robo-Chauffeur",
+      "card_text": [
+        "Tireless algorithms promise a future with zero traffic accidents.",
+        "Software makes life-or-death road choices without any human accountability."
+      ]
+    },
+    "back": {
+      "verdict": "Efficiency vs. Ethics Audit",
+      "scoring_anchors": {
+        "3_pts": "Note safety vs. accountability contrast.",
+        "7_pts": "Detect 'tireless' (hero) vs. 'black-box' (risk) framing.",
+        "10_pts": "Cross-reference technical safety data with legal liability."
+      },
+      "reality_anchor": "Autonomous vehicle safety vs moral machine ethics"
+    },
+    "teacher_notes": {
+      "deep_insight": "Tech outlets report on 'Statistical Safety' (fewer total deaths), while legal/human rights outlets report on 'Individual Agency' (who is to blame for one death?). A car that is 99% safer can still be 100% terrifying if there is no human in control.",
+      "habit": "If a machine is 'smarter,' ask: 'Who gets in trouble when the machine makes a mistake?'",
+      "references": [
+        {
+          "title": "Wired: Self-Driving Safety",
+          "url": "https://www.wired.com/story/self-driving-cars-safety-statistics/"
+        },
+        {
+          "title": "The Verge: The Ethics of AI Driving",
+          "url": "https://www.theverge.com/2023/5/24/23735911/tesla-autopilot-fsd-safety-data-investigation"
+        }
+      ]
+    }
+  },
+  {
+    "card_id": "#8",
+    "category": "discernment",
+    "problem_type": "perspective_lens_audit",
+    "difficulty": "medium",
+    "front": {
+      "title": "Cultured Protein",
+      "card_text": [
+        "Sterile lab-grown meat saves thousands of animals from the slaughterhouse.",
+        "Vats of chemical broth produce synthetic products to replace farm-raised food."
+      ]
+    },
+    "back": {
+      "verdict": "Compassion vs. Naturalism Audit",
+      "scoring_anchors": {
+        "3_pts": "Note saving animals vs. synthetic broth.",
+        "7_pts": "Analyze 'sterile' (clean) vs. 'chemical' (artificial) framing.",
+        "10_pts": "Check for industry-sponsored terminology."
+      },
+      "reality_anchor": "Lab-grown meat FDA approval vs naming controversy"
+    },
+    "teacher_notes": {
+      "deep_insight": "Nomenclature is a battlefield. 'Cultured' or 'Cell-based' meat sounds like a breakthrough; 'Synthetic' or 'Lab-grown' sounds like a warning. The same science—multiplying animal cells in a liquid—is framed as either 'Kindness' or 'Chemistry.'",
+      "habit": "Identify the 'Yuck Factor.' Is the author using words that make the food sound like a lab experiment or a home-cooked meal?",
+      "references": [
+        {
+          "title": "Scientific American: Cultured Meat",
+          "url": "https://www.scientificamerican.com/article/lab-grown-meat-is-cleared-for-sale-in-the-u-s/"
+        },
+        {
+          "title": "The Guardian: The Future of Food",
+          "url": "https://www.theguardian.com/environment/2023/jun/21/lab-grown-meat-chicken-us-approval"
+        }
+      ]
+    }
+  },
+  {
+    "card_id": "#9",
+    "category": "discernment",
+    "problem_type": "perspective_lens_audit",
+    "difficulty": "hard",
+    "front": {
+      "title": "Digital Sovereign",
+      "card_text": [
+        "Instant digital payments bring banking to billions without traditional accounts.",
+        "Government-tracked code replaces cash, allowing the state to monitor every cent."
+      ]
+    },
+    "back": {
+      "verdict": "Inclusion vs. Surveillance Audit",
+      "scoring_anchors": {
+        "3_pts": "Contrast inclusion vs. monitoring.",
+        "7_pts": "Detect 'empowerment' vs. 'control' framing.",
+        "10_pts": "Proposed habit: Trace anonymity levels in digital currencies."
+      },
+      "reality_anchor": "CBDC financial inclusion vs privacy risks"
+    },
+    "teacher_notes": {
+      "deep_insight": "Central Bank Digital Currencies (CBDCs) are framed by global banks as 'Tools of Inclusion' (helping the poor). Privacy advocates frame them as 'Tools of Totalitarianism' (ending financial privacy). Both perspectives are factually grounded in how the software code is actually written.",
+      "habit": "Ask: 'If this tool makes my life easier, does it also make it easier for someone to stop me from using it?'",
+      "references": [
+        {
+          "title": "IMF: The Benefits of CBDCs",
+          "url": "https://www.imf.org/en/Topics/fintech/central-bank-digital-currency"
+        },
+        {
+          "title": "Reuters: Privacy concerns over digital Euro",
+          "url": "https://www.reuters.com/technology/eu-central-banker-defends-digital-euro-privacy-2023-09-04/"
+        }
+      ]
+    }
+  },
+  {
+    "card_id": "#10",
+    "category": "discernment",
+    "problem_type": "perspective_lens_audit",
+    "difficulty": "hard",
+    "front": {
+      "title": "The Fast Forest",
+      "card_text": [
+        "Millions of saplings are planted to soak up carbon and cool Earth.",
+        "Rows of non-native trees create a silent desert where wildlife cannot survive."
+      ]
+    },
+    "back": {
+      "verdict": "Quantity vs. Quality Audit",
+      "scoring_anchors": {
+        "3_pts": "Note 'cooling Earth' vs. 'silent desert.'",
+        "7_pts": "Analyze carbon-counting vs. ecosystem-health framing.",
+        "10_pts": "Cross-reference tree-planting numbers with species diversity."
+      },
+      "reality_anchor": "Monoculture reforestation vs biodiversity loss"
+    },
+    "teacher_notes": {
+      "deep_insight": "This is a conflict of 'Metrics.' A climate report measures 'Tons of Carbon' (a win). A biology report measures 'Species Diversity' (a loss). Both reports are looking at the same 10,000 trees but are using different rulers to measure success.",
+      "habit": "When you hear about 'Millions of Trees,' ask: 'Are they all the same kind, and what lived there before they arrived?'",
+      "references": [
+        {
+          "title": "BBC: The problem with tree planting",
+          "url": "https://www.bbc.com/future/article/20200521-the-reasons-why-tree-planting-isnt-always-good"
+        },
+        {
+          "title": "The Economist: Reforestation and its Discontents",
+          "url": "https://www.economist.com/science-and-technology/2022/07/06/planting-trees-is-good-planting-forests-is-better"
+        }
+      ]
+    }
+  },
+  {
+    "card_id": "#11",
+    "category": "discernment",
+    "problem_type": "perspective_lens_audit",
+    "difficulty": "easy",
+    "front": {
+      "title": "Wolf Return",
+      "card_text": [
+        "Silver hunters rebalance the valley, and willow, beaver, and songbird life surges back.",
+        "Shadowy predators cross fence lines at dusk, leaving ranchers guarding calves through the night."
+      ]
+    },
+    "back": {
+      "verdict": "Restoration vs. Threat",
+      "scoring_anchors": {
+        "3_pts": "Spotted ecosystem healer vs. livestock danger.",
+        "7_pts": "Noted valley-wide gains vs. household losses.",
+        "10_pts": "Ask who benefits—and who pays."
+      },
+      "reality_anchor": "National Geographic Yellowstone wolves Reuters ranchers"
+    },
+    "teacher_notes": {
+      "deep_insight": "The same wolf can be framed through an 'Ecosystem Lens' or a 'Livelihood Lens.' Conservation reporting zooms out to rivers, trees, and biodiversity. Rural reporting zooms in to one family, one herd, and one night of risk. Each lens serves a different audience and value system.",
+      "habit": "Zoom out, then zoom in: what changes for the forest, and what changes for one family?",
+      "references": [
+        {
+          "title": "National Geographic: How wolves change rivers and ecosystems",
+          "url": "https://www.nationalgeographic.com/animals/article/yellowstone-wolves-reintroduction-helped-stabilize-ecosystem"
+        },
+        {
+          "title": "Reuters: Ranchers face wolf return in Colorado",
+          "url": "https://www.reuters.com/world/us/colorado-ranchers-brace-return-gray-wolves-2023-12-18/"
+        }
+      ]
+    }
+  },
+  {
+    "card_id": "#12",
+    "category": "discernment",
+    "problem_type": "perspective_lens_audit",
+    "difficulty": "medium",
+    "front": {
+      "title": "Thirst Machine",
+      "card_text": [
+        "Sea water turns sweet, rescuing crowded cities as reservoirs shrink under relentless heat.",
+        "Pipes dump dense brine back to sea, and the miracle sip comes with a heavy power bill."
+      ]
+    },
+    "back": {
+      "verdict": "Rescue vs. Cost",
+      "scoring_anchors": {
+        "3_pts": "Saw lifesaver water vs. waste plume.",
+        "7_pts": "Tracked drought relief vs. energy/ecology framing.",
+        "10_pts": "Check what problem gets moved, not solved."
+      },
+      "reality_anchor": "Reuters desalination drought Scientific American brine"
+    },
+    "teacher_notes": {
+      "deep_insight": "Desalination stories often use a 'Scarcity Lens' or an 'Externalities Lens.' One celebrates water security for cities. The other asks where the salt, energy demand, and marine stress go. The frame serves either urgent human need or long-term system accounting.",
+      "habit": "When a miracle resource appears, ask what it consumes and where the leftovers go.",
+      "references": [
+        {
+          "title": "Reuters: Drought drives desalination interest",
+          "url": "https://www.reuters.com/world/middle-east/drought-spurs-desalination-boom-2023-06-14/"
+        },
+        {
+          "title": "Scientific American: The environmental downside of desalination",
+          "url": "https://www.scientificamerican.com/article/the-world-can-make-more-water-from-the-sea-but-at-what-cost/"
+        }
+      ]
+    }
+  },
+  {
+    "card_id": "#13",
+    "category": "discernment",
+    "problem_type": "perspective_lens_audit",
+    "difficulty": "hard",
+    "front": {
+      "title": "Border Carbon Wall",
+      "card_text": [
+        "Carbon tolls shield cleaner factories, stopping dirty imports from undercutting local climate rules.",
+        "Green tariffs rise at the border, squeezing poorer exporters that did little to cause the crisis."
+      ]
+    },
+    "back": {
+      "verdict": "Climate Tool or Barrier",
+      "scoring_anchors": {
+        "3_pts": "Spotted fair-competition vs. unfair-burden lens.",
+        "7_pts": "Noted domestic industry protection inside climate language.",
+        "10_pts": "Ask who gains leverage when standards travel."
+      },
+      "reality_anchor": "EU carbon border tax Reuters Economist"
+    },
+    "teacher_notes": {
+      "deep_insight": "Carbon border taxes sit at the crossroads of climate policy, trade policy, and geopolitics. One lens treats them as fairness tools: local firms with stricter rules should not be undercut by dirtier imports. Another treats them as green protectionism that shifts costs onto poorer exporters. The chosen frame often serves either domestic industry or climate-justice concerns.",
+      "habit": "When policy sounds moral, inspect the money path and ask who gets bargaining power.",
+      "references": [
+        {
+          "title": "Reuters: EU launches carbon border tariff system",
+          "url": "https://www.reuters.com/world/europe/eu-launches-worlds-first-carbon-border-tariff-2023-10-01/"
+        },
+        {
+          "title": "The Economist: The trouble with carbon border taxes",
+          "url": "https://www.economist.com/finance-and-economics/2023/08/17/europes-carbon-border-tax-will-be-hard-to-pull-off"
+        }
+      ]
+    }
+  },
+  {
+    "card_id": "#14",
+    "category": "discernment",
+    "problem_type": "affective_highjack",
+    "difficulty": "easy",
+    "front": {
+      "title": "ULTRA-GUM WILL EXPLODE!",
+      "card_text": [
+        "A scary rumor is spreading! Kids who chew Ultra-Gum might have it POP in their mouths like a giant water balloon. Everyone is throwing their gum away before it's too late!"
+      ]
+    },
+    "back": {
+      "verdict": "Playground Panic",
+      "scoring_anchors": {
+        "3_pts": "The news is spreading fear and surprise.",
+        "7_pts": "The outcome could be kids wasting their favorite candy.",
+        "10_pts": "The intention behind the rumor is to cause harmless chaos."
+      },
+      "reality_anchor": "How silly rumors start"
+    },
+    "teacher_notes": {
+      "deep_insight": "Even silly stories can feel very real in the moment, making us act without thinking.",
+      "habit": "When you feel scared by a rumor, ask 'Is that even physically possible?'",
+      "references": [
+        {
+          "title": "Why Kids Believe Rumors",
+          "url": "https://www.psychologytoday.com/kids-rumors"
+        }
+      ]
+    }
+  },
+  {
+      "card_id":"#15",
+      "category":"discernment",
+      "problem_type":"affective_highjack",
+      "difficulty":"easy",
+      "front":{
+         "title":"SPARKLE-KITTEN NEEDS YOU!",
+         "card_text":[
+            "The world's cutest kitten is crying and all alone! It’s cold and sad. Share this picture right now to send it good vibes and love, or else you’re totally heartless!"
+         ]
+      },
+      "back":{
+         "verdict":"Sadness Share-Bait",
+         "scoring_anchors":{
+            "3_pts":"The news is spreading sadness and guilt.",
+            "7_pts":"The outcome could be thousands of useless post shares.",
+            "10_pts":"The intention behind the post is to farm likes and attention."
+         },
+         "reality_anchor":"How emotional posts get shares"
+      },
+      "teacher_notes":{
+         "deep_insight":"Feeling sad for an animal makes us want to help, and sharing feels like helping, even if it doesn't do anything real.",
+         "habit":"Stop and ask, 'How does sharing this actually help?'",
+         "references":[
+            {
+               "title":"The Power of Cute Animals Online",
+               "url":"https://www.theatlantic.com/internet-cute"
+            }
+         ]
+      }
+   },
+   {
+      "card_id":"#16",
+      "category":"discernment",
+      "problem_type":"affective_highjack",
+      "difficulty":"easy",
+      "front":{
+         "title":"ROBOT INVASION TODAY!",
+         "card_text":[
+            "A giant toy robot is stomping through the city! People are screaming! Watch this exclusive video right now before it destroys everything!"
+         ]
+      },
+      "back":{
+         "verdict":"Shocking Clickbait",
+         "scoring_anchors":{
+            "3_pts":"The news is spreading shock and excitement.",
+            "7_pts":"The outcome could be people clicking dangerous links.",
+            "10_pts":"The intention behind the story is to get advertising money."
+         },
+         "reality_anchor":"How clickbait works"
+      },
+      "teacher_notes":{
+         "deep_insight":"Our brain pays extra attention to things that look dangerous, which is why clickbait works.",
+         "habit":"If it sounds like a movie, it might be a trick to get a click.",
+         "references":[
+            {
+               "title":"Clickbait and the Human Brain",
+               "url":"https://www.wired.com/story/clickbait-psychology"
+            }
+         ]
+      }
+   },
+   {
+      "card_id":"#17",
+      "category":"discernment",
+      "problem_type":"affective_highjack",
+      "difficulty":"easy",
+      "front":{
+         "title":"ICE CREAM IS FORBIDDEN!",
+         "card_text":[
+            "Your principal just made a new rule: ICE CREAM IS BANNED FOREVER at school! This is so unfair! We have to protest during lunch right now!"
+         ]
+      },
+      "back":{
+         "verdict":"Outrage Hack",
+         "scoring_anchors":{
+            "3_pts":"The news is spreading anger and unfairness.",
+            "7_pts":"The outcome could be students getting into trouble.",
+            "10_pts":"The intention behind the message is to start a protest."
+         },
+         "reality_anchor":"Making people mad to get attention"
+      },
+      "teacher_notes":{
+         "deep_insight":"Anger makes us act fast. If someone says something is unfair, check the official facts first.",
+         "habit":"Don't get mad until you hear it from the actual source.",
+         "references":[
+            {
+               "title":"The Psychology of Anger",
+               "url":"https://www.apa.org/topics/anger"
+            }
+         ]
+      }
+   },
+   {
+      "card_id":"#18",
+      "category":"discernment",
+      "problem_type":"affective_highjack",
+      "difficulty":"easy",
+      "front":{
+         "title":"FREE GALAXY-PHONE TICKET!",
+         "card_text":[
+            "You’re one of the lucky 10! Click here now to claim your golden ticket and win a brand new Galaxy-Phone instantly! This is your only chance!"
+         ]
+      },
+      "back":{
+         "verdict":"Greed-Grab Scam",
+         "scoring_anchors":{
+            "3_pts":"The news is spreading greed and urgency.",
+            "7_pts":"The outcome could be giving away personal information.",
+            "10_pts":"The intention behind the scam is to steal data."
+         },
+         "reality_anchor":"How phishing scams trick you"
+      },
+      "teacher_notes":{
+         "deep_insight":"The feeling of being 'lucky' can make us forget to be careful and safe online.",
+         "habit":"If it sounds too good to be true, it probably is.",
+         "references":[
+            {
+               "title":"Protecting Yourself from Scams",
+               "url":"https://www.fcc.gov/general/frauds-scams"
+            }
+         ]
+      }
+   },
+   {
+      "card_id":"#19",
+      "category":"discernment",
+      "problem_type":"affective_highjack",
+      "difficulty":"medium",
+      "front":{
+         "title":"LOCAL WATER SUPPLY TAINTED",
+         "card_text":[
+            "URGENT: Traces of toxic chemical X found in city reservoir! Official reports are being suppressed. Do NOT drink tap water until further notice. Share to save lives!"
+         ]
+      },
+      "back":{
+         "verdict":"Panic Fuel",
+         "scoring_anchors":{
+            "3_pts":"The news is spreading immediate terror.",
+            "7_pts":"The outcome could be dangerous stockpiling and shortages.",
+            "10_pts":"The intention behind the alert is to create public distrust."
+         },
+         "reality_anchor":"Amplifying real-world anxieties"
+      },
+      "teacher_notes":{
+         "deep_insight":"This leverages our fundamental need for safety and uses 'suppressed reports' to build distrust.",
+         "habit":"Wait for official emergency alerts before reacting.",
+         "references":[
+            {
+               "title":"The Psychology of Resource Scarcity",
+               "url":"https://www.psychologicalscience.org/news/the-psychology-of-scarcity.html"
+            }
+         ]
+      }
+   },
+   {
+      "card_id":"#20",
+      "category":"discernment",
+      "problem_type":"affective_highjack",
+      "difficulty":"medium",
+      "front":{
+         "title":"MASSIVE LAYOFFS ANNOUNCED",
+         "card_text":[
+            "Top company XYZ just fired 10,000 workers via email! Is your job next? Analysts warn a massive economic crash is imminent. Your financial future is at risk."
+         ]
+      },
+      "back":{
+         "verdict":"Financial Anxiety",
+         "scoring_anchors":{
+            "3_pts":"The news is spreading deep financial worry.",
+            "7_pts":"The outcome could be a stock market crash.",
+            "10_pts":"The intention behind the warning is to manipulate markets."
+         },
+         "reality_anchor":"Using fear to influence financial markets"
+      },
+      "teacher_notes":{
+         "deep_insight":"News about money and job security instantly activates our survival instincts.",
+         "habit":"Diversify your sources. One layoff doesn't equal a collapse.",
+         "references":[
+            {
+               "title":"The Impact of Fear on Economics",
+               "url":"https://www.imf.org/fear-economic-behavior"
+            }
+         ]
+      }
+   },
+   {
+      "card_id":"#21",
+      "category":"discernment",
+      "problem_type":"affective_highjack",
+      "difficulty":"medium",
+      "front":{
+         "title":"NEW VIRUS IS AIRBORNE",
+         "card_text":[
+            "A shocking new report suggests the 'K-Flu' virus spreads purely through the air, even outdoors! Vaccines might be useless. Stay locked indoors and prepare!"
+         ]
+      },
+      "back":{
+         "verdict":"Health Dread",
+         "scoring_anchors":{
+            "3_pts":"The news is spreading health-related dread.",
+            "7_pts":"The outcome could be social withdrawal and isolation.",
+            "10_pts":"The intention behind the report is to undermine authorities."
+         },
+         "reality_anchor":"Leveraging uncertainty during health crises"
+      },
+      "teacher_notes":{
+         "deep_insight":"Health fears are universal. This leverages uncertainty to create paralysis and isolation.",
+         "habit":"Check information with established health organizations like the WHO.",
+         "references":[
+            {
+               "title":"Misinformation During Health Crises",
+               "url":"https://www.who.int/news-room/spotlight/misinformation-during-health-crises"
+            }
+         ]
+      }
+   },
+   {
+      "card_id":"#22",
+      "category":"discernment",
+      "problem_type":"affective_highjack",
+      "difficulty":"hard",
+      "front":{
+         "title":"ELECTION WAS RIGGED",
+         "card_text":[
+            "Leaked emails prove 'glitches' in voting machines flipped thousands of votes! Your democracy is under siege. They are stealing your future! Rise up and fight!"
+         ]
+      },
+      "back":{
+         "verdict":"Democratic Sabotage",
+         "scoring_anchors":{
+            "3_pts":"The news is spreading fury and resentment.",
+            "7_pts":"The outcome could be civil unrest and violence.",
+            "10_pts":"The intention behind the leak is to destabilize the nation."
+         },
+         "reality_anchor":"Misinformation to undermine election integrity"
+      },
+      "teacher_notes":{
+         "deep_insight":"This is a direct attack on civic identity, framing issues as 'Us vs. Them' for control.",
+         "habit":"Demand evidence and independent audits before believing fraud claims.",
+         "references":[
+            {
+               "title":"Disinformation and Democracy",
+               "url":"https://www.brookings.edu/research/disinformation-and-democracy"
+            }
+         ]
+      }
+   },
+   {
+      "card_id":"#23",
+      "category":"discernment",
+      "problem_type":"affective_highjack",
+      "difficulty":"hard",
+      "front":{
+         "title":"HIDDEN ALLERGY IN FOOD?",
+         "card_text":[
+            "Is common ingredient 'X' actually a secret neurotoxin? Unconfirmed studies link it to brain damage in children. Are companies poisoning your family for profit?"
+         ]
+      },
+      "back":{
+         "verdict":"Existential Guilt",
+         "scoring_anchors":{
+            "3_pts":"The news is spreading parental guilt and panic.",
+            "7_pts":"The outcome could be harmful diet changes for kids.",
+            "10_pts":"The intention behind the study is to hijack engagement via fear."
+         },
+         "reality_anchor":"Leveraging parental anxiety about health"
+      },
+      "teacher_notes":{
+         "deep_insight":"This targets the responsibility of protecting family to weaponize scientific uncertainty.",
+         "habit":"Check if studies are peer-reviewed before changing habits.",
+         "references":[
+            {
+               "title":"How to Read a Scientific Study",
+               "url":"https://www.scientificamerican.com/article/how-to-read-a-scientific-study/"
+            }
+         ]
+      }
+   },
+   {
+      "card_id":"#24",
+      "category":"discernment",
+      "problem_type":"affective_highjack",
+      "difficulty":"easy",
+      "front":{
+         "title":"SCHOOL JUICE RECALL",
+         "card_text":[
+            "Posts warn fruit pouches in classrooms could make kids faint by lunch. Families rush stores, and backpacks fill with emergency drinks."
+         ]
+      },
+      "back":{
+         "verdict":"Fear Sprint",
+         "scoring_anchors":{
+            "3_pts":"The news is spreading fear.",
+            "7_pts":"The outcome could be panic buying.",
+            "10_pts":"The intention behind the post is to trigger sharing."
+         },
+         "reality_anchor":"school juice scare rumor"
+      },
+      "teacher_notes":{
+         "deep_insight":"Kid-centered safety scares spread fast because adults want to protect children immediately, and kids copy the panic they see around them.",
+         "habit":"Pause before you pass it on: check the school or district message first.",
+         "references":[
+            {
+               "title":"AAP: Talking to Children About Scary News",
+               "url":"https://www.healthychildren.org/English/family-life/Media/Pages/Talking-to-Children-About-Tragedies-and-Other-News-Events.aspx"
+            },
+            {
+               "title":"Common Sense Media: Helping Kids Spot Misinformation",
+               "url":"https://www.commonsensemedia.org/articles/news-and-media-literacy-resource-center"
+            }
+         ]
+      }
+   },
+   {
+      "card_id":"#25",
+      "category":"discernment",
+      "problem_type":"affective_highjack",
+      "difficulty":"medium",
+      "front":{
+         "title":"ATM LINES GROW",
+         "card_text":[
+            "Viral clips claim regional banks will freeze withdrawals this weekend. Crowds drain cash machines before markets even open."
+         ]
+      },
+      "back":{
+         "verdict":"Bank Run Bait",
+         "scoring_anchors":{
+            "3_pts":"The news is spreading economic fear.",
+            "7_pts":"The outcome could be cash hoarding.",
+            "10_pts":"The intention behind the clips is to spark a bank run."
+         },
+         "reality_anchor":"bank run rumor withdrawals false"
+      },
+      "teacher_notes":{
+         "deep_insight":"Financial rumors exploit scarcity thinking and social proof: seeing other people rush makes danger feel confirmed before facts arrive.",
+         "habit":"When money panic trends, verify with regulators and major outlets before moving funds.",
+         "references":[
+            {
+               "title":"Reuters: How social media can accelerate bank runs",
+               "url":"https://www.reuters.com/world/us/social-media-can-help-accelerate-bank-runs-2023-03-20/"
+            },
+            {
+               "title":"FDIC: Deposit Insurance FAQs",
+               "url":"https://www.fdic.gov/resources/deposit-insurance/faq/"
+            }
+         ]
+      }
+   },
+   {
+      "card_id":"#26",
+      "category":"discernment",
+      "problem_type":"affective_highjack",
+      "difficulty":"hard",
+      "front":{
+         "title":"COUNT DELAY LEAK",
+         "card_text":[
+            "Audio 'proves' officials plan to pause vote counting in key cities. Feeds fill with calls to surround election offices tonight."
+         ]
+      },
+      "back":{
+         "verdict":"Trust Collapse",
+         "scoring_anchors":{
+            "3_pts":"The news is spreading rage.",
+            "7_pts":"The outcome could be intimidation and unrest.",
+            "10_pts":"The intention behind the audio is to break trust in results."
+         },
+         "reality_anchor":"election count delay rumor audio"
+      },
+      "teacher_notes":{
+         "deep_insight":"Civic rumors target legitimacy itself. Once people feel the process is stolen, they may accept escalation before evidence is checked.",
+         "habit":"Treat leaked election media as unverified until confirmed by officials, audits, and multiple trusted outlets.",
+         "references":[
+            {
+               "title":"CISA: Rumor Control",
+               "url":"https://www.cisa.gov/rumorcontrol"
+            },
+            {
+               "title":"Brookings: Disinformation and Democracy",
+               "url":"https://www.brookings.edu/articles/disinformation-and-democracy/"
+            }
+         ]
+      }
+   }
+]

@@ -18,6 +18,32 @@ OLLAMA_MODEL = "llama3"
 NUM_QUESTIONS = 3
 CARDS_PATH = "cards.json"
 
+# TTS settings
+PIPER_BIN = str(Path.home() / ".local" / "bin" / "piper")
+PIPER_MODEL = str(Path.home() / "thor_game_mvp" / "en-us-amy-low.onnx")
+TTS_OUTPUT = "/tmp/tts_output.wav"
+
+
+def speak(text: str) -> None:
+    """Convert text to speech using Piper and play it."""
+    if not text or not text.strip():
+        return
+    # Clean text for TTS: remove emoji and special characters
+    clean = text.encode("ascii", "ignore").decode("ascii").strip()
+    if not clean:
+        return
+    try:
+        piper_proc = subprocess.run(
+            [PIPER_BIN, "--model", PIPER_MODEL, "--output_file", TTS_OUTPUT],
+            input=clean,
+            text=True,
+            capture_output=True,
+        )
+        if piper_proc.returncode == 0 and Path(TTS_OUTPUT).exists():
+            subprocess.run(["aplay", TTS_OUTPUT], check=True, capture_output=True)
+    except Exception:
+        pass  # Silently skip if TTS fails
+
 
 def load_cards(path: str) -> List[Dict[str, Any]]:
     p = Path(path)
@@ -61,6 +87,12 @@ def print_card(card: Dict[str, Any], index: int, total: int) -> None:
         if key in options:
             print(f"{key}. {options[key]}")
     print("=" * 60)
+
+    # Speak the question and options
+    options_text = ". ".join(
+        f"{key}, {options[key]}" for key in ["A", "B", "C", "D"] if key in options
+    )
+    speak(f"Question {index}. {card['question']} Your options are: {options_text}")
 
 
 def update_session(session: Dict[str, Any], card: Dict[str, Any], result: Dict[str, Any], user_answer: str) -> None:
@@ -141,9 +173,18 @@ def print_summary(session: Dict[str, Any]) -> None:
     print(f"\nAI literacy tip: {tip}")
     print("=" * 60)
 
+    # Speak the summary
+    speak(
+        f"Game over! You scored {total_score:.0f} out of {total}. "
+        f"Your best category was {category_result['best']}. "
+        f"Here is a tip: {tip}"
+    )
+
 
 def main() -> None:
     print("Starting PROMPT! Thor MVP...")
+    speak("Welcome to PROMPT! The AI literacy game. Let's get started!")
+
     cards = load_cards(CARDS_PATH)
     selected_cards = random.sample(cards, k=min(NUM_QUESTIONS, len(cards)))
 
@@ -172,6 +213,10 @@ def main() -> None:
         user_text = transcribe_audio(whisper_model, AUDIO_FILE)
         print(f"\nYou said: {user_text if user_text else '[No speech detected]'}")
 
+        # Speak back what was heard
+        if user_text:
+            speak(f"I heard you say: {user_text}")
+
         result = check_answer(card, user_text)
 
         feedback = generate_feedback(
@@ -189,16 +234,24 @@ def main() -> None:
         )
 
         label_map = {
+            "correct": "Correct",
+            "partial": "Partially correct",
+            "incorrect": "Incorrect",
+        }
+        label_map_display = {
             "correct": "Correct ✅",
             "partial": "Partially correct 🟡",
             "incorrect": "Incorrect ❌",
         }
 
-        print("\nResult:", label_map[result["judgement"]])
+        print("\nResult:", label_map_display[result["judgement"]])
         print(f"Score earned: {result['score']}")
         print("Why matched:", result["matched_reason"])
         print("\nAI Feedback:")
         print(feedback)
+
+        # Speak the result and feedback
+        speak(f"{label_map[result['judgement']]}! {feedback}")
 
         update_session(session, card, result, user_text)
 
