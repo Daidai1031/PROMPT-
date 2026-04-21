@@ -7,183 +7,299 @@
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg:#0c1220;--card-front:#1a2744;--card-back:#12203a;--card-border:#2a3f6e;
-  --panel-bg:#111c30;--accent-coral:#ff6b6b;--accent-mint:#51cf98;--accent-gold:#ffc857;
-  --accent-sky:#4dabf7;--accent-violet:#b197fc;--accent-orange:#ff922b;
-  --text:#e8edf5;--text-dim:#6b7d9e;--correct:#51cf98;--incorrect:#ff6b6b;--partial:#ffc857;--r:16px;
+  --bg:#0c1220;
+  --panel-bg:#111c30;
+  --card-front:#1a2744;
+  --card-back:#12203a;
+  --card-border:#2a3f6e;
+  --card-accent:#4dabf7;
+  --bubble-a:#202d50;
+  --bubble-b:#172544;
+
+  --accent-coral:#ff6b6b;
+  --accent-mint:#51cf98;
+  --accent-gold:#ffc857;
+  --accent-sky:#4dabf7;
+  --accent-violet:#b197fc;
+  --accent-orange:#ff922b;
+
+  --text:#e8edf5;
+  --text-dim:#6b7d9e;
+  --correct:#51cf98;
+  --good:#8cd9b7;
+  --partial:#ffc857;
+  --incorrect:#ff6b6b;
+
+  --r-sm:10px; --r-md:14px; --r-lg:18px;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 html,body{width:100vw;height:100vh;overflow:hidden;font-family:'Quicksand',sans-serif;background:var(--bg);color:var(--text);user-select:none;-webkit-tap-highlight-color:transparent;}
 body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:0.5;}
-.screen{display:none;width:100vw;height:100vh;position:absolute;top:0;left:0;z-index:1;}
+.screen{display:none;width:100vw;height:100vh;position:absolute;inset:0;z-index:1;}
 .screen.active{display:flex;}
 
 /* ═══ HOME ═══ */
-#home{flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;background:radial-gradient(ellipse at 30% 40%,rgba(77,171,247,0.06) 0%,transparent 60%);}
-.home-card{width:260px;height:160px;perspective:600px;margin-bottom:4px;}
-.home-card-inner{width:100%;height:100%;position:relative;animation:home-flip 4s ease-in-out infinite;transform-style:preserve-3d;}
-@keyframes home-flip{0%,40%{transform:rotateY(0)}50%,90%{transform:rotateY(180deg)}100%{transform:rotateY(360deg)}}
-.home-card-face{position:absolute;inset:0;border-radius:var(--r);backface-visibility:hidden;display:flex;align-items:center;justify-content:center;border:2px solid var(--card-border);padding:20px;}
-.home-card-front{background:linear-gradient(145deg,var(--card-front),#1e3355);box-shadow:0 8px 32px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.05);}
-.home-card-front .hc-q{font-family:'Baloo 2',cursive;font-size:15px;font-weight:600;color:var(--accent-sky);line-height:1.3;}
-.home-card-back{background:linear-gradient(145deg,#162a48,var(--card-back));transform:rotateY(180deg);box-shadow:0 8px 32px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.05);}
-.home-card-back .hc-a{font-family:'Baloo 2',cursive;font-size:14px;font-weight:600;color:var(--accent-mint);}
-.logo{font-family:'Baloo 2',cursive;font-size:52px;font-weight:800;background:linear-gradient(135deg,var(--accent-coral),var(--accent-gold),var(--accent-mint));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:2px;line-height:1;}
-.logo-sub{font-size:12px;color:var(--text-dim);font-weight:700;letter-spacing:5px;text-transform:uppercase;}
-.start-btn{margin-top:10px;padding:14px 52px;font-family:'Baloo 2',cursive;font-size:22px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--accent-coral),var(--accent-violet));border:none;border-radius:40px;cursor:pointer;box-shadow:0 4px 20px rgba(255,107,107,0.3);transition:transform .15s;}
-.start-btn:active{transform:scale(0.94);}
-.home-hint{font-size:11px;color:var(--text-dim);margin-top:4px;}
+#home{flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;background:radial-gradient(ellipse at 30% 40%,rgba(77,171,247,0.07) 0%,transparent 60%);padding:18px;}
+.logo{font-family:'Baloo 2',cursive;font-size:56px;font-weight:800;background:linear-gradient(135deg,var(--accent-coral),var(--accent-gold),var(--accent-mint));-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:3px;line-height:1;}
+.logo-sub{font-size:12px;color:var(--text-dim);font-weight:700;letter-spacing:6px;text-transform:uppercase;}
+.home-tagline{font-size:13px;color:var(--text-dim);margin-top:-4px;max-width:520px;line-height:1.4;}
+.mode-title{font-family:'Baloo 2',cursive;font-size:16px;color:var(--text);font-weight:700;margin-top:10px;}
+.mode-row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;max-width:860px;}
+.mode-card{width:190px;background:var(--card-front);border:2px solid var(--card-border);border-radius:var(--r-lg);padding:14px 14px 12px;cursor:pointer;transition:transform .15s, border-color .15s, box-shadow .2s;text-align:left;}
+.mode-card:active{transform:scale(0.97);}
+.mode-card.selected{border-color:var(--accent-sky);box-shadow:0 0 20px rgba(77,171,247,0.25);}
+.mode-badge{display:inline-block;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:2px 8px;border-radius:10px;margin-bottom:6px;}
+.mode-badge.disc{background:rgba(255,107,107,0.12);color:var(--accent-coral);}
+.mode-badge.usage{background:rgba(77,171,247,0.12);color:var(--accent-sky);}
+.mode-badge.mix{background:rgba(177,151,252,0.12);color:var(--accent-violet);}
+.mode-name{font-family:'Baloo 2',cursive;font-size:16px;font-weight:700;margin-bottom:4px;}
+.mode-desc{font-size:11px;line-height:1.3;color:var(--text-dim);}
+.start-btn{margin-top:6px;padding:13px 54px;font-family:'Baloo 2',cursive;font-size:21px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--accent-coral),var(--accent-violet));border:none;border-radius:40px;cursor:pointer;box-shadow:0 4px 20px rgba(255,107,107,0.3);transition:transform .15s;}
+.start-btn:disabled{opacity:0.4;cursor:default;}
+.start-btn:not(:disabled):active{transform:scale(0.94);}
+.home-hint{font-size:11px;color:var(--text-dim);margin-top:2px;}
 
-/* ═══ GAME split ═══ */
+/* ═══ GAME ═══ */
 #game{flex-direction:row;padding:0;background:radial-gradient(ellipse at 20% 50%,rgba(77,171,247,0.04) 0%,transparent 50%);}
 
-/* Left: card */
-.card-side{width:55%;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 14px 10px 18px;position:relative;}
-.game-top-bar{position:absolute;top:6px;left:14px;right:14px;display:flex;align-items:center;justify-content:space-between;z-index:2;}
+/* Left: card side */
+.card-side{width:58%;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 14px 10px 18px;position:relative;}
+.game-top-bar{position:absolute;top:7px;left:14px;right:14px;display:flex;align-items:center;justify-content:space-between;z-index:2;}
 .game-logo{font-family:'Baloo 2',cursive;font-size:15px;font-weight:800;color:var(--accent-gold);}
 .top-info{display:flex;align-items:center;gap:7px;}
 .dots{display:flex;gap:4px;}
 .dot{width:9px;height:9px;border-radius:50%;background:#1e2d4d;border:2px solid #2a3f5e;transition:all .3s;}
-.dot.correct{background:var(--correct);border-color:var(--correct);}
-.dot.incorrect{background:var(--incorrect);border-color:var(--incorrect);}
-.dot.current{border-color:var(--accent-sky);box-shadow:0 0 6px rgba(77,171,247,0.5);}
-.score-pill{font-family:'Baloo 2',cursive;font-size:12px;font-weight:700;color:var(--accent-gold);background:rgba(255,200,87,0.08);padding:1px 9px;border-radius:12px;border:1px solid rgba(255,200,87,0.15);}
+.dot.tier-deep{background:var(--correct);border-color:var(--correct);}
+.dot.tier-mid{background:var(--good);border-color:var(--good);}
+.dot.tier-surface{background:var(--partial);border-color:var(--partial);}
+.dot.tier-off,.dot.tier-silent{background:var(--incorrect);border-color:var(--incorrect);}
+.dot.current{border-color:var(--accent-sky);box-shadow:0 0 6px rgba(77,171,247,0.55);}
+.score-pill{font-family:'Baloo 2',cursive;font-size:12px;font-weight:700;color:var(--accent-gold);background:rgba(255,200,87,0.08);padding:2px 10px;border-radius:12px;border:1px solid rgba(255,200,87,0.15);}
 
 /* Flip card */
-.card-container{width:100%;max-width:400px;height:85%;max-height:520px;perspective:1000px;margin-top:10px;}
-.card-flipper{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 0.6s cubic-bezier(0.4,0,0.2,1);}
+.card-container{width:100%;max-width:420px;height:88%;max-height:540px;perspective:1200px;}
+.card-flipper{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 0.7s cubic-bezier(0.4,0,0.2,1);}
 .card-flipper.flipped{transform:rotateY(180deg);}
-.card-face{position:absolute;inset:0;border-radius:var(--r);backface-visibility:hidden;overflow:hidden;}
+.card-face{position:absolute;inset:0;border-radius:var(--r-lg);backface-visibility:hidden;overflow:hidden;}
 
-.card-front{background:linear-gradient(155deg,var(--card-front) 0%,#1e3355 100%);border:2px solid var(--card-border);box-shadow:0 10px 40px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.04);display:flex;flex-direction:column;padding:14px 18px;}
-.card-front::before{content:'';position:absolute;top:0;right:0;width:100px;height:100px;background:radial-gradient(circle at top right,rgba(77,171,247,0.06) 0%,transparent 70%);pointer-events:none;}
-.card-corner{position:absolute;font-family:'Baloo 2',cursive;font-size:10px;font-weight:700;color:var(--text-dim);opacity:0.35;}
-.card-corner.tl{top:6px;left:10px;}.card-corner.br{bottom:6px;right:10px;transform:rotate(180deg);}
-.card-cat{align-self:flex-start;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;padding:2px 9px;border-radius:10px;margin-bottom:4px;margin-top:2px;}
-.cat-real_vs_fake{background:rgba(255,107,107,0.12);color:var(--accent-coral);}
-.cat-ai_best_practices{background:rgba(77,171,247,0.12);color:var(--accent-sky);}
-.cat-bad_actors{background:rgba(255,146,43,0.12);color:var(--accent-orange);}
-.card-q{font-family:'Baloo 2',cursive;font-size:14px;font-weight:600;line-height:1.3;color:#fff;flex-shrink:0;margin-bottom:6px;}
-.card-opts{display:flex;flex-direction:column;gap:5px;flex:1;overflow-y:auto;}
-.card-opt{display:flex;align-items:center;gap:9px;padding:8px 11px;background:rgba(255,255,255,0.03);border:1.5px solid rgba(255,255,255,0.06);border-radius:10px;cursor:pointer;transition:all .15s;font-size:13px;font-weight:600;}
-.card-opt:active{transform:scale(0.97);}
-.card-opt.selected{border-color:var(--accent-sky);background:rgba(77,171,247,0.1);box-shadow:0 0 12px rgba(77,171,247,0.1);}
-.card-opt.reveal-correct{border-color:var(--correct);background:rgba(81,207,152,0.1);}
-.card-opt.reveal-incorrect{border-color:var(--incorrect);background:rgba(255,107,107,0.08);opacity:0.5;}
-.card-opt.reveal-dim{opacity:0.25;}
-.opt-ltr{font-family:'Baloo 2',cursive;font-size:13px;font-weight:700;width:26px;height:26px;display:flex;align-items:center;justify-content:center;border-radius:7px;background:rgba(255,255,255,0.04);flex-shrink:0;}
-.opt-txt{flex:1;line-height:1.2;}
+.card-front{background:linear-gradient(155deg,var(--card-front) 0%,#1e3355 100%);border:2px solid var(--card-border);box-shadow:0 10px 40px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.04);display:flex;flex-direction:column;padding:14px 18px 12px;}
+.card-front::before{content:'';position:absolute;top:0;right:0;width:120px;height:120px;background:radial-gradient(circle at top right,rgba(77,171,247,0.07) 0%,transparent 70%);pointer-events:none;}
+.card-corner{position:absolute;font-family:'Baloo 2',cursive;font-size:10px;font-weight:700;color:var(--text-dim);opacity:0.4;letter-spacing:1px;}
+.card-corner.tl{top:6px;left:10px;}
+.card-corner.br{bottom:6px;right:10px;}
 
-.card-back{background:linear-gradient(155deg,#0e1e38 0%,#162a48 100%);border:2px solid var(--card-border);box-shadow:0 10px 40px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.04);transform:rotateY(180deg);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center;gap:8px;}
-.card-back::before{content:'';position:absolute;inset:8px;border:1px solid rgba(255,255,255,0.03);border-radius:12px;pointer-events:none;}
-.back-icon{font-size:36px;}
-.back-title{font-family:'Baloo 2',cursive;font-size:22px;font-weight:700;}
-.back-title.correct{color:var(--correct);}.back-title.incorrect{color:var(--incorrect);}.back-title.partial{color:var(--partial);}
-.back-explain{font-size:13px;line-height:1.35;color:var(--text-dim);max-width:320px;}
-.back-tip{font-size:11px;color:var(--accent-gold);background:rgba(255,200,87,0.06);border:1px solid rgba(255,200,87,0.1);border-radius:10px;padding:6px 14px;max-width:320px;}
+.card-header-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:2px 0 8px;flex-shrink:0;}
+.card-cat{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;padding:3px 10px;border-radius:10px;}
+.cat-discernment{background:rgba(255,107,107,0.12);color:var(--accent-coral);}
+.cat-usage{background:rgba(77,171,247,0.12);color:var(--accent-sky);}
+.card-diff{font-size:9px;font-weight:700;letter-spacing:1px;color:var(--text-dim);padding:3px 8px;border:1px solid var(--card-border);border-radius:10px;text-transform:uppercase;}
+
+.card-title{font-family:'Baloo 2',cursive;font-size:22px;font-weight:700;line-height:1.15;color:#fff;margin-bottom:10px;flex-shrink:0;}
+.ptype-label{font-size:10px;color:var(--text-dim);margin-top:-6px;margin-bottom:10px;letter-spacing:1px;text-transform:uppercase;}
+
+.body-area{flex:1;display:flex;flex-direction:column;gap:8px;overflow-y:auto;padding-right:4px;}
+.body-bubble{padding:11px 13px;border-radius:var(--r-md);font-size:14px;line-height:1.4;font-weight:500;border:1.5px solid transparent;}
+.body-bubble.a{background:var(--bubble-a);border-color:rgba(255,107,107,0.2);}
+.body-bubble.b{background:var(--bubble-b);border-color:rgba(77,171,247,0.2);}
+.body-bubble.solo{background:var(--bubble-a);border-color:rgba(177,151,252,0.25);}
+.bubble-lens{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px;opacity:0.75;}
+.body-bubble.a .bubble-lens{color:var(--accent-coral);}
+.body-bubble.b .bubble-lens{color:var(--accent-sky);}
+.body-bubble.solo .bubble-lens{color:var(--accent-violet);}
+
+.card-back{background:linear-gradient(155deg,#0e1e38 0%,#162a48 100%);border:2px solid var(--card-border);box-shadow:0 10px 40px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.04);transform:rotateY(180deg);display:flex;flex-direction:column;padding:14px 18px 12px;gap:8px;}
+.back-top{display:flex;align-items:center;gap:10px;}
+.back-icon{font-size:28px;}
+.back-title{font-family:'Baloo 2',cursive;font-size:19px;font-weight:700;flex:1;}
+.back-title.correct,.back-title.good{color:var(--correct);}
+.back-title.partial{color:var(--partial);}
+.back-title.incorrect{color:var(--incorrect);}
+.back-score{font-family:'Baloo 2',cursive;font-size:20px;font-weight:800;color:var(--accent-gold);}
+.back-section{padding:10px 12px;border-radius:var(--r-md);background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);}
+.back-section-label{font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--accent-sky);text-transform:uppercase;margin-bottom:5px;}
+.back-section-text{font-size:12.5px;line-height:1.4;color:var(--text);}
+.back-section.insight{border-color:rgba(77,171,247,0.18);}
+.back-section.habit{border-color:rgba(255,200,87,0.22);background:rgba(255,200,87,0.05);}
+.back-section.habit .back-section-label{color:var(--accent-gold);}
+.back-section.sugg{border-color:rgba(177,151,252,0.2);background:rgba(177,151,252,0.04);}
+.back-section.sugg .back-section-label{color:var(--accent-violet);}
+.back-section.sugg .back-section-text{font-style:italic;}
 
 /* Right: voice panel */
-.voice-side{width:45%;height:100vh;background:var(--panel-bg);border-left:1px solid rgba(255,255,255,0.04);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px;gap:10px;position:relative;}
-.voice-side::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:radial-gradient(ellipse at 50% 30%,rgba(177,151,252,0.04) 0%,transparent 60%);pointer-events:none;}
+.voice-side{width:42%;height:100vh;background:var(--panel-bg);border-left:1px solid rgba(255,255,255,0.04);display:flex;flex-direction:column;align-items:center;padding:22px 16px 18px;gap:10px;position:relative;justify-content:space-between;}
+.voice-side::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 30%,rgba(177,151,252,0.05) 0%,transparent 60%);pointer-events:none;}
 
+.voice-top{display:flex;flex-direction:column;align-items:center;gap:8px;width:100%;position:relative;z-index:1;}
 .voice-label{font-family:'Baloo 2',cursive;font-size:11px;font-weight:700;color:var(--text-dim);letter-spacing:2px;text-transform:uppercase;}
-.voice-status{font-family:'Baloo 2',cursive;font-size:13px;color:var(--text-dim);text-align:center;min-height:18px;max-width:90%;line-height:1.3;}
+.prompt-bubble{width:100%;background:var(--card-front);border:1.5px solid var(--card-border);border-radius:var(--r-md);padding:10px 13px;font-size:12.5px;color:var(--text);line-height:1.4;text-align:center;min-height:48px;display:flex;align-items:center;justify-content:center;}
+.prompt-bubble.tip{border-color:rgba(255,200,87,0.3);background:rgba(255,200,87,0.04);color:#ffe5a3;font-style:italic;}
+.prompt-hint{font-size:11px;color:var(--text-dim);line-height:1.4;text-align:center;max-width:90%;}
+
+.voice-mid{display:flex;flex-direction:column;align-items:center;gap:10px;position:relative;z-index:1;}
+.mic-ring{width:104px;height:104px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle,rgba(77,171,247,0.07) 0%,transparent 70%);position:relative;cursor:pointer;transition:transform .2s;}
+.mic-ring::before{content:'';position:absolute;inset:0;border-radius:50%;border:2.5px solid rgba(77,171,247,0.25);transition:all .3s;}
+.mic-ring:active{transform:scale(0.94);}
+.mic-ring.recording::before{border-color:var(--accent-coral);animation:ring-pulse 1.1s ease-in-out infinite;}
+.mic-ring.processing::before{border-color:var(--accent-gold);border-style:dashed;animation:ring-spin 1.8s linear infinite;}
+.mic-ring.disabled{opacity:0.35;pointer-events:none;}
+@keyframes ring-pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,107,107,0.35);}50%{box-shadow:0 0 0 16px rgba(255,107,107,0);}}
+@keyframes ring-spin{to{transform:rotate(360deg);}}
+.mic-icon{font-size:36px;z-index:1;}
+.voice-status{font-family:'Baloo 2',cursive;font-size:13px;color:var(--text-dim);text-align:center;min-height:18px;max-width:95%;line-height:1.3;}
 .voice-status.highlight{color:var(--accent-gold);}
-.voice-status.feedback{color:var(--text);font-style:italic;}
+.voice-status.speaking{color:var(--accent-sky);}
+.voice-transcript{font-size:12px;color:#a9b8d4;text-align:center;min-height:14px;max-width:95%;font-style:italic;line-height:1.3;}
 
-.mic-ring{width:90px;height:90px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle,rgba(77,171,247,0.06) 0%,transparent 70%);position:relative;cursor:pointer;transition:all .2s;}
-.mic-ring::before{content:'';position:absolute;inset:0;border-radius:50%;border:2px solid rgba(77,171,247,0.2);transition:all .3s;}
-.mic-ring:active{transform:scale(0.95);}
-.mic-ring.recording::before{border-color:var(--accent-coral);animation:ring-pulse 1.2s ease-in-out infinite;}
-.mic-ring.processing::before{border-color:var(--accent-gold);border-style:dashed;animation:ring-spin 2s linear infinite;}
-@keyframes ring-pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,107,107,0.3);}50%{box-shadow:0 0 0 14px rgba(255,107,107,0);}}
-@keyframes ring-spin{to{transform:rotate(360deg)}}
-.mic-icon{font-size:32px;z-index:1;}
+.voice-bottom{display:flex;flex-direction:column;align-items:center;gap:8px;width:100%;position:relative;z-index:1;}
+.reaction-bubble{width:100%;background:rgba(81,207,152,0.08);border:1.5px solid rgba(81,207,152,0.28);border-radius:var(--r-md);padding:10px 13px;font-size:13px;line-height:1.35;display:none;text-align:center;color:#c8f3dd;}
+.habit-bubble{width:100%;background:rgba(255,200,87,0.07);border:1.5px solid rgba(255,200,87,0.3);border-radius:var(--r-md);padding:9px 13px;font-size:12.5px;line-height:1.35;display:none;text-align:center;color:#ffe5a3;font-style:italic;}
+.bubble-lead{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;opacity:0.8;display:block;margin-bottom:3px;}
+.reaction-bubble .bubble-lead{color:var(--accent-mint);}
+.habit-bubble .bubble-lead{color:var(--accent-gold);}
 
-.voice-transcript{font-size:11px;color:var(--text-dim);text-align:center;min-height:14px;max-width:90%;font-style:italic;}
-.or-divider{font-size:10px;color:rgba(255,255,255,0.15);letter-spacing:2px;text-transform:uppercase;}
+.action-btn{width:100%;padding:12px 0;font-family:'Baloo 2',cursive;font-size:16px;font-weight:700;color:#fff;border:none;border-radius:12px;cursor:pointer;transition:transform .15s, opacity .15s;}
+.action-btn.skip{background:transparent;border:1.5px solid var(--card-border);color:var(--text-dim);font-size:13px;padding:9px 0;}
+.action-btn.next{background:linear-gradient(135deg,var(--accent-mint),var(--accent-sky));box-shadow:0 4px 16px rgba(81,207,152,0.22);display:none;}
+.action-btn:active{transform:scale(0.97);}
 
-.confirm-btn{width:80%;max-width:240px;padding:11px 0;font-family:'Baloo 2',cursive;font-size:16px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--accent-sky),var(--accent-violet));border:none;border-radius:12px;cursor:pointer;transition:transform .15s,opacity .15s;box-shadow:0 4px 16px rgba(77,171,247,0.2);}
-.confirm-btn:disabled{opacity:0.25;cursor:default;}
-.confirm-btn:not(:disabled):active{transform:scale(0.96);}
-.next-btn{width:80%;max-width:240px;padding:11px 0;font-family:'Baloo 2',cursive;font-size:16px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--accent-mint),var(--accent-sky));border:none;border-radius:12px;cursor:pointer;box-shadow:0 4px 16px rgba(81,207,152,0.2);transition:transform .15s;display:none;}
-.next-btn:active{transform:scale(0.96);}
-
-/* LOADING */
-#loading{display:none;position:absolute;inset:0;background:rgba(8,10,22,0.85);backdrop-filter:blur(4px);flex-direction:column;align-items:center;justify-content:center;gap:12px;z-index:20;}
+/* Loading */
+#loading{display:none;position:absolute;inset:0;background:rgba(8,10,22,0.85);backdrop-filter:blur(4px);flex-direction:column;align-items:center;justify-content:center;gap:12px;z-index:30;}
 #loading.active{display:flex;}
-.spinner{width:36px;height:36px;border:3px solid #1e2d4d;border-top-color:var(--accent-sky);border-radius:50%;animation:spin .7s linear infinite;}
-@keyframes spin{to{transform:rotate(360deg)}}
+.spinner{width:38px;height:38px;border:3px solid #1e2d4d;border-top-color:var(--accent-sky);border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
 .loading-text{font-family:'Baloo 2',cursive;font-size:14px;color:var(--text-dim);}
 
-/* SUMMARY */
-#summary{flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:14px 28px;text-align:center;background:radial-gradient(ellipse at 50% 40%,rgba(81,207,152,0.05) 0%,transparent 50%);}
-.sum-trophy{font-size:44px;}
-.sum-title{font-family:'Baloo 2',cursive;font-size:28px;font-weight:800;background:linear-gradient(135deg,var(--accent-gold),var(--accent-mint));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.sum-score{font-family:'Baloo 2',cursive;font-size:40px;font-weight:800;color:#fff;}
-.sum-score span{color:var(--text-dim);font-size:20px;}
+/* Summary */
+#summary{flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:18px 28px;text-align:center;background:radial-gradient(ellipse at 50% 40%,rgba(81,207,152,0.05) 0%,transparent 50%);}
+.sum-trophy{font-size:46px;line-height:1;}
+.sum-title{font-family:'Baloo 2',cursive;font-size:28px;font-weight:800;background:linear-gradient(135deg,var(--accent-gold),var(--accent-mint));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.sum-score{font-family:'Baloo 2',cursive;font-size:44px;font-weight:800;color:#fff;line-height:1;}
+.sum-score span{color:var(--text-dim);font-size:22px;}
 .sum-cats{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
-.sum-cat{background:var(--card-front);border-radius:12px;padding:7px 14px;text-align:center;min-width:100px;border:1px solid var(--card-border);}
-.sum-cat-name{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim);margin-bottom:2px;}
-.sum-cat-score{font-family:'Baloo 2',cursive;font-size:17px;font-weight:700;}
-.sum-tip{font-size:13px;color:var(--accent-gold);max-width:420px;line-height:1.3;}
-.replay-btn{padding:12px 40px;font-family:'Baloo 2',cursive;font-size:19px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--accent-coral),var(--accent-violet));border:none;border-radius:40px;cursor:pointer;box-shadow:0 4px 18px rgba(255,107,107,0.3);transition:transform .15s;}
+.sum-cat{background:var(--card-front);border-radius:12px;padding:8px 16px;min-width:120px;border:1px solid var(--card-border);}
+.sum-cat-name{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim);margin-bottom:3px;}
+.sum-cat-score{font-family:'Baloo 2',cursive;font-size:18px;font-weight:700;}
+.sum-tip{font-size:13px;color:var(--accent-gold);max-width:460px;line-height:1.4;}
+.replay-btn{padding:12px 42px;font-family:'Baloo 2',cursive;font-size:19px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--accent-coral),var(--accent-violet));border:none;border-radius:40px;cursor:pointer;box-shadow:0 4px 18px rgba(255,107,107,0.3);transition:transform .15s;}
 .replay-btn:active{transform:scale(0.95);}
+
 .fade-in{animation:fadeIn .3s ease-out;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
 </style>
 </head>
 <body>
 
+<!-- HOME -->
 <div id="home" class="screen active">
-  <div class="home-card"><div class="home-card-inner">
-    <div class="home-card-face home-card-front"><div class="hc-q">Is this headline real or fake? 🤔</div></div>
-    <div class="home-card-face home-card-back"><div class="hc-a">Flip the card to find out! ✅</div></div>
-  </div></div>
   <div class="logo">PROMPT!</div>
-  <div class="logo-sub">AI Literacy Card Game</div>
-  <button class="start-btn" onclick="startGame()">Play!</button>
-  <div class="home-hint">tap to choose · speak to answer · flip to learn</div>
+  <div class="logo-sub">AI Literacy · Spoken Reflection</div>
+  <div class="home-tagline">Read the card, say what you notice out loud, and learn how to see through AI and online framing.</div>
+  <div class="mode-title">Pick your deck</div>
+  <div class="mode-row">
+    <div class="mode-card" data-mode="discernment" onclick="selectMode('discernment', this)">
+      <div class="mode-badge disc">Discernment</div>
+      <div class="mode-name">Spot the Frame</div>
+      <div class="mode-desc">Read two stories about the same thing. Can you tell which lens is pulling you in?</div>
+    </div>
+    <div class="mode-card" data-mode="usage" onclick="selectMode('usage', this)">
+      <div class="mode-badge usage">AI Usage</div>
+      <div class="mode-name">Better Prompts</div>
+      <div class="mode-desc">The AI gave a biased or messy answer. What would you ask to fix it?</div>
+    </div>
+    <div class="mode-card selected" data-mode="mixed" onclick="selectMode('mixed', this)">
+      <div class="mode-badge mix">Mixed</div>
+      <div class="mode-name">Full Deck</div>
+      <div class="mode-desc">A balanced run through both decks. Great for a first game.</div>
+    </div>
+  </div>
+  <button class="start-btn" id="start-btn" onclick="startGame()">Start Game</button>
+  <div class="home-hint">say what you think · no multiple choice · every answer counts</div>
 </div>
 
+<!-- GAME -->
 <div id="game" class="screen">
   <div class="card-side">
     <div class="game-top-bar">
       <div class="game-logo">PROMPT!</div>
-      <div class="top-info"><div class="dots" id="dots"></div><div class="score-pill" id="score-pill">⭐ 0</div></div>
+      <div class="top-info">
+        <div class="dots" id="dots"></div>
+        <div class="score-pill" id="score-pill">0 pts</div>
+      </div>
     </div>
-    <div class="card-container"><div class="card-flipper" id="card-flipper">
-      <div class="card-face card-front" id="card-front">
-        <div class="card-corner tl" id="card-num">01</div>
-        <div class="card-corner br" id="card-num2">01</div>
-        <div class="card-cat" id="card-cat"></div>
-        <div class="card-q" id="card-q"></div>
-        <div class="card-opts" id="card-opts"></div>
+
+    <div class="card-container">
+      <div class="card-flipper" id="card-flipper">
+        <!-- FRONT -->
+        <div class="card-face card-front" id="card-front">
+          <div class="card-corner tl" id="card-num-tl">01</div>
+          <div class="card-corner br" id="card-num-br">01</div>
+          <div class="card-header-row">
+            <div class="card-cat" id="card-cat"></div>
+            <div class="card-diff" id="card-diff"></div>
+          </div>
+          <div class="card-title" id="card-title"></div>
+          <div class="ptype-label" id="card-ptype"></div>
+          <div class="body-area" id="body-area"></div>
+        </div>
+        <!-- BACK -->
+        <div class="card-face card-back" id="card-back">
+          <div class="back-top">
+            <div class="back-icon" id="back-icon">🎉</div>
+            <div class="back-title" id="back-title">Nice!</div>
+            <div class="back-score" id="back-score">+10</div>
+          </div>
+          <div class="back-section insight">
+            <div class="back-section-label">Deep Insight</div>
+            <div class="back-section-text" id="back-insight"></div>
+          </div>
+          <div class="back-section habit">
+            <div class="back-section-label">Habit to Keep</div>
+            <div class="back-section-text" id="back-habit"></div>
+          </div>
+          <div class="back-section sugg" id="back-sugg-wrap" style="display:none;">
+            <div class="back-section-label">A Strong Prompt Looks Like</div>
+            <div class="back-section-text" id="back-sugg"></div>
+          </div>
+        </div>
       </div>
-      <div class="card-face card-back" id="card-back">
-        <div class="back-icon" id="back-icon">🎉</div>
-        <div class="back-title" id="back-title">Awesome!</div>
-        <div class="back-explain" id="back-explain"></div>
-        <div class="back-tip" id="back-tip"></div>
-      </div>
-    </div></div>
+    </div>
   </div>
 
   <div class="voice-side">
-    <div class="voice-label">Voice Input</div>
-    <div class="voice-status" id="voice-status">Tap an option or speak</div>
-    <div class="mic-ring" id="mic-ring" onclick="toggleRecording()"><div class="mic-icon" id="mic-icon">🎤</div></div>
-    <div class="voice-transcript" id="voice-transcript"></div>
-    <div class="or-divider">— or tap a choice —</div>
-    <button class="confirm-btn" id="confirm-btn" disabled onclick="submitAnswer()">Choose an answer</button>
-    <button class="next-btn" id="next-btn" onclick="nextCard()">Next Card →</button>
+    <div class="voice-top">
+      <div class="voice-label">Your Turn</div>
+      <div class="prompt-bubble" id="prompt-bubble">Read the card, then tap the mic and say what you notice.</div>
+    </div>
+
+    <div class="voice-mid">
+      <div class="mic-ring" id="mic-ring" onclick="toggleRecording()">
+        <div class="mic-icon" id="mic-icon">🎤</div>
+      </div>
+      <div class="voice-status" id="voice-status">Tap to speak · up to 15s</div>
+      <div class="voice-transcript" id="voice-transcript"></div>
+    </div>
+
+    <div class="voice-bottom">
+      <div class="reaction-bubble" id="reaction-bubble">
+        <span class="bubble-lead">Coach Says</span>
+        <span id="reaction-text"></span>
+      </div>
+      <div class="habit-bubble" id="habit-bubble">
+        <span class="bubble-lead">Try This Habit</span>
+        <span id="habit-text"></span>
+      </div>
+      <button class="action-btn skip" id="skip-btn" onclick="skipAnswer()">I don't know — skip</button>
+      <button class="action-btn next" id="next-btn" onclick="nextCard()">Next Card →</button>
+    </div>
   </div>
 </div>
 
+<!-- LOADING -->
 <div id="loading"><div class="spinner"></div><div class="loading-text" id="loading-text">Thinking...</div></div>
 
+<!-- SUMMARY -->
 <div id="summary" class="screen">
-  <div class="sum-trophy" id="sum-trophy"></div>
+  <div class="sum-trophy" id="sum-trophy">🏆</div>
   <div class="sum-title">Game Complete!</div>
   <div class="sum-score" id="sum-score"></div>
   <div class="sum-cats" id="sum-cats"></div>
@@ -192,135 +308,436 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 </div>
 
 <script>
-const API='';
-const CAT_LABELS={real_vs_fake:'Real vs Fake',ai_best_practices:'AI Best Practices',bad_actors:'Bad Actors & Motive'};
-const CAT_EMOJI={real_vs_fake:'🔍',ai_best_practices:'🤖',bad_actors:'🎭'};
-let sessionId=null,currentCard=null,selectedOpt=null,totalCards=0,currentIdx=0,score=0,results=[];
-let isRecording=false,mediaRecorder=null,audioChunks=[],answered=false;
+/* ============================================================
+   PROMPT! v2 client — mode select + open-ended voice reflection
+   ============================================================ */
+const API = '';
 
-function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
-function showLoading(m){document.getElementById('loading-text').textContent=m||'Thinking...';document.getElementById('loading').classList.add('active');}
-function hideLoading(){document.getElementById('loading').classList.remove('active');}
+const CAT_LABELS = { discernment:'Discernment', usage:'AI Usage' };
+const CAT_EMOJI  = { discernment:'🔍', usage:'🤖' };
 
-async function speak(text){
-  try{const r=await fetch(`${API}/api/tts`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text})});
-  if(!r.ok)return;const blob=await r.blob();const url=URL.createObjectURL(blob);const a=new Audio(url);
-  return new Promise(res=>{a.onended=()=>{URL.revokeObjectURL(url);res();};a.onerror=()=>{URL.revokeObjectURL(url);res();};a.play().catch(()=>res());});}catch(e){}}
+const PTYPE_LABEL = {
+  perspective_lens_audit: 'Perspective · Lens Audit',
+  affective_highjack:     'Emotion · Hijack Check',
+  bias_inverter:          'Prompt · Bias Inverter',
+  task_decomposition_map: 'Prompt · Task Decomposition',
+};
 
+const PTYPE_QUESTION = {
+  perspective_lens_audit: "Same thing, two descriptions. What's the hidden lens? Who's each one for?",
+  affective_highjack:     "Say the emotion this post wants you to feel — and who gains if you share it.",
+  bias_inverter:          "This answer hides a viewpoint. What prompt would force the AI to show another?",
+  task_decomposition_map: "Too big for one prompt. Name two or three small steps you'd ask first.",
+};
+
+const TIER_UI = {
+  deep:    { icon:'🌟', title:'Deep Read!',     cls:'correct' },
+  mid:     { icon:'✨', title:'Sharp Thinking', cls:'good'    },
+  surface: { icon:'👀', title:'Good Start',     cls:'partial' },
+  off:     { icon:'💡', title:'Almost there',   cls:'incorrect' },
+  silent:  { icon:'🤫', title:'Skipped',        cls:'incorrect' },
+};
+
+/* ─── State ─── */
+let sessionId = null;
+let currentCard = null;
+let currentIdx = 0;
+let totalCards = 0;
+let totalScore = 0;
+let maxScore = 0;
+let results = [];          // list of tiers, one per answered card
+let answered = false;
+let isRecording = false;
+let mediaRecorder = null;
+let audioChunks = [];
+let selectedMode = 'mixed';
+let audioPlayer = null;
+
+/* ─── Screen helpers ─── */
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+function showLoading(m){
+  document.getElementById('loading-text').textContent = m || 'Thinking...';
+  document.getElementById('loading').classList.add('active');
+}
+function hideLoading(){ document.getElementById('loading').classList.remove('active'); }
+
+/* ─── Home ─── */
+function selectMode(mode, el){
+  selectedMode = mode;
+  document.querySelectorAll('.mode-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+function goHome(){
+  stopAudio();
+  showScreen('home');
+}
+
+/* ─── TTS playback ─── */
+async function stopAudio(){
+  if (audioPlayer){
+    try { audioPlayer.pause(); audioPlayer.src = ''; } catch(e){}
+    audioPlayer = null;
+  }
+}
+
+async function speak(text, tone='narrator'){
+  if (!text || !text.trim()) return;
+  try {
+    const r = await fetch(`${API}/api/tts`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ text, tone }),
+    });
+    if (!r.ok) return;
+    const blob = await r.blob();
+    await stopAudio();
+    const url = URL.createObjectURL(blob);
+    const audio = new Audio(url);
+    audioPlayer = audio;
+    return new Promise(res => {
+      audio.onended = ()=>{ URL.revokeObjectURL(url); res(); };
+      audio.onerror = ()=>{ URL.revokeObjectURL(url); res(); };
+      audio.play().catch(()=>res());
+    });
+  } catch(e){}
+}
+
+/* Chain multiple (text, tone) segments */
+async function speakChain(segments){
+  for (const [text, tone] of segments){
+    if (text && text.trim()){
+      await speak(text, tone);
+    }
+  }
+}
+
+/* ─── Start game ─── */
 async function startGame(){
-  showLoading('Shuffling cards...');
-  try{const r=await fetch(`${API}/api/start`,{method:'POST'});const d=await r.json();
-  sessionId=d.session_id;totalCards=d.total_cards;currentCard=d.card;currentIdx=0;score=0;results=[];
-  hideLoading();showScreen('game');renderCard();
-  await speak('Welcome to PROMPT! Let us begin!');speakQuestion();
-  }catch(e){hideLoading();alert('Cannot connect to server.');}
+  document.getElementById('start-btn').disabled = true;
+  showLoading('Shuffling the deck...');
+  try {
+    const r = await fetch(`${API}/api/start`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ mode: selectedMode }),
+    });
+    const d = await r.json();
+    if (d.error){ hideLoading(); alert(d.error); document.getElementById('start-btn').disabled=false; return; }
+    sessionId  = d.session_id;
+    totalCards = d.total_cards;
+    currentCard = d.card;
+    currentIdx = 0;
+    totalScore = 0;
+    maxScore = totalCards * 10;
+    results = [];
+    hideLoading();
+    showScreen('game');
+    renderCard();
+    await speak('Welcome to PROMPT! Listen carefully, then tell me what you see.', 'celebrate');
+    await readCardAloud();
+  } catch(e){
+    hideLoading();
+    document.getElementById('start-btn').disabled = false;
+    alert('Cannot connect to server.');
+  }
 }
-function goHome(){showScreen('home');}
 
+/* ─── Render a card ─── */
 function renderCard(){
-  selectedOpt=null;answered=false;const c=currentCard;
+  const c = currentCard;
+  answered = false;
   document.getElementById('card-flipper').classList.remove('flipped');
-  const num=String(currentIdx+1).padStart(2,'0');
-  document.getElementById('card-num').textContent=num;document.getElementById('card-num2').textContent=num;
-  const dotsEl=document.getElementById('dots');dotsEl.innerHTML='';
-  for(let i=0;i<totalCards;i++){const d=document.createElement('div');d.className='dot';if(i<results.length)d.classList.add(results[i]);if(i===currentIdx)d.classList.add('current');dotsEl.appendChild(d);}
-  document.getElementById('score-pill').textContent=`⭐ ${score}`;
-  const catEl=document.getElementById('card-cat');catEl.textContent=`${CAT_EMOJI[c.category]||''} ${CAT_LABELS[c.category]||c.category}`;catEl.className=`card-cat cat-${c.category}`;
-  document.getElementById('card-q').textContent=c.question;
-  const grid=document.getElementById('card-opts');grid.innerHTML='';
-  for(const k of Object.keys(c.options)){const b=document.createElement('div');b.className='card-opt fade-in';b.dataset.key=k;b.innerHTML=`<div class="opt-ltr">${k}</div><div class="opt-txt">${c.options[k]}</div>`;b.onclick=()=>selectOption(k,b);grid.appendChild(b);}
-  document.getElementById('confirm-btn').disabled=true;document.getElementById('confirm-btn').textContent='Choose an answer';document.getElementById('confirm-btn').style.display='';
-  document.getElementById('next-btn').style.display='none';
-  document.getElementById('voice-status').textContent='Tap an option or speak';document.getElementById('voice-status').className='voice-status';
-  document.getElementById('voice-transcript').textContent='';resetMicBtn();
+
+  const num = String(currentIdx + 1).padStart(2, '0');
+  document.getElementById('card-num-tl').textContent = `${c.id}`;
+  document.getElementById('card-num-br').textContent = `${num}/${String(totalCards).padStart(2,'0')}`;
+
+  const catEl = document.getElementById('card-cat');
+  catEl.textContent = `${CAT_EMOJI[c.category]||''} ${CAT_LABELS[c.category]||c.category}`;
+  catEl.className = `card-cat cat-${c.category}`;
+
+  document.getElementById('card-diff').textContent = c.difficulty || 'easy';
+  document.getElementById('card-title').textContent = c.title;
+  document.getElementById('card-ptype').textContent = PTYPE_LABEL[c.problem_type] || c.problem_type;
+
+  /* Body: 2 bubbles for perspective_lens_audit (Lens A vs Lens B), 1 for others */
+  const body = document.getElementById('body-area');
+  body.innerHTML = '';
+  const texts = Array.isArray(c.body) ? c.body : [String(c.body||'')];
+  if (c.problem_type === 'perspective_lens_audit' && texts.length >= 2){
+    body.appendChild(makeBubble(texts[0], 'a', 'Lens A'));
+    body.appendChild(makeBubble(texts[1], 'b', 'Lens B'));
+  } else {
+    texts.forEach((t, i) => body.appendChild(makeBubble(t, 'solo', i === 0 ? 'The Post' : 'More')));
+  }
+
+  /* Dots + score pill */
+  const dotsEl = document.getElementById('dots');
+  dotsEl.innerHTML = '';
+  for (let i=0; i<totalCards; i++){
+    const d = document.createElement('div');
+    d.className = 'dot';
+    if (i < results.length) d.classList.add('tier-' + results[i]);
+    if (i === currentIdx) d.classList.add('current');
+    dotsEl.appendChild(d);
+  }
+  document.getElementById('score-pill').textContent = `${totalScore} pts`;
+
+  /* Prompt bubble = question suited to the problem type */
+  const pb = document.getElementById('prompt-bubble');
+  pb.className = 'prompt-bubble';
+  pb.textContent = PTYPE_QUESTION[c.problem_type] || "Say what you notice out loud.";
+
+  /* Right panel reset */
+  document.getElementById('reaction-bubble').style.display = 'none';
+  document.getElementById('habit-bubble').style.display = 'none';
+  document.getElementById('voice-status').textContent = 'Tap to speak · up to 15s';
+  document.getElementById('voice-status').className = 'voice-status';
+  document.getElementById('voice-transcript').textContent = '';
+  document.getElementById('skip-btn').style.display = '';
+  document.getElementById('next-btn').style.display = 'none';
+  resetMicBtn();
 }
 
-async function speakQuestion(){const c=currentCard;const o=Object.entries(c.options).map(([k,v])=>`${k}, ${v}`).join('. ');await speak(`Question ${currentIdx+1}. ${c.question} Your options are: ${o}`);}
-
-function selectOption(k,btn){if(answered)return;selectedOpt=k;document.querySelectorAll('.card-opt').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');const cb=document.getElementById('confirm-btn');cb.disabled=false;cb.textContent=`Lock in ${k}! 🔒`;}
-
-async function submitAnswer(){
-  if(!selectedOpt||answered)return;answered=true;document.getElementById('confirm-btn').disabled=true;showLoading('Checking...');
-  try{const r=await fetch(`${API}/api/answer`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({session_id:sessionId,selected_option:selectedOpt})});
-  const d=await r.json();hideLoading();revealAnswer(d);}catch(e){hideLoading();document.getElementById('voice-status').textContent='Error';}
+function makeBubble(text, variant, lensLabel){
+  const el = document.createElement('div');
+  el.className = `body-bubble ${variant} fade-in`;
+  const lens = document.createElement('div');
+  lens.className = 'bubble-lens';
+  lens.textContent = lensLabel || '';
+  const body = document.createElement('div');
+  body.textContent = text;
+  el.appendChild(lens);
+  el.appendChild(body);
+  return el;
 }
 
-async function toggleRecording(){if(answered)return;if(isRecording)stopRecording();else startRecording();}
+/* Read the card aloud: narrator reads title + body, curious reads the prompt question. */
+async function readCardAloud(){
+  const c = currentCard;
+  const segments = [];
+  segments.push([c.title, 'narrator']);
+  if (Array.isArray(c.body)){
+    for (const t of c.body) segments.push([t, 'narrator']);
+  } else if (c.body){
+    segments.push([String(c.body), 'narrator']);
+  }
+  const q = PTYPE_QUESTION[c.problem_type];
+  if (q) segments.push([q, 'curious']);
+  await speakChain(segments);
+}
+
+/* ─── Mic / recording ─── */
+function resetMicBtn(){
+  const ring = document.getElementById('mic-ring');
+  ring.className = 'mic-ring';
+  document.getElementById('mic-icon').textContent = '🎤';
+}
+
+async function toggleRecording(){
+  if (answered) return;
+  if (isRecording) stopRecording();
+  else startRecording();
+}
+
 async function startRecording(){
-  try{const stream=await navigator.mediaDevices.getUserMedia({audio:true});
-  mediaRecorder=new MediaRecorder(stream,{mimeType:'audio/webm'});audioChunks=[];
-  mediaRecorder.ondataavailable=e=>{if(e.data.size>0)audioChunks.push(e.data);};
-  mediaRecorder.onstop=()=>{stream.getTracks().forEach(t=>t.stop());processVoice();};
-  mediaRecorder.start();isRecording=true;
-  document.getElementById('mic-ring').classList.add('recording');document.getElementById('mic-icon').textContent='⏹';
-  document.getElementById('voice-status').textContent='🎤 Listening...';document.getElementById('voice-status').className='voice-status highlight';
-  setTimeout(()=>{if(isRecording)stopRecording();},8000);
-  }catch(e){document.getElementById('voice-status').textContent='Mic access denied';}
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio:true });
+    mediaRecorder = new MediaRecorder(stream, { mimeType:'audio/webm' });
+    audioChunks = [];
+    mediaRecorder.ondataavailable = e => { if (e.data.size>0) audioChunks.push(e.data); };
+    mediaRecorder.onstop = () => { stream.getTracks().forEach(t=>t.stop()); processVoice(); };
+    mediaRecorder.start();
+    isRecording = true;
+    const ring = document.getElementById('mic-ring');
+    ring.classList.add('recording');
+    document.getElementById('mic-icon').textContent = '⏹';
+    const st = document.getElementById('voice-status');
+    st.textContent = '🎤 Listening... say what you notice';
+    st.className = 'voice-status highlight';
+    setTimeout(() => { if (isRecording) stopRecording(); }, 15000);
+  } catch(e) {
+    document.getElementById('voice-status').textContent = 'Mic access denied';
+  }
 }
-function stopRecording(){if(mediaRecorder&&mediaRecorder.state==='recording')mediaRecorder.stop();isRecording=false;document.getElementById('mic-ring').classList.remove('recording');document.getElementById('mic-ring').classList.add('processing');document.getElementById('mic-icon').textContent='⏳';document.getElementById('voice-status').textContent='Processing...';}
+
+function stopRecording(){
+  if (mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.stop();
+  isRecording = false;
+  const ring = document.getElementById('mic-ring');
+  ring.classList.remove('recording');
+  ring.classList.add('processing');
+  document.getElementById('mic-icon').textContent = '⏳';
+  document.getElementById('voice-status').textContent = 'Transcribing...';
+}
 
 async function processVoice(){
-  const blob=new Blob(audioChunks,{type:'audio/webm'});const fd=new FormData();fd.append('audio',blob,'recording.webm');showLoading('Transcribing...');
-  try{const tr=await fetch(`${API}/api/transcribe`,{method:'POST',body:fd});const td=await tr.json();const text=td.text||'';
-  if(!text){hideLoading();document.getElementById('voice-status').textContent='No speech detected';resetMicBtn();return;}
-  document.getElementById('voice-transcript').textContent=`"${text}"`;
-  const matched=matchVoiceToOption(text);
-  if(matched){answered=true;selectedOpt=matched;
-    document.querySelectorAll('.card-opt').forEach(el=>{el.classList.remove('selected');if(el.dataset.key===matched)el.classList.add('selected');});
-    const r=await fetch(`${API}/api/answer`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({session_id:sessionId,selected_option:matched})});
-    const d=await r.json();hideLoading();await speak(`I heard: ${text}`);revealAnswer(d);
-  }else{hideLoading();document.getElementById('voice-status').textContent='Could not match — try again';resetMicBtn();}
-  }catch(e){hideLoading();document.getElementById('voice-status').textContent='Error';resetMicBtn();}
+  const blob = new Blob(audioChunks, { type:'audio/webm' });
+  const fd = new FormData();
+  fd.append('audio', blob, 'recording.webm');
+  showLoading('Listening...');
+  try {
+    const tr = await fetch(`${API}/api/transcribe`, { method:'POST', body:fd });
+    const td = await tr.json();
+    const text = (td.text || '').trim();
+    if (!text){
+      hideLoading();
+      document.getElementById('voice-status').textContent = 'I did not hear anything. Try again?';
+      resetMicBtn();
+      return;
+    }
+    document.getElementById('voice-transcript').textContent = `"${text}"`;
+    await submitSpokenAnswer(text);
+  } catch(e){
+    hideLoading();
+    document.getElementById('voice-status').textContent = 'Error. Tap mic to retry.';
+    resetMicBtn();
+  }
 }
 
-function matchVoiceToOption(text){
-  const t=text.toLowerCase().trim();const c=currentCard;
-  const lp={A:[/\ba\b/,/option a/i],B:[/\bb\b/,/option b/i],C:[/\bc\b/,/option c/i],D:[/\bd\b/,/option d/i]};
-  for(const[k,ps]of Object.entries(lp)){if(!(k in c.options))continue;for(const p of ps){if(p.test(t))return k;}}
-  for(const[k,v]of Object.entries(c.options)){if(t.includes(v.toLowerCase()))return k;}
-  if(c.accepted_keywords){for(const kw of c.accepted_keywords){if(t.includes(kw.toLowerCase()))return c.correct_answer;}}
-  return null;
+async function skipAnswer(){
+  if (answered) return;
+  await submitSpokenAnswer(''); // empty = silent tier
 }
-function resetMicBtn(){document.getElementById('mic-ring').className='mic-ring';document.getElementById('mic-icon').textContent='🎤';}
 
+async function submitSpokenAnswer(text){
+  answered = true;
+  document.getElementById('skip-btn').style.display = 'none';
+  showLoading('Coach is thinking...');
+  try {
+    const r = await fetch(`${API}/api/answer`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ session_id: sessionId, user_answer: text }),
+    });
+    const d = await r.json();
+    hideLoading();
+    if (d.error){ document.getElementById('voice-status').textContent = 'Error: ' + d.error; return; }
+    await revealAnswer(d);
+  } catch(e){
+    hideLoading();
+    document.getElementById('voice-status').textContent = 'Error. Please try again.';
+  }
+}
+
+/* ─── Reveal flow ─── */
 async function revealAnswer(data){
-  const c=currentCard;
-  document.querySelectorAll('.card-opt').forEach(el=>{const k=el.dataset.key;el.onclick=null;el.classList.remove('selected');
-    if(k===c.correct_answer)el.classList.add('reveal-correct');else if(k===selectedOpt&&data.judgement!=='correct')el.classList.add('reveal-incorrect');else el.classList.add('reveal-dim');});
-  score=data.current_score;results.push(data.judgement);
-  document.getElementById('score-pill').textContent=`⭐ ${score}`;
-  const dots=document.querySelectorAll('.dot');if(dots[currentIdx]){dots[currentIdx].classList.remove('current');dots[currentIdx].classList.add(data.judgement);}
-  // Prepare back
-  const icons={correct:'🎉',partial:'🤔',incorrect:'💡'},titles={correct:'Awesome!',partial:'Almost!',incorrect:'Good try!'};
-  document.getElementById('back-icon').textContent=icons[data.judgement];
-  const bt=document.getElementById('back-title');bt.textContent=titles[data.judgement];bt.className=`back-title ${data.judgement}`;
-  document.getElementById('back-explain').textContent=data.explanation;
-  document.getElementById('back-tip').textContent=`💡 ${data.verification_tip}`;
-  // Flip
-  setTimeout(()=>{document.getElementById('card-flipper').classList.add('flipped');},600);
-  // Right panel
-  document.getElementById('confirm-btn').style.display='none';
-  document.getElementById('next-btn').style.display='';document.getElementById('next-btn').textContent=data.has_next?'Next Card →':'See Results 🏆';
-  document.getElementById('voice-status').textContent=data.feedback;document.getElementById('voice-status').className='voice-status feedback';
+  const tier = data.tier || 'off';
+  const ui = TIER_UI[tier] || TIER_UI.off;
+
+  /* Back of card */
+  document.getElementById('back-icon').textContent = ui.icon;
+  const bt = document.getElementById('back-title');
+  bt.textContent = ui.title;
+  bt.className = `back-title ${ui.cls}`;
+  document.getElementById('back-score').textContent = `+${data.score}`;
+  document.getElementById('back-insight').textContent = data.card_back.deep_insight || '—';
+  document.getElementById('back-habit').textContent   = data.card_back.habit        || '—';
+  if (data.card_back.suggested_prompt){
+    document.getElementById('back-sugg-wrap').style.display = '';
+    document.getElementById('back-sugg').textContent = data.card_back.suggested_prompt;
+  } else {
+    document.getElementById('back-sugg-wrap').style.display = 'none';
+  }
+
+  /* Score tracking */
+  totalScore = data.current_total_score;
+  results.push(tier);
+  document.getElementById('score-pill').textContent = `${totalScore} pts`;
+  const dots = document.querySelectorAll('.dot');
+  if (dots[currentIdx]) {
+    dots[currentIdx].classList.remove('current');
+    dots[currentIdx].classList.add('tier-' + tier);
+  }
+
+  /* Flip with a small delay so it feels intentional */
+  setTimeout(()=> document.getElementById('card-flipper').classList.add('flipped'), 350);
+
+  /* Right panel: coach speaks + next button */
+  const rBubble = document.getElementById('reaction-bubble');
+  const hBubble = document.getElementById('habit-bubble');
+  document.getElementById('reaction-text').textContent = data.feedback.reaction || '';
+  document.getElementById('habit-text').textContent = data.feedback.habit || '';
+  rBubble.style.display = data.feedback.reaction ? '' : 'none';
+  hBubble.style.display = data.feedback.habit ? '' : 'none';
+
+  document.getElementById('next-btn').style.display = '';
+  document.getElementById('next-btn').textContent = data.has_next ? 'Next Card →' : 'See Results 🏆';
+  document.getElementById('voice-status').textContent = 'Coach is talking...';
+  document.getElementById('voice-status').className = 'voice-status speaking';
   resetMicBtn();
-  if(data.has_next&&data.next_card)currentCard=data.next_card;
-  const lb={correct:'Correct!',partial:'Almost there!',incorrect:'Not quite.'};
-  await speak(`${lb[data.judgement]} ${data.feedback}`);
+  document.getElementById('mic-ring').classList.add('disabled');
+
+  /* Preload next card for speed */
+  if (data.has_next && data.next_card) currentCard = data.next_card;
+
+  /* Speak: warm reaction -> curious habit. Celebrate if deep score. */
+  const segments = [];
+  if (tier === 'deep' || tier === 'mid'){
+    segments.push(['Nice one!', 'celebrate']);
+  }
+  if (data.feedback.reaction) segments.push([data.feedback.reaction, 'warm']);
+  if (data.feedback.habit)    segments.push([data.feedback.habit,    'curious']);
+  await speakChain(segments);
+  document.getElementById('voice-status').textContent = 'Tap Next when you\'re ready.';
+  document.getElementById('voice-status').className = 'voice-status';
 }
 
-async function nextCard(){document.getElementById('voice-transcript').textContent='';currentIdx++;if(currentIdx>=totalCards)await showSummary();else{renderCard();speakQuestion();}}
+async function nextCard(){
+  if (currentIdx + 1 >= totalCards){
+    await showSummary();
+    return;
+  }
+  currentIdx++;
+  document.getElementById('voice-transcript').textContent = '';
+  renderCard();
+  document.getElementById('mic-ring').classList.remove('disabled');
+  await readCardAloud();
+}
 
+/* ─── Summary ─── */
 async function showSummary(){
-  showLoading('Preparing results...');
-  try{const r=await fetch(`${API}/api/summary?session_id=${sessionId}`,{method:'POST'});const d=await r.json();hideLoading();
-  const pct=Math.round((d.score/d.total)*100);let trophy='💪';if(pct===100)trophy='🏆';else if(pct>=75)trophy='🥇';else if(pct>=50)trophy='🥈';
-  document.getElementById('sum-trophy').textContent=trophy;document.getElementById('sum-score').innerHTML=`${d.score} <span>/ ${d.total}</span>`;
-  const ce=document.getElementById('sum-cats');ce.innerHTML='';
-  for(const[cat,s]of Object.entries(d.category_stats)){const p=Math.round((s.correct/s.total)*100);const div=document.createElement('div');div.className='sum-cat fade-in';
-    div.innerHTML=`<div class="sum-cat-name">${CAT_EMOJI[cat]||''} ${CAT_LABELS[cat]||cat}</div><div class="sum-cat-score" style="color:${p>=75?'var(--correct)':p>=50?'var(--partial)':'var(--incorrect)'}">${s.correct}/${s.total}</div>`;ce.appendChild(div);}
-  document.getElementById('sum-tip').textContent=`💡 ${d.tip}`;showScreen('summary');
-  await speak(`Game over! You scored ${d.score} out of ${d.total}. ${d.tip}`);
-  }catch(e){hideLoading();showScreen('summary');}
+  showLoading('Wrapping up...');
+  try {
+    const r = await fetch(`${API}/api/summary?session_id=${encodeURIComponent(sessionId)}`, { method:'POST' });
+    const d = await r.json();
+    hideLoading();
+    if (d.error){ alert(d.error); return; }
+
+    maxScore = d.max_score;
+    const pct = maxScore ? Math.round((d.score / maxScore) * 100) : 0;
+    let trophy = '💪';
+    if (pct >= 90) trophy = '🏆';
+    else if (pct >= 70) trophy = '🥇';
+    else if (pct >= 50) trophy = '🥈';
+
+    document.getElementById('sum-trophy').textContent = trophy;
+    document.getElementById('sum-score').innerHTML = `${d.score} <span>/ ${d.max_score}</span>`;
+
+    const ce = document.getElementById('sum-cats');
+    ce.innerHTML = '';
+    for (const [mode, s] of Object.entries(d.per_mode || {})){
+      const maxM = s.total * 10;
+      const p = maxM ? Math.round((s.score / maxM) * 100) : 0;
+      const color = p >= 75 ? 'var(--correct)' : p >= 50 ? 'var(--partial)' : 'var(--incorrect)';
+      const div = document.createElement('div');
+      div.className = 'sum-cat fade-in';
+      div.innerHTML = `
+        <div class="sum-cat-name">${CAT_EMOJI[mode]||''} ${CAT_LABELS[mode]||mode}</div>
+        <div class="sum-cat-score" style="color:${color}">${s.score} / ${maxM}</div>`;
+      ce.appendChild(div);
+    }
+    document.getElementById('sum-tip').textContent = `💡 ${d.tip}`;
+    showScreen('summary');
+    await speak(`Game over! You scored ${d.score} out of ${d.max_score}.`, 'celebrate');
+    await speak(d.tip, 'curious');
+  } catch(e){
+    hideLoading();
+    showScreen('summary');
+  }
 }
 </script>
 </body>

@@ -1,110 +1,157 @@
+"""
+LLM feedback layer for PROMPT! v2.
+
+Uses Ollama (local Llama 3) to generate two-line reflection feedback:
+  Line 1 (reaction): the WARM tone reads this.
+  Line 2 (habit):    the CURIOUS tone reads this.
+
+The rule engine has already decided the score. The LLM only crafts language.
+"""
+
+from __future__ import annotations
+
+from typing import Any, Dict, Tuple
+
 from ollama import chat
 
+from prompts import (
+    PERSPECTIVE_LENS_PROMPT,
+    AFFECTIVE_HIJACK_PROMPT,
+    BIAS_INVERTER_PROMPT,
+    TASK_DECOMPOSITION_PROMPT,
+    SUMMARY_PROMPT,
+)
 
-CATEGORY_GUIDANCE = {
-    "real_vs_fake": "Focus on checking evidence, sources, and context.",
-    "ai_best_practices": "Focus on using AI carefully, clearly, and responsibly.",
-    "bad_actors": "Focus on motive, incentives, and who benefits when false information spreads."
+
+_TEMPLATES = {
+    "perspective_lens_audit": PERSPECTIVE_LENS_PROMPT,
+    "affective_highjack":     AFFECTIVE_HIJACK_PROMPT,
+    "bias_inverter":          BIAS_INVERTER_PROMPT,
+    "task_decomposition_map": TASK_DECOMPOSITION_PROMPT,
 }
+
+
+def _fill(template: str, card: Dict[str, Any], user_answer: str, tier: str) -> str:
+    return template.format(
+        title=card.get("title", ""),
+        deep_insight=card.get("deep_insight", ""),
+        habit=card.get("habit", ""),
+        suggested_prompt=card.get("suggested_prompt", "") or "",
+        user_answer=(user_answer or "").strip() or "(no speech)",
+        tier=tier,
+    )
+
+
+def _fallback(card: Dict[str, Any], tier: str) -> Tuple[str, str]:
+    """If Ollama fails, still return something kind and on-topic."""
+    habit = card.get("habit") or "Pause and ask who this view leaves out."
+    if tier == "deep":
+        return ("You spotted the hidden angle — that's exactly the move.", habit)
+    if tier == "mid":
+        return ("Nice catch on the framing. One step deeper and you'd nail it.", habit)
+    if tier == "surface":
+        return ("Good start — you noticed the contrast.", habit)
+    if tier == "off":
+        return ("Close — try looking at the actual words each side uses.", habit)
+    return ("No worries — give the next one a try out loud.", habit)
+
+
+def _parse_two_lines(text: str) -> Tuple[str, str]:
+    """Split the model's output into (reaction, habit). Be tolerant of formats."""
+    if not text:
+        return ("", "")
+    # Normalize
+    cleaned = text.strip().replace("**", "").replace("*", "")
+    # Strip any "Line 1:" / "Reaction:" style prefixes
+    lines = [ln.strip() for ln in cleaned.split("\n") if ln.strip()]
+    # Drop obvious label prefixes
+    clean_lines = []
+    for ln in lines:
+        low = ln.lower()
+        for prefix in ("line 1:", "line 2:", "reaction:", "habit:", "tip:", "1.", "2.", "-"):
+            if low.startswith(prefix):
+                ln = ln[len(prefix):].strip()
+                break
+        if ln:
+            clean_lines.append(ln)
+    if len(clean_lines) >= 2:
+        return (clean_lines[0], clean_lines[1])
+    if len(clean_lines) == 1:
+        # Try to split on a period in the middle
+        only = clean_lines[0]
+        parts = only.split(". ", 1)
+        if len(parts) == 2:
+            return (parts[0].strip() + ".", parts[1].strip())
+        return (only, "")
+    return ("", "")
 
 
 def generate_feedback(
     model: str,
-    question: str,
+    card: Dict[str, Any],
     user_answer: str,
-    judgement: str,
-    explanation: str,
-    category: str,
-    matched_reason: str,
-    misconception: str,
-    teaching_focus: str,
-    source_note: str,
-    verification_tip: str,
-) -> str:
-    category_guidance = CATEGORY_GUIDANCE.get(
-        category,
-        "Focus on clear and encouraging learning feedback."
-    )
+    tier: str,
+) -> Dict[str, str]:
+    """
+    Returns {"reaction": str, "habit": str}.
+    Both lines are short and safe to send straight to TTS.
+    """
+    template = _TEMPLATES.get(card.get("problem_type", ""))
+    if template is None:
+        reaction, habit = _fallback(card, tier)
+        return {"reaction": reaction, "habit": habit}
 
-    prompt = f"""
-You are a playful, kind AI game companion for players age 10+.
-
-The system has already judged the answer.
-Do NOT judge the answer yourself.
-Your job is only to give short spoken feedback.
-
-Style rules:
-- 1 or 2 short sentences
-- warm, cheerful, and encouraging
-- simple words for kids age 10+
-- not preachy
-- not too formal
-- sound like a friendly robot game host
-- avoid sarcasm
-- avoid politics-heavy wording
-- do not repeat the whole question
-- do not mention "matched reason"
-- do not say "misconception"
-- if incorrect, be gentle and explain the key idea simply
-- if partial, praise what was right and add one missing idea
-- if correct, celebrate briefly and reinforce the lesson
-- whenever helpful, include one simple verification habit
-
-Category guidance:
-{category_guidance}
-
-Question: {question}
-User answer: {user_answer}
-Judgement: {judgement}
-Explanation: {explanation}
-Teaching focus: {teaching_focus}
-Source note: {source_note}
-Verification tip: {verification_tip}
-""".strip()
+    prompt = _fill(template, card, user_answer, tier)
 
     try:
-        response = chat(
+        resp = chat(
             model=model,
             messages=[{"role": "user", "content": prompt}],
+            options={"temperature": 0.7, "num_predict": 120},
         )
-        return response["message"]["content"].strip()
+        raw = resp["message"]["content"].strip()
+        reaction, habit = _parse_two_lines(raw)
+        if not reaction:
+            reaction, habit_fb = _fallback(card, tier)
+            if not habit:
+                habit = habit_fb
+        if not habit:
+            habit = card.get("habit") or "Ask who this view leaves out."
+        return {"reaction": reaction, "habit": habit}
     except Exception as e:
-        fallback_map = {
-            "correct": f"Nice job! {teaching_focus}",
-            "partial": f"You are close! {teaching_focus}",
-            "incorrect": f"Good try! {explanation} {verification_tip}",
-        }
-        return fallback_map.get(judgement, f"Thanks for playing! {verification_tip}") + f" (LLM error: {e})"
+        print(f"[llm] generate_feedback error: {e}")
+        reaction, habit = _fallback(card, tier)
+        return {"reaction": reaction, "habit": habit}
 
 
 def generate_summary_tip(
     model: str,
-    best_category: str,
-    worst_category: str,
-    score: str,
+    score: int,
+    total: int,
+    best_mode: str,
+    worst_mode: str,
 ) -> str:
-    prompt = f"""
-You are a playful, kind AI game companion for players age 10+.
-
-Generate exactly one short end-of-game tip.
-Rules:
-- under 16 words
-- very simple
-- practical
-- friendly
-- suitable for children
-- related to checking information or using AI carefully
-
-Score: {score}
-Best category: {best_category}
-Weakest category: {worst_category}
-""".strip()
-
+    prompt = SUMMARY_PROMPT.format(
+        score=score,
+        total=total,
+        best_mode=best_mode or "n/a",
+        worst_mode=worst_mode or "n/a",
+    )
     try:
-        response = chat(
+        resp = chat(
             model=model,
             messages=[{"role": "user", "content": prompt}],
+            options={"temperature": 0.7, "num_predict": 60},
         )
-        return response["message"]["content"].strip()
-    except Exception:
+        raw = resp["message"]["content"].strip()
+        # Take just the first sentence, no markdown
+        raw = raw.replace("**", "").replace("*", "").strip()
+        # If the model returned multiple lines, keep the first non-empty one
+        for line in raw.split("\n"):
+            line = line.strip().strip('"').strip("'")
+            if line:
+                return line
+        return "Pause, check the source, and ask who benefits before you share."
+    except Exception as e:
+        print(f"[llm] summary error: {e}")
         return "Pause, check the source, and ask who benefits before you share."

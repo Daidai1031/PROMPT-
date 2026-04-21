@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=no">
+<title>PROMPT! — AI Literacy Game</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0c1220;--card-front:#1a2744;--card-back:#12203a;--card-border:#2a3f6e;
+  --panel-bg:#111c30;--accent-coral:#ff6b6b;--accent-mint:#51cf98;--accent-gold:#ffc857;
+  --accent-sky:#4dabf7;--accent-violet:#b197fc;--accent-orange:#ff922b;
+  --text:#e8edf5;--text-dim:#6b7d9e;--correct:#51cf98;--incorrect:#ff6b6b;--partial:#ffc857;--r:16px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:100vw;height:100vh;overflow:hidden;font-family:'Quicksand',sans-serif;background:var(--bg);color:var(--text);user-select:none;-webkit-tap-highlight-color:transparent;}
+body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:0.5;}
+.screen{display:none;width:100vw;height:100vh;position:absolute;top:0;left:0;z-index:1;}
+.screen.active{display:flex;}
+
+/* ═══ HOME ═══ */
+#home{flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;background:radial-gradient(ellipse at 30% 40%,rgba(77,171,247,0.06) 0%,transparent 60%);}
+.home-card{width:260px;height:160px;perspective:600px;margin-bottom:4px;}
+.home-card-inner{width:100%;height:100%;position:relative;animation:home-flip 4s ease-in-out infinite;transform-style:preserve-3d;}
+@keyframes home-flip{0%,40%{transform:rotateY(0)}50%,90%{transform:rotateY(180deg)}100%{transform:rotateY(360deg)}}
+.home-card-face{position:absolute;inset:0;border-radius:var(--r);backface-visibility:hidden;display:flex;align-items:center;justify-content:center;border:2px solid var(--card-border);padding:20px;}
+.home-card-front{background:linear-gradient(145deg,var(--card-front),#1e3355);box-shadow:0 8px 32px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.05);}
+.home-card-front .hc-q{font-family:'Baloo 2',cursive;font-size:15px;font-weight:600;color:var(--accent-sky);line-height:1.3;}
+.home-card-back{background:linear-gradient(145deg,#162a48,var(--card-back));transform:rotateY(180deg);box-shadow:0 8px 32px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.05);}
+.home-card-back .hc-a{font-family:'Baloo 2',cursive;font-size:14px;font-weight:600;color:var(--accent-mint);}
+.logo{font-family:'Baloo 2',cursive;font-size:52px;font-weight:800;background:linear-gradient(135deg,var(--accent-coral),var(--accent-gold),var(--accent-mint));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:2px;line-height:1;}
+.logo-sub{font-size:12px;color:var(--text-dim);font-weight:700;letter-spacing:5px;text-transform:uppercase;}
+.start-btn{margin-top:10px;padding:14px 52px;font-family:'Baloo 2',cursive;font-size:22px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--accent-coral),var(--accent-violet));border:none;border-radius:40px;cursor:pointer;box-shadow:0 4px 20px rgba(255,107,107,0.3);transition:transform .15s;}
+.start-btn:active{transform:scale(0.94);}
+.home-hint{font-size:11px;color:var(--text-dim);margin-top:4px;}
+
+/* ═══ GAME split ═══ */
+#game{flex-direction:row;padding:0;background:radial-gradient(ellipse at 20% 50%,rgba(77,171,247,0.04) 0%,transparent 50%);}
+
+/* Left: card */
+.card-side{width:55%;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 14px 10px 18px;position:relative;}
+.game-top-bar{position:absolute;top:6px;left:14px;right:14px;display:flex;align-items:center;justify-content:space-between;z-index:2;}
+.game-logo{font-family:'Baloo 2',cursive;font-size:15px;font-weight:800;color:var(--accent-gold);}
+.top-info{display:flex;align-items:center;gap:7px;}
+.dots{display:flex;gap:4px;}
+.dot{width:9px;height:9px;border-radius:50%;background:#1e2d4d;border:2px solid #2a3f5e;transition:all .3s;}
+.dot.correct{background:var(--correct);border-color:var(--correct);}
+.dot.incorrect{background:var(--incorrect);border-color:var(--incorrect);}
+.dot.current{border-color:var(--accent-sky);box-shadow:0 0 6px rgba(77,171,247,0.5);}
+.score-pill{font-family:'Baloo 2',cursive;font-size:12px;font-weight:700;color:var(--accent-gold);background:rgba(255,200,87,0.08);padding:1px 9px;border-radius:12px;border:1px solid rgba(255,200,87,0.15);}
+
+/* Flip card */
+.card-container{width:100%;max-width:400px;height:85%;max-height:520px;perspective:1000px;margin-top:10px;}
+.card-flipper{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 0.6s cubic-bezier(0.4,0,0.2,1);}
+.card-flipper.flipped{transform:rotateY(180deg);}
+.card-face{position:absolute;inset:0;border-radius:var(--r);backface-visibility:hidden;overflow:hidden;}
+
+.card-front{background:linear-gradient(155deg,var(--card-front) 0%,#1e3355 100%);border:2px solid var(--card-border);box-shadow:0 10px 40px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.04);display:flex;flex-direction:column;padding:14px 18px;}
+.card-front::before{content:'';position:absolute;top:0;right:0;width:100px;height:100px;background:radial-gradient(circle at top right,rgba(77,171,247,0.06) 0%,transparent 70%);pointer-events:none;}
+.card-corner{position:absolute;font-family:'Baloo 2',cursive;font-size:10px;font-weight:700;color:var(--text-dim);opacity:0.35;}
+.card-corner.tl{top:6px;left:10px;}.card-corner.br{bottom:6px;right:10px;transform:rotate(180deg);}
+.card-cat{align-self:flex-start;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;padding:2px 9px;border-radius:10px;margin-bottom:4px;margin-top:2px;}
+.cat-real_vs_fake{background:rgba(255,107,107,0.12);color:var(--accent-coral);}
+.cat-ai_best_practices{background:rgba(77,171,247,0.12);color:var(--accent-sky);}
+.cat-bad_actors{background:rgba(255,146,43,0.12);color:var(--accent-orange);}
+.card-q{font-family:'Baloo 2',cursive;font-size:14px;font-weight:600;line-height:1.3;color:#fff;flex-shrink:0;margin-bottom:6px;}
+.card-opts{display:flex;flex-direction:column;gap:5px;flex:1;overflow-y:auto;}
+.card-opt{display:flex;align-items:center;gap:9px;padding:8px 11px;background:rgba(255,255,255,0.03);border:1.5px solid rgba(255,255,255,0.06);border-radius:10px;cursor:pointer;transition:all .15s;font-size:13px;font-weight:600;}
+.card-opt:active{transform:scale(0.97);}
+.card-opt.selected{border-color:var(--accent-sky);background:rgba(77,171,247,0.1);box-shadow:0 0 12px rgba(77,171,247,0.1);}
+.card-opt.reveal-correct{border-color:var(--correct);background:rgba(81,207,152,0.1);}
+.card-opt.reveal-incorrect{border-color:var(--incorrect);background:rgba(255,107,107,0.08);opacity:0.5;}
+.card-opt.reveal-dim{opacity:0.25;}
+.opt-ltr{font-family:'Baloo 2',cursive;font-size:13px;font-weight:700;width:26px;height:26px;display:flex;align-items:center;justify-content:center;border-radius:7px;background:rgba(255,255,255,0.04);flex-shrink:0;}
+.opt-txt{flex:1;line-height:1.2;}
+
+.card-back{background:linear-gradient(155deg,#0e1e38 0%,#162a48 100%);border:2px solid var(--card-border);box-shadow:0 10px 40px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.04);transform:rotateY(180deg);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center;gap:8px;}
+.card-back::before{content:'';position:absolute;inset:8px;border:1px solid rgba(255,255,255,0.03);border-radius:12px;pointer-events:none;}
+.back-icon{font-size:36px;}
+.back-title{font-family:'Baloo 2',cursive;font-size:22px;font-weight:700;}
+.back-title.correct{color:var(--correct);}.back-title.incorrect{color:var(--incorrect);}.back-title.partial{color:var(--partial);}
+.back-explain{font-size:13px;line-height:1.35;color:var(--text-dim);max-width:320px;}
+.back-tip{font-size:11px;color:var(--accent-gold);background:rgba(255,200,87,0.06);border:1px solid rgba(255,200,87,0.1);border-radius:10px;padding:6px 14px;max-width:320px;}
+
+/* Right: voice panel */
+.voice-side{width:45%;height:100vh;background:var(--panel-bg);border-left:1px solid rgba(255,255,255,0.04);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px;gap:10px;position:relative;}
+.voice-side::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:radial-gradient(ellipse at 50% 30%,rgba(177,151,252,0.04) 0%,transparent 60%);pointer-events:none;}
+
+.voice-label{font-family:'Baloo 2',cursive;font-size:11px;font-weight:700;color:var(--text-dim);letter-spacing:2px;text-transform:uppercase;}
+.voice-status{font-family:'Baloo 2',cursive;font-size:13px;color:var(--text-dim);text-align:center;min-height:18px;max-width:90%;line-height:1.3;}
+.voice-status.highlight{color:var(--accent-gold);}
+.voice-status.feedback{color:var(--text);font-style:italic;}
+
+.mic-ring{width:90px;height:90px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle,rgba(77,171,247,0.06) 0%,transparent 70%);position:relative;cursor:pointer;transition:all .2s;}
+.mic-ring::before{content:'';position:absolute;inset:0;border-radius:50%;border:2px solid rgba(77,171,247,0.2);transition:all .3s;}
+.mic-ring:active{transform:scale(0.95);}
+.mic-ring.recording::before{border-color:var(--accent-coral);animation:ring-pulse 1.2s ease-in-out infinite;}
+.mic-ring.processing::before{border-color:var(--accent-gold);border-style:dashed;animation:ring-spin 2s linear infinite;}
+@keyframes ring-pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,107,107,0.3);}50%{box-shadow:0 0 0 14px rgba(255,107,107,0);}}
+@keyframes ring-spin{to{transform:rotate(360deg)}}
+.mic-icon{font-size:32px;z-index:1;}
+
+.voice-transcript{font-size:11px;color:var(--text-dim);text-align:center;min-height:14px;max-width:90%;font-style:italic;}
+.or-divider{font-size:10px;color:rgba(255,255,255,0.15);letter-spacing:2px;text-transform:uppercase;}
+
+.confirm-btn{width:80%;max-width:240px;padding:11px 0;font-family:'Baloo 2',cursive;font-size:16px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--accent-sky),var(--accent-violet));border:none;border-radius:12px;cursor:pointer;transition:transform .15s,opacity .15s;box-shadow:0 4px 16px rgba(77,171,247,0.2);}
+.confirm-btn:disabled{opacity:0.25;cursor:default;}
+.confirm-btn:not(:disabled):active{transform:scale(0.96);}
+.next-btn{width:80%;max-width:240px;padding:11px 0;font-family:'Baloo 2',cursive;font-size:16px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--accent-mint),var(--accent-sky));border:none;border-radius:12px;cursor:pointer;box-shadow:0 4px 16px rgba(81,207,152,0.2);transition:transform .15s;display:none;}
+.next-btn:active{transform:scale(0.96);}
+
+/* LOADING */
+#loading{display:none;position:absolute;inset:0;background:rgba(8,10,22,0.85);backdrop-filter:blur(4px);flex-direction:column;align-items:center;justify-content:center;gap:12px;z-index:20;}
+#loading.active{display:flex;}
+.spinner{width:36px;height:36px;border:3px solid #1e2d4d;border-top-color:var(--accent-sky);border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-family:'Baloo 2',cursive;font-size:14px;color:var(--text-dim);}
+
+/* SUMMARY */
+#summary{flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:14px 28px;text-align:center;background:radial-gradient(ellipse at 50% 40%,rgba(81,207,152,0.05) 0%,transparent 50%);}
+.sum-trophy{font-size:44px;}
+.sum-title{font-family:'Baloo 2',cursive;font-size:28px;font-weight:800;background:linear-gradient(135deg,var(--accent-gold),var(--accent-mint));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.sum-score{font-family:'Baloo 2',cursive;font-size:40px;font-weight:800;color:#fff;}
+.sum-score span{color:var(--text-dim);font-size:20px;}
+.sum-cats{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
+.sum-cat{background:var(--card-front);border-radius:12px;padding:7px 14px;text-align:center;min-width:100px;border:1px solid var(--card-border);}
+.sum-cat-name{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim);margin-bottom:2px;}
+.sum-cat-score{font-family:'Baloo 2',cursive;font-size:17px;font-weight:700;}
+.sum-tip{font-size:13px;color:var(--accent-gold);max-width:420px;line-height:1.3;}
+.replay-btn{padding:12px 40px;font-family:'Baloo 2',cursive;font-size:19px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--accent-coral),var(--accent-violet));border:none;border-radius:40px;cursor:pointer;box-shadow:0 4px 18px rgba(255,107,107,0.3);transition:transform .15s;}
+.replay-btn:active{transform:scale(0.95);}
+.fade-in{animation:fadeIn .3s ease-out;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<div id="home" class="screen active">
+  <div class="home-card"><div class="home-card-inner">
+    <div class="home-card-face home-card-front"><div class="hc-q">Is this headline real or fake? 🤔</div></div>
+    <div class="home-card-face home-card-back"><div class="hc-a">Flip the card to find out! ✅</div></div>
+  </div></div>
+  <div class="logo">PROMPT!</div>
+  <div class="logo-sub">AI Literacy Card Game</div>
+  <button class="start-btn" onclick="startGame()">Play!</button>
+  <div class="home-hint">tap to choose · speak to answer · flip to learn</div>
+</div>
+
+<div id="game" class="screen">
+  <div class="card-side">
+    <div class="game-top-bar">
+      <div class="game-logo">PROMPT!</div>
+      <div class="top-info"><div class="dots" id="dots"></div><div class="score-pill" id="score-pill">⭐ 0</div></div>
+    </div>
+    <div class="card-container"><div class="card-flipper" id="card-flipper">
+      <div class="card-face card-front" id="card-front">
+        <div class="card-corner tl" id="card-num">01</div>
+        <div class="card-corner br" id="card-num2">01</div>
+        <div class="card-cat" id="card-cat"></div>
+        <div class="card-q" id="card-q"></div>
+        <div class="card-opts" id="card-opts"></div>
+      </div>
+      <div class="card-face card-back" id="card-back">
+        <div class="back-icon" id="back-icon">🎉</div>
+        <div class="back-title" id="back-title">Awesome!</div>
+        <div class="back-explain" id="back-explain"></div>
+        <div class="back-tip" id="back-tip"></div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="voice-side">
+    <div class="voice-label">Voice Input</div>
+    <div class="voice-status" id="voice-status">Tap an option or speak</div>
+    <div class="mic-ring" id="mic-ring" onclick="toggleRecording()"><div class="mic-icon" id="mic-icon">🎤</div></div>
+    <div class="voice-transcript" id="voice-transcript"></div>
+    <div class="or-divider">— or tap a choice —</div>
+    <button class="confirm-btn" id="confirm-btn" disabled onclick="submitAnswer()">Choose an answer</button>
+    <button class="next-btn" id="next-btn" onclick="nextCard()">Next Card →</button>
+  </div>
+</div>
+
+<div id="loading"><div class="spinner"></div><div class="loading-text" id="loading-text">Thinking...</div></div>
+
+<div id="summary" class="screen">
+  <div class="sum-trophy" id="sum-trophy"></div>
+  <div class="sum-title">Game Complete!</div>
+  <div class="sum-score" id="sum-score"></div>
+  <div class="sum-cats" id="sum-cats"></div>
+  <div class="sum-tip" id="sum-tip"></div>
+  <button class="replay-btn" onclick="goHome()">Play Again 🔄</button>
+</div>
+
+<script>
+const API='';
+const CAT_LABELS={real_vs_fake:'Real vs Fake',ai_best_practices:'AI Best Practices',bad_actors:'Bad Actors & Motive'};
+const CAT_EMOJI={real_vs_fake:'🔍',ai_best_practices:'🤖',bad_actors:'🎭'};
+let sessionId=null,currentCard=null,selectedOpt=null,totalCards=0,currentIdx=0,score=0,results=[];
+let isRecording=false,mediaRecorder=null,audioChunks=[],answered=false;
+
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function showLoading(m){document.getElementById('loading-text').textContent=m||'Thinking...';document.getElementById('loading').classList.add('active');}
+function hideLoading(){document.getElementById('loading').classList.remove('active');}
+
+async function speak(text){
+  try{const r=await fetch(`${API}/api/tts`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text})});
+  if(!r.ok)return;const blob=await r.blob();const url=URL.createObjectURL(blob);const a=new Audio(url);
+  return new Promise(res=>{a.onended=()=>{URL.revokeObjectURL(url);res();};a.onerror=()=>{URL.revokeObjectURL(url);res();};a.play().catch(()=>res());});}catch(e){}}
+
+async function startGame(){
+  showLoading('Shuffling cards...');
+  try{const r=await fetch(`${API}/api/start`,{method:'POST'});const d=await r.json();
+  sessionId=d.session_id;totalCards=d.total_cards;currentCard=d.card;currentIdx=0;score=0;results=[];
+  hideLoading();showScreen('game');renderCard();
+  await speak('Welcome to PROMPT! Let us begin!');speakQuestion();
+  }catch(e){hideLoading();alert('Cannot connect to server.');}
+}
+function goHome(){showScreen('home');}
+
+function renderCard(){
+  selectedOpt=null;answered=false;const c=currentCard;
+  document.getElementById('card-flipper').classList.remove('flipped');
+  const num=String(currentIdx+1).padStart(2,'0');
+  document.getElementById('card-num').textContent=num;document.getElementById('card-num2').textContent=num;
+  const dotsEl=document.getElementById('dots');dotsEl.innerHTML='';
+  for(let i=0;i<totalCards;i++){const d=document.createElement('div');d.className='dot';if(i<results.length)d.classList.add(results[i]);if(i===currentIdx)d.classList.add('current');dotsEl.appendChild(d);}
+  document.getElementById('score-pill').textContent=`⭐ ${score}`;
+  const catEl=document.getElementById('card-cat');catEl.textContent=`${CAT_EMOJI[c.category]||''} ${CAT_LABELS[c.category]||c.category}`;catEl.className=`card-cat cat-${c.category}`;
+  document.getElementById('card-q').textContent=c.question;
+  const grid=document.getElementById('card-opts');grid.innerHTML='';
+  for(const k of Object.keys(c.options)){const b=document.createElement('div');b.className='card-opt fade-in';b.dataset.key=k;b.innerHTML=`<div class="opt-ltr">${k}</div><div class="opt-txt">${c.options[k]}</div>`;b.onclick=()=>selectOption(k,b);grid.appendChild(b);}
+  document.getElementById('confirm-btn').disabled=true;document.getElementById('confirm-btn').textContent='Choose an answer';document.getElementById('confirm-btn').style.display='';
+  document.getElementById('next-btn').style.display='none';
+  document.getElementById('voice-status').textContent='Tap an option or speak';document.getElementById('voice-status').className='voice-status';
+  document.getElementById('voice-transcript').textContent='';resetMicBtn();
+}
+
+async function speakQuestion(){const c=currentCard;const o=Object.entries(c.options).map(([k,v])=>`${k}, ${v}`).join('. ');await speak(`Question ${currentIdx+1}. ${c.question} Your options are: ${o}`);}
+
+function selectOption(k,btn){if(answered)return;selectedOpt=k;document.querySelectorAll('.card-opt').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');const cb=document.getElementById('confirm-btn');cb.disabled=false;cb.textContent=`Lock in ${k}! 🔒`;}
+
+async function submitAnswer(){
+  if(!selectedOpt||answered)return;answered=true;document.getElementById('confirm-btn').disabled=true;showLoading('Checking...');
+  try{const r=await fetch(`${API}/api/answer`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({session_id:sessionId,selected_option:selectedOpt})});
+  const d=await r.json();hideLoading();revealAnswer(d);}catch(e){hideLoading();document.getElementById('voice-status').textContent='Error';}
+}
+
+async function toggleRecording(){if(answered)return;if(isRecording)stopRecording();else startRecording();}
+async function startRecording(){
+  try{const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+  mediaRecorder=new MediaRecorder(stream,{mimeType:'audio/webm'});audioChunks=[];
+  mediaRecorder.ondataavailable=e=>{if(e.data.size>0)audioChunks.push(e.data);};
+  mediaRecorder.onstop=()=>{stream.getTracks().forEach(t=>t.stop());processVoice();};
+  mediaRecorder.start();isRecording=true;
+  document.getElementById('mic-ring').classList.add('recording');document.getElementById('mic-icon').textContent='⏹';
+  document.getElementById('voice-status').textContent='🎤 Listening...';document.getElementById('voice-status').className='voice-status highlight';
+  setTimeout(()=>{if(isRecording)stopRecording();},8000);
+  }catch(e){document.getElementById('voice-status').textContent='Mic access denied';}
+}
+function stopRecording(){if(mediaRecorder&&mediaRecorder.state==='recording')mediaRecorder.stop();isRecording=false;document.getElementById('mic-ring').classList.remove('recording');document.getElementById('mic-ring').classList.add('processing');document.getElementById('mic-icon').textContent='⏳';document.getElementById('voice-status').textContent='Processing...';}
+
+async function processVoice(){
+  const blob=new Blob(audioChunks,{type:'audio/webm'});const fd=new FormData();fd.append('audio',blob,'recording.webm');showLoading('Transcribing...');
+  try{const tr=await fetch(`${API}/api/transcribe`,{method:'POST',body:fd});const td=await tr.json();const text=td.text||'';
+  if(!text){hideLoading();document.getElementById('voice-status').textContent='No speech detected';resetMicBtn();return;}
+  document.getElementById('voice-transcript').textContent=`"${text}"`;
+  const matched=matchVoiceToOption(text);
+  if(matched){answered=true;selectedOpt=matched;
+    document.querySelectorAll('.card-opt').forEach(el=>{el.classList.remove('selected');if(el.dataset.key===matched)el.classList.add('selected');});
+    const r=await fetch(`${API}/api/answer`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({session_id:sessionId,selected_option:matched})});
+    const d=await r.json();hideLoading();await speak(`I heard: ${text}`);revealAnswer(d);
+  }else{hideLoading();document.getElementById('voice-status').textContent='Could not match — try again';resetMicBtn();}
+  }catch(e){hideLoading();document.getElementById('voice-status').textContent='Error';resetMicBtn();}
+}
+
+function matchVoiceToOption(text){
+  const t=text.toLowerCase().trim();const c=currentCard;
+  const lp={A:[/\ba\b/,/option a/i],B:[/\bb\b/,/option b/i],C:[/\bc\b/,/option c/i],D:[/\bd\b/,/option d/i]};
+  for(const[k,ps]of Object.entries(lp)){if(!(k in c.options))continue;for(const p of ps){if(p.test(t))return k;}}
+  for(const[k,v]of Object.entries(c.options)){if(t.includes(v.toLowerCase()))return k;}
+  if(c.accepted_keywords){for(const kw of c.accepted_keywords){if(t.includes(kw.toLowerCase()))return c.correct_answer;}}
+  return null;
+}
+function resetMicBtn(){document.getElementById('mic-ring').className='mic-ring';document.getElementById('mic-icon').textContent='🎤';}
+
+async function revealAnswer(data){
+  const c=currentCard;
+  document.querySelectorAll('.card-opt').forEach(el=>{const k=el.dataset.key;el.onclick=null;el.classList.remove('selected');
+    if(k===c.correct_answer)el.classList.add('reveal-correct');else if(k===selectedOpt&&data.judgement!=='correct')el.classList.add('reveal-incorrect');else el.classList.add('reveal-dim');});
+  score=data.current_score;results.push(data.judgement);
+  document.getElementById('score-pill').textContent=`⭐ ${score}`;
+  const dots=document.querySelectorAll('.dot');if(dots[currentIdx]){dots[currentIdx].classList.remove('current');dots[currentIdx].classList.add(data.judgement);}
+  // Prepare back
+  const icons={correct:'🎉',partial:'🤔',incorrect:'💡'},titles={correct:'Awesome!',partial:'Almost!',incorrect:'Good try!'};
+  document.getElementById('back-icon').textContent=icons[data.judgement];
+  const bt=document.getElementById('back-title');bt.textContent=titles[data.judgement];bt.className=`back-title ${data.judgement}`;
+  document.getElementById('back-explain').textContent=data.explanation;
+  document.getElementById('back-tip').textContent=`💡 ${data.verification_tip}`;
+  // Flip
+  setTimeout(()=>{document.getElementById('card-flipper').classList.add('flipped');},600);
+  // Right panel
+  document.getElementById('confirm-btn').style.display='none';
+  document.getElementById('next-btn').style.display='';document.getElementById('next-btn').textContent=data.has_next?'Next Card →':'See Results 🏆';
+  document.getElementById('voice-status').textContent=data.feedback;document.getElementById('voice-status').className='voice-status feedback';
+  resetMicBtn();
+  if(data.has_next&&data.next_card)currentCard=data.next_card;
+  const lb={correct:'Correct!',partial:'Almost there!',incorrect:'Not quite.'};
+  await speak(`${lb[data.judgement]} ${data.feedback}`);
+}
+
+async function nextCard(){document.getElementById('voice-transcript').textContent='';currentIdx++;if(currentIdx>=totalCards)await showSummary();else{renderCard();speakQuestion();}}
+
+async function showSummary(){
+  showLoading('Preparing results...');
+  try{const r=await fetch(`${API}/api/summary?session_id=${sessionId}`,{method:'POST'});const d=await r.json();hideLoading();
+  const pct=Math.round((d.score/d.total)*100);let trophy='💪';if(pct===100)trophy='🏆';else if(pct>=75)trophy='🥇';else if(pct>=50)trophy='🥈';
+  document.getElementById('sum-trophy').textContent=trophy;document.getElementById('sum-score').innerHTML=`${d.score} <span>/ ${d.total}</span>`;
+  const ce=document.getElementById('sum-cats');ce.innerHTML='';
+  for(const[cat,s]of Object.entries(d.category_stats)){const p=Math.round((s.correct/s.total)*100);const div=document.createElement('div');div.className='sum-cat fade-in';
+    div.innerHTML=`<div class="sum-cat-name">${CAT_EMOJI[cat]||''} ${CAT_LABELS[cat]||cat}</div><div class="sum-cat-score" style="color:${p>=75?'var(--correct)':p>=50?'var(--partial)':'var(--incorrect)'}">${s.correct}/${s.total}</div>`;ce.appendChild(div);}
+  document.getElementById('sum-tip').textContent=`💡 ${d.tip}`;showScreen('summary');
+  await speak(`Game over! You scored ${d.score} out of ${d.total}. ${d.tip}`);
+  }catch(e){hideLoading();showScreen('summary');}
+}
+</script>
+</body>
+</html>
