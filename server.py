@@ -1,5 +1,11 @@
 """
-PROMPT! Game Server v2 — discernment + usage cards, ChatTTS multi-tone.
+PROMPT! Game Server v3.1.
+
+Changes from v3:
+  - /api/answer now returns feedback with THREE fields: reaction, habit, invite.
+  - NEW /api/followup endpoint: free-form follow-up Q&A scoped to the card
+    the child just answered. Not scored; the count appears on the summary.
+  - Session bookkeeping tracks follow-up count per card and total.
 """
 
 from __future__ import annotations
@@ -7,7 +13,7 @@ from __future__ import annotations
 import tempfile
 import time
 from pathlib import Path
-from typing import Any, Dict, Optional, List
+from typing import Any, Dict, List, Optional
 
 import whisper
 from fastapi import FastAPI, File, UploadFile
@@ -16,7 +22,12 @@ from pydantic import BaseModel
 
 import tts
 from cards_loader import pick_deck
-from llm import generate_feedback, generate_summary_tip
+from llm import (
+    answer_followup,
+    generate_feedback,
+    generate_summary_tip,
+    judge_bias_inverter,
+)
 from rules import check_answer
 
 # ─── Config ───
@@ -24,8 +35,12 @@ WHISPER_MODEL = "small"
 OLLAMA_MODEL = "llama3"
 CARDS_PER_GAME = 6
 
+# Guardrails for follow-up Q&A
+MAX_FOLLOWUPS_PER_CARD = 4      # after this we politely stop
+FOLLOWUP_HISTORY_WINDOW = 2     # how many prior turns the LLM sees
+
 # ─── App ───
-app = FastAPI(title="PROMPT! Game Server v2")
+app = FastAPI(title="PROMPT! Game Server v3.1")
 
 # ─── Runtime state ───
 _whisper_model = None
@@ -34,7 +49,7 @@ _sessions: Dict[str, Dict[str, Any]] = {}
 
 # ─── Request models ───
 class StartRequest(BaseModel):
-    mode: str = "mixed"  # "discernment" | "usage" | "mixed"
+    mode: str = "mixed"
     num_cards: Optional[int] = None
 
 
@@ -43,18 +58,14 @@ class AnswerRequest(BaseModel):
     user_answer: str
 
 
+class FollowupRequest(BaseModel):
+    session_id: str
+    question: str
+
+
 class TTSRequest(BaseModel):
     text: str
-    tone: str = "narrator"  # narrator | curious | warm | celebrate
-
-
-class TTSSegment(BaseModel):
-    text: str
     tone: str = "narrator"
-
-
-class TTSMultiRequest(BaseModel):
-    segments: List[TTSSegment]
 
 
 # ─── Startup ───
@@ -63,7 +74,7 @@ async def startup() -> None:
     global _whisper_model
     print("[startup] Loading Whisper ...")
     _whisper_model = whisper.load_model(WHISPER_MODEL)
-    print("[startup] Warming ChatTTS ...")
+    print("[startup] Warming Kokoro TTS ...")
     try:
         tts.warmup()
     except Exception as e:
@@ -77,7 +88,6 @@ def _mode_of(card: Dict[str, Any]) -> str:
 
 
 def _public_card(card: Dict[str, Any]) -> Dict[str, Any]:
-    """Return only the fields the frontend needs to render the FRONT of the card."""
     return {
         "id": card["id"],
         "card_id": card["id"],
@@ -90,7 +100,6 @@ def _public_card(card: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def _back_view(card: Dict[str, Any]) -> Dict[str, Any]:
-    """Return fields used on the flipped BACK of the card after an answer."""
     return {
         "verdict": card["verdict"],
         "deep_insight": card["deep_insight"],
@@ -101,6 +110,7 @@ def _back_view(card: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def _summarize_session(session: Dict[str, Any]) -> Dict[str, Any]:
+    answered_cards = session.get("index", 0)
     per_mode = session.get("per_mode", {})
     best = worst = None
     best_avg = -1.0
@@ -115,15 +125,28 @@ def _summarize_session(session: Dict[str, Any]) -> Dict[str, Any]:
         if avg < worst_avg:
             worst_avg = avg
             worst = mode
+
+    # Count total follow-ups across all cards played.
+    total_followups = sum(
+        len(h.get("followups", []))
+        for h in session.get("history", [])
+    )
+
     return {
         "score": int(session["score"]),
-        "max_score": int(session["total_cards"]) * 10,
-        "total_cards": session["total_cards"],
+        "max_score": int(answered_cards) * 10 if answered_cards else 10,
+        "total_cards": answered_cards,
+        "deck_size": session["total_cards"],
         "per_mode": per_mode,
         "best_mode": best or "n/a",
         "worst_mode": worst or "n/a",
         "history": session["history"],
+        "total_followups": total_followups,
     }
+
+
+def _judge_wrapper(card, user_answer, rule_result):
+    return judge_bias_inverter(card, user_answer, rule_result, model=OLLAMA_MODEL)
 
 
 # ─── Routes ───
@@ -169,7 +192,7 @@ async def submit_answer(req: AnswerRequest) -> Dict[str, Any]:
         return {"error": "Game already finished"}
 
     card = session["deck"][idx]
-    result = check_answer(card, req.user_answer)
+    result = check_answer(card, req.user_answer, llm_judge=_judge_wrapper)
 
     feedback = generate_feedback(
         model=OLLAMA_MODEL,
@@ -184,6 +207,9 @@ async def submit_answer(req: AnswerRequest) -> Dict[str, Any]:
     stats["score"] += result["score"]
     session["score"] += result["score"]
 
+    # NEW: history entry carries a followups[] list so we can append later
+    # without rebuilding the record. The current answer card's position in
+    # the deck is `idx`, i.e. the LAST entry in history once appended.
     session["history"].append({
         "card_id": card["id"],
         "problem_type": card["problem_type"],
@@ -192,6 +218,8 @@ async def submit_answer(req: AnswerRequest) -> Dict[str, Any]:
         "score": result["score"],
         "tier": result["tier"],
         "judgement": result["judgement"],
+        "feedback": feedback,
+        "followups": [],
     })
 
     session["index"] += 1
@@ -209,6 +237,58 @@ async def submit_answer(req: AnswerRequest) -> Dict[str, Any]:
         "max_possible": session["total_cards"] * 10,
         "has_next": has_next,
         "next_card": _public_card(next_card) if next_card else None,
+        "followups_allowed": MAX_FOLLOWUPS_PER_CARD,
+    }
+
+
+@app.post("/api/followup")
+async def submit_followup(req: FollowupRequest) -> Dict[str, Any]:
+    """
+    Handle a follow-up question about the CARD MOST RECENTLY ANSWERED.
+
+    Follow-ups attach to the last entry in session['history'], which was
+    appended by /api/answer. We cap the number of follow-ups per card so
+    conversations can't run forever and clog the queue.
+    """
+    session = _sessions.get(req.session_id)
+    if not session:
+        return {"error": "Invalid session"}
+
+    if not session["history"]:
+        return {"error": "No card answered yet in this session"}
+
+    last_entry = session["history"][-1]
+    followups: List[Dict[str, str]] = last_entry.setdefault("followups", [])
+    if len(followups) >= MAX_FOLLOWUPS_PER_CARD:
+        return {
+            "answer": "Let's save more questions for after the game — ready for the next card?",
+            "followups_used": len(followups),
+            "followups_allowed": MAX_FOLLOWUPS_PER_CARD,
+            "limit_reached": True,
+        }
+
+    # The card the follow-up is about is at deck[index-1] (we already advanced).
+    last_card_index = session["index"] - 1
+    if last_card_index < 0 or last_card_index >= len(session["deck"]):
+        return {"error": "No active card for follow-up"}
+    card = session["deck"][last_card_index]
+
+    question = (req.question or "").strip()
+    reply = answer_followup(
+        model=OLLAMA_MODEL,
+        card=card,
+        last_feedback=last_entry.get("feedback") or {},
+        history=followups,
+        question=question,
+    )
+
+    followups.append({"question": question, "answer": reply})
+
+    return {
+        "answer": reply,
+        "followups_used": len(followups),
+        "followups_allowed": MAX_FOLLOWUPS_PER_CARD,
+        "limit_reached": len(followups) >= MAX_FOLLOWUPS_PER_CARD,
     }
 
 
@@ -240,23 +320,6 @@ async def text_to_speech(req: TTSRequest):
     return {"error": "TTS failed"}
 
 
-@app.post("/api/tts_multi")
-async def text_to_speech_multi(req: TTSMultiRequest):
-    segments = []
-    for seg in req.segments:
-        text = (seg.text or "").strip()
-        if text:
-            segments.append((text, seg.tone or "narrator"))
-
-    if not segments:
-        return {"error": "No valid segments"}
-
-    wav_path = tts.synthesize_multi(segments)
-    if wav_path and Path(wav_path).exists():
-        return FileResponse(wav_path, media_type="audio/wav", filename="speech.wav")
-    return {"error": "TTS failed"}
-
-
 @app.post("/api/summary")
 async def get_summary(session_id: str) -> Dict[str, Any]:
     session = _sessions.get(session_id)
@@ -264,6 +327,10 @@ async def get_summary(session_id: str) -> Dict[str, Any]:
         return {"error": "Invalid session"}
 
     summary = _summarize_session(session)
+    if summary["total_cards"] == 0:
+        summary["tip"] = "Every answer counts — try speaking out loud next time."
+        return summary
+
     tip = generate_summary_tip(
         model=OLLAMA_MODEL,
         score=summary["score"],

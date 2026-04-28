@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# PROMPT! v2 — first-time install + run helper for Jetson AGX Thor.
+# PROMPT! v3 — install + run for Jetson AGX Thor.
 # Usage:
-#   ./install_and_run.sh install   # installs Python deps (one-time)
-#   ./install_and_run.sh run       # starts the FastAPI server on port 8000
-#   ./install_and_run.sh tts-test  # quick smoke-test of ChatTTS multi-tone
+#   ./install_and_run.sh install   # one-time: Python deps + Kokoro weights
+#   ./install_and_run.sh run       # starts FastAPI server on :8000
+#   ./install_and_run.sh tts-test  # quick TTS smoke test
 set -euo pipefail
 
 cmd="${1:-run}"
@@ -11,29 +11,36 @@ cmd="${1:-run}"
 case "$cmd" in
   install)
     echo "[install] Python dependencies..."
+    # Core service + STT
     python -m pip install --break-system-packages \
         fastapi "uvicorn[standard]" python-multipart \
-        openai-whisper ollama \
-        ChatTTS torch torchaudio numpy
+        openai-whisper ollama
+
+    # Kokoro TTS — 82M model, downloads ~325 MB of ONNX weights on first use
+    python -m pip install --break-system-packages \
+        kokoro soundfile numpy
+
     echo "[install] Pulling llama3 via Ollama..."
     ollama pull llama3 || echo "[warn] Ollama not running — pull llama3 manually later."
     echo "[install] Done."
     ;;
 
   run)
-    echo "[run] Starting PROMPT! server on :8000 ..."
+    echo "[run] Starting PROMPT! v3 server on :8000 ..."
     pkill -f "uvicorn server:app" || true
     python -m uvicorn server:app --host 0.0.0.0 --port 8000
     ;;
 
   tts-test)
-    echo "[tts-test] Generating one sample per tone..."
+    echo "[tts-test] Rendering one sample per tone (same voice, different speeds)..."
     python -c "
-import tts
+import tts, time
 for tone in ['narrator', 'curious', 'warm', 'celebrate']:
-    p = tts.synthesize(f'Hello! This is the {tone} voice speaking.', tone=tone,
-                       out_path=f'/tmp/prompt_tone_test_{tone}.wav')
-    print(f'  {tone}: {p}')
+    t0 = time.time()
+    p = tts.synthesize(f'Hello! This is the {tone} voice speaking.',
+                       tone=tone, out_path=f'/tmp/prompt_tone_test_{tone}.wav')
+    dt = time.time() - t0
+    print(f'  {tone:10s} -> {p}  ({dt:.2f}s)')
 "
     echo "[tts-test] Play with: aplay /tmp/prompt_tone_test_warm.wav"
     ;;

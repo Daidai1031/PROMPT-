@@ -62,6 +62,7 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 /* ═══ GAME ═══ */
 #game{flex-direction:row;padding:0;background:radial-gradient(ellipse at 20% 50%,rgba(77,171,247,0.04) 0%,transparent 50%);}
 
+/* Left: card side */
 .card-side{width:58%;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 14px 10px 18px;position:relative;}
 .game-top-bar{position:absolute;top:7px;left:14px;right:14px;display:flex;align-items:center;justify-content:space-between;z-index:2;}
 .game-logo{font-family:'Baloo 2',cursive;font-size:15px;font-weight:800;color:var(--accent-gold);}
@@ -79,6 +80,7 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 .card-id-pill,.progress-pill{font-size:11px;font-weight:700;letter-spacing:1px;padding:6px 10px;border-radius:12px;background:rgba(255,255,255,0.04);border:1px solid var(--card-border);color:var(--text-dim);}
 .card-id-pill strong,.progress-pill strong{color:var(--text);}
 
+/* Flip card */
 .card-container{width:100%;max-width:420px;height:82%;max-height:560px;perspective:1200px;}
 .card-flipper{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 0.7s cubic-bezier(0.4,0,0.2,1);}
 .card-flipper.flipped{transform:rotateY(180deg);}
@@ -106,7 +108,7 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 .body-bubble.b .bubble-lens{color:var(--accent-sky);}
 .body-bubble.solo .bubble-lens{color:var(--accent-violet);}
 
-.card-back{background:linear-gradient(155deg,#0e1e38 0%,#162a48 100%);border:2px solid var(--card-border);box-shadow:0 10px 40px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.04);transform:rotateY(180deg);display:flex;flex-direction:column;padding:14px 18px 12px;gap:8px;overflow-y:auto;}
+.card-back{background:linear-gradient(155deg,#0e1e38 0%,#162a48 100%);border:2px solid var(--card-border);box-shadow:0 10px 40px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.04);transform:rotateY(180deg);display:flex;flex-direction:column;padding:14px 18px 12px;gap:8px;}
 .back-top{display:flex;align-items:center;gap:10px;}
 .back-icon{font-size:28px;}
 .back-title{font-family:'Baloo 2',cursive;font-size:19px;font-weight:700;flex:1;}
@@ -130,16 +132,17 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 .ref-item a:hover{text-decoration:underline;}
 .ref-item .ref-url{font-size:10px;color:var(--text-dim);word-break:break-all;}
 
-/* Right panel */
-.voice-side{width:42%;height:100vh;background:var(--panel-bg);border-left:1px solid rgba(255,255,255,0.04);display:flex;flex-direction:column;align-items:center;padding:22px 16px 18px;gap:8px;position:relative;}
+/* Right: voice panel */
+.voice-side{width:42%;height:100vh;background:var(--panel-bg);border-left:1px solid rgba(255,255,255,0.04);display:flex;flex-direction:column;align-items:center;padding:22px 16px 18px;gap:10px;position:relative;justify-content:space-between;}
 .voice-side::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 30%,rgba(177,151,252,0.05) 0%,transparent 60%);pointer-events:none;}
 
-.voice-top{display:flex;flex-direction:column;align-items:center;gap:8px;width:100%;position:relative;z-index:1;flex-shrink:0;}
+.voice-top{display:flex;flex-direction:column;align-items:center;gap:8px;width:100%;position:relative;z-index:1;}
 .voice-label{font-family:'Baloo 2',cursive;font-size:11px;font-weight:700;color:var(--text-dim);letter-spacing:2px;text-transform:uppercase;}
 .prompt-bubble{width:100%;background:var(--card-front);border:1.5px solid var(--card-border);border-radius:var(--r-md);padding:10px 13px;font-size:12.5px;color:var(--text);line-height:1.4;text-align:center;min-height:48px;display:flex;align-items:center;justify-content:center;}
+.prompt-bubble.tip{border-color:rgba(255,200,87,0.3);background:rgba(255,200,87,0.04);color:#ffe5a3;font-style:italic;}
 
-.voice-mid{display:flex;flex-direction:column;align-items:center;gap:10px;position:relative;z-index:1;flex-shrink:0;}
-.mic-ring{width:92px;height:92px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle,rgba(77,171,247,0.07) 0%,transparent 70%);position:relative;cursor:pointer;transition:transform .2s;}
+.voice-mid{display:flex;flex-direction:column;align-items:center;gap:10px;position:relative;z-index:1;}
+.mic-ring{width:104px;height:104px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle,rgba(77,171,247,0.07) 0%,transparent 70%);position:relative;cursor:pointer;transition:transform .2s;}
 .mic-ring::before{content:'';position:absolute;inset:0;border-radius:50%;border:2.5px solid rgba(77,171,247,0.25);transition:all .3s;}
 .mic-ring:active{transform:scale(0.94);}
 .mic-ring.recording::before{border-color:var(--accent-coral);animation:ring-pulse 1.1s ease-in-out infinite;}
@@ -147,82 +150,38 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 .mic-ring.disabled{opacity:0.35;pointer-events:none;}
 @keyframes ring-pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,107,107,0.35);}50%{box-shadow:0 0 0 16px rgba(255,107,107,0);}}
 @keyframes ring-spin{to{transform:rotate(360deg);}}
-.mic-icon{font-size:32px;z-index:1;}
+.mic-icon{font-size:36px;z-index:1;}
 .voice-status{font-family:'Baloo 2',cursive;font-size:13px;color:var(--text-dim);text-align:center;min-height:18px;max-width:95%;line-height:1.3;}
 .voice-status.highlight{color:var(--accent-gold);}
 .voice-status.speaking{color:var(--accent-sky);}
 .voice-transcript{font-size:12px;color:#a9b8d4;text-align:center;min-height:14px;max-width:95%;font-style:italic;line-height:1.3;}
 
-.voice-bottom{display:flex;flex-direction:column;align-items:stretch;gap:7px;width:100%;position:relative;z-index:1;flex:1;min-height:0;}
-.coach-stack{display:flex;flex-direction:column;gap:7px;overflow-y:auto;padding-right:2px;flex:1;min-height:0;}
-
-.reaction-bubble,.habit-bubble,.invite-bubble{
-  width:100%;
-  border-radius:var(--r-md);
-  padding:9px 12px;
-  font-size:12.5px;
-  line-height:1.35;
-  display:none;
-  text-align:left;
-  border:1.5px solid transparent;
-}
-.reaction-bubble{background:rgba(81,207,152,0.08);border-color:rgba(81,207,152,0.28);color:#c8f3dd;}
-.habit-bubble{background:rgba(255,200,87,0.07);border-color:rgba(255,200,87,0.3);color:#ffe5a3;font-style:italic;}
-.invite-bubble{background:rgba(77,171,247,0.07);border-color:rgba(77,171,247,0.3);color:#cbe3ff;}
-
-.bubble-lead{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;opacity:0.85;display:block;margin-bottom:3px;}
+.voice-bottom{display:flex;flex-direction:column;align-items:center;gap:8px;width:100%;position:relative;z-index:1;}
+.reaction-bubble{width:100%;background:rgba(81,207,152,0.08);border:1.5px solid rgba(81,207,152,0.28);border-radius:var(--r-md);padding:10px 13px;font-size:13px;line-height:1.35;display:none;text-align:center;color:#c8f3dd;}
+.habit-bubble{width:100%;background:rgba(255,200,87,0.07);border:1.5px solid rgba(255,200,87,0.3);border-radius:var(--r-md);padding:9px 13px;font-size:12.5px;line-height:1.35;display:none;text-align:center;color:#ffe5a3;font-style:italic;}
+.bubble-lead{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;opacity:0.8;display:block;margin-bottom:3px;}
 .reaction-bubble .bubble-lead{color:var(--accent-mint);}
 .habit-bubble .bubble-lead{color:var(--accent-gold);}
-.invite-bubble .bubble-lead{color:var(--accent-sky);}
 
-.qa-turn{display:flex;flex-direction:column;gap:4px;}
-.qa-bubble{padding:8px 11px;border-radius:12px;font-size:12.5px;line-height:1.35;max-width:90%;}
-.qa-bubble.q{align-self:flex-end;background:rgba(177,151,252,0.14);border:1px solid rgba(177,151,252,0.3);color:#e4daff;}
-.qa-bubble.a{align-self:flex-start;background:rgba(81,207,152,0.1);border:1px solid rgba(81,207,152,0.28);color:#d6f3e4;}
-.qa-lead{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;opacity:0.75;margin-bottom:2px;}
-.qa-bubble.q .qa-lead{color:var(--accent-violet);}
-.qa-bubble.a .qa-lead{color:var(--accent-mint);}
-
-.followup-counter{font-size:10px;color:var(--text-dim);text-align:center;letter-spacing:1px;text-transform:uppercase;margin-top:2px;display:none;}
-
-.btn-row{display:flex;gap:8px;width:100%;flex-shrink:0;}
-.action-btn{
-  flex:1;
-  padding:11px 0;
-  font-family:'Baloo 2',cursive;
-  font-size:14px;
-  font-weight:700;
-  border:none;
-  border-radius:12px;
-  cursor:pointer;
-  transition:transform .15s, opacity .15s;
-  background:transparent;
-  border:1.5px solid var(--card-border);
-  color:var(--text-dim);
-}
-.action-btn.skip:hover,.action-btn.end:hover{border-color:var(--accent-coral);color:#ffb4b4;}
-.action-btn.ask{
-  background:linear-gradient(135deg,var(--accent-sky),var(--accent-violet));
-  border:none;
-  color:#fff;
-  box-shadow:0 3px 12px rgba(77,171,247,0.28);
-}
+.action-btn{width:100%;padding:12px 0;font-family:'Baloo 2',cursive;font-size:16px;font-weight:700;color:#fff;border:none;border-radius:12px;cursor:pointer;transition:transform .15s, opacity .15s;}
+.action-btn.skip{background:transparent;border:1.5px solid var(--card-border);color:var(--text-dim);font-size:13px;padding:9px 0;}
 .action-btn.next{
   background:linear-gradient(135deg,var(--accent-mint),var(--accent-sky));
-  border:none;
-  color:#fff;
-  box-shadow:0 3px 12px rgba(81,207,152,0.25);
-  font-size:15px;
+  box-shadow:0 4px 16px rgba(81,207,152,0.22);
+  display:none;
+  visibility:hidden;
+  opacity:0;
 }
 .action-btn:active{transform:scale(0.97);}
-.action-btn:disabled{opacity:0.4;cursor:default;}
 
+/* Loading */
 #loading{display:none;position:absolute;inset:0;background:rgba(8,10,22,0.85);backdrop-filter:blur(4px);flex-direction:column;align-items:center;justify-content:center;gap:12px;z-index:30;}
 #loading.active{display:flex;}
 .spinner{width:38px;height:38px;border:3px solid #1e2d4d;border-top-color:var(--accent-sky);border-radius:50%;animation:spin .7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
 .loading-text{font-family:'Baloo 2',cursive;font-size:14px;color:var(--text-dim);}
 
+/* Summary */
 #summary{flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:18px 28px;text-align:center;background:radial-gradient(ellipse at 50% 40%,rgba(81,207,152,0.05) 0%,transparent 50%);}
 .sum-trophy{font-size:46px;line-height:1;}
 .sum-title{font-family:'Baloo 2',cursive;font-size:28px;font-weight:800;background:linear-gradient(135deg,var(--accent-gold),var(--accent-mint));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
@@ -232,8 +191,6 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 .sum-cat{background:var(--card-front);border-radius:12px;padding:8px 16px;min-width:120px;border:1px solid var(--card-border);}
 .sum-cat-name{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim);margin-bottom:3px;}
 .sum-cat-score{font-family:'Baloo 2',cursive;font-size:18px;font-weight:700;}
-.sum-followups{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--accent-violet);margin-top:-2px;}
-.sum-followups strong{font-family:'Baloo 2',cursive;font-size:15px;color:#e4daff;}
 .sum-tip{font-size:13px;color:var(--accent-gold);max-width:460px;line-height:1.4;}
 .replay-btn{padding:12px 42px;font-family:'Baloo 2',cursive;font-size:19px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--accent-coral),var(--accent-violet));border:none;border-radius:40px;cursor:pointer;box-shadow:0 4px 18px rgba(255,107,107,0.3);transition:transform .15s;}
 .replay-btn:active{transform:scale(0.95);}
@@ -326,45 +283,29 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 
   <div class="voice-side">
     <div class="voice-top">
-      <div class="voice-label" id="voice-label">Your Turn</div>
+      <div class="voice-label">Your Turn</div>
       <div class="prompt-bubble" id="prompt-bubble">Read the card, then tap the mic and say what you notice.</div>
     </div>
 
     <div class="voice-mid">
-      <div class="mic-ring" id="mic-ring" onclick="onMicTap()">
+      <div class="mic-ring" id="mic-ring" onclick="toggleRecording()">
         <div class="mic-icon" id="mic-icon">🎤</div>
       </div>
-      <div class="voice-status" id="voice-status">Tap to speak</div>
+      <div class="voice-status" id="voice-status">Tap to speak · up to 15s</div>
       <div class="voice-transcript" id="voice-transcript"></div>
     </div>
 
     <div class="voice-bottom">
-      <div class="coach-stack" id="coach-stack">
-        <div class="reaction-bubble" id="reaction-bubble">
-          <span class="bubble-lead">Coach Says</span>
-          <span id="reaction-text"></span>
-        </div>
-        <div class="habit-bubble" id="habit-bubble">
-          <span class="bubble-lead">Try This Habit</span>
-          <span id="habit-text"></span>
-        </div>
-        <div class="invite-bubble" id="invite-bubble">
-          <span class="bubble-lead">Ask Me Anything</span>
-          <span id="invite-text"></span>
-        </div>
-        <div id="followup-thread"></div>
-        <div class="followup-counter" id="followup-counter"></div>
+      <div class="reaction-bubble" id="reaction-bubble">
+        <span class="bubble-lead">Coach Says</span>
+        <span id="reaction-text"></span>
       </div>
-
-      <div class="btn-row" id="pre-answer-row">
-        <button class="action-btn skip" onclick="skipAnswer()">Skip card</button>
-        <button class="action-btn end" onclick="endGameEarly()">End game</button>
+      <div class="habit-bubble" id="habit-bubble">
+        <span class="bubble-lead">Try This Habit</span>
+        <span id="habit-text"></span>
       </div>
-
-      <div class="btn-row" id="post-answer-row" style="display:none;">
-        <button class="action-btn next" id="next-btn" onclick="nextCard()">Next Card →</button>
-        <button class="action-btn end" onclick="endGameEarly()">End game</button>
-      </div>
+      <button class="action-btn skip" id="skip-btn" onclick="skipAnswer()">I don't know — skip</button>
+      <button class="action-btn next" id="next-btn" onclick="nextCard()">Next Card →</button>
     </div>
   </div>
 </div>
@@ -376,9 +317,6 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
   <div class="sum-title">Game Complete!</div>
   <div class="sum-score" id="sum-score"></div>
   <div class="sum-cats" id="sum-cats"></div>
-  <div class="sum-followups" id="sum-followups" style="display:none;">
-    💬 You asked <strong id="sum-followup-count">0</strong> follow-up questions — curiosity points!
-  </div>
   <div class="sum-tip" id="sum-tip"></div>
   <button class="replay-btn" onclick="goHome()">Play Again 🔄</button>
 </div>
@@ -418,17 +356,19 @@ let totalCards = 0;
 let totalScore = 0;
 let maxScore = 0;
 let results = [];
-
-let uiPhase = 'answering';
-let followupsUsed = 0;
-let followupsAllowed = 4;
-
+let answered = false;
 let isRecording = false;
 let mediaRecorder = null;
 let audioChunks = [];
 let selectedMode = 'mixed';
 let audioPlayer = null;
+
 let micStream = null;
+let audioContext = null;
+let analyser = null;
+let silenceCheckTimer = null;
+let silenceStartedAt = null;
+let stopRequested = false;
 
 function showScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
@@ -448,7 +388,6 @@ function selectMode(mode, el){
 function goHome(){
   stopAudio();
   showScreen('home');
-  document.getElementById('start-btn').disabled = false;
 }
 
 async function stopAudio(){
@@ -480,6 +419,40 @@ async function speak(text, tone='narrator'){
   } catch(e){}
 }
 
+async function speakChain(segments, fallbackTone='narrator'){
+  const valid = (segments || []).filter(s => s && s[0] && s[0].trim());
+  if (!valid.length) return;
+
+  const tone = valid[0][1] || fallbackTone;
+  const mergedText = valid.map(([text]) => text.trim()).join(' ');
+
+  try {
+    const r = await fetch(`${API}/api/tts_multi`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        segments: [{ text: mergedText, tone }]
+      }),
+    });
+
+    if (!r.ok) throw new Error('tts_multi failed');
+
+    const blob = await r.blob();
+    await stopAudio();
+    const url = URL.createObjectURL(blob);
+    const audio = new Audio(url);
+    audioPlayer = audio;
+
+    return new Promise(res => {
+      audio.onended = ()=>{ URL.revokeObjectURL(url); res(); };
+      audio.onerror = ()=>{ URL.revokeObjectURL(url); res(); };
+      audio.play().catch(()=>res());
+    });
+  } catch(e){
+    await speak(mergedText, tone);
+  }
+}
+
 async function startGame(){
   document.getElementById('start-btn').disabled = true;
   showLoading('Shuffling the deck...');
@@ -501,7 +474,10 @@ async function startGame(){
     hideLoading();
     showScreen('game');
     renderCard();
-    await readCardAloud(true);
+    await speakChain([
+      ['Welcome to PROMPT! Listen carefully, then tell me what you notice.', 'narrator']
+    ], 'narrator');
+    await readCardAloud();
   } catch(e){
     hideLoading();
     document.getElementById('start-btn').disabled = false;
@@ -511,11 +487,8 @@ async function startGame(){
 
 function renderCard(){
   const c = currentCard;
-  uiPhase = 'answering';
-  followupsUsed = 0;
-
-  const flipper = document.getElementById('card-flipper');
-  flipper.classList.remove('flipped');
+  answered = false;
+  document.getElementById('card-flipper').classList.remove('flipped');
 
   document.getElementById('card-id-display').textContent = c.card_id || c.id || '—';
   document.getElementById('card-progress-display').textContent = `${currentIdx + 1} / ${totalCards}`;
@@ -549,23 +522,21 @@ function renderCard(){
   }
   document.getElementById('score-pill').textContent = `${totalScore} pts`;
 
-  document.getElementById('voice-label').textContent = 'Your Turn';
-  document.getElementById('prompt-bubble').textContent =
-    PTYPE_QUESTION[c.problem_type] || "Say what you notice out loud.";
+  const pb = document.getElementById('prompt-bubble');
+  pb.className = 'prompt-bubble';
+  pb.textContent = PTYPE_QUESTION[c.problem_type] || "Say what you notice out loud.";
 
   document.getElementById('reaction-bubble').style.display = 'none';
   document.getElementById('habit-bubble').style.display = 'none';
-  document.getElementById('invite-bubble').style.display = 'none';
-  document.getElementById('followup-thread').innerHTML = '';
-  document.getElementById('followup-counter').style.display = 'none';
-
-  document.getElementById('voice-status').textContent = 'Tap to speak';
+  document.getElementById('voice-status').textContent = 'Tap to speak · up to 15s';
   document.getElementById('voice-status').className = 'voice-status';
   document.getElementById('voice-transcript').textContent = '';
-
-  document.getElementById('pre-answer-row').style.display = 'flex';
-  document.getElementById('post-answer-row').style.display = 'none';
-
+  document.getElementById('skip-btn').style.display = '';
+  const nextBtn = document.getElementById('next-btn');
+  nextBtn.style.display = 'none';
+  nextBtn.style.visibility = 'hidden';
+  nextBtn.style.opacity = '0';
+  nextBtn.disabled = true;
   document.getElementById('back-refs-wrap').style.display = 'none';
   document.getElementById('back-refs').innerHTML = '';
   resetMicBtn();
@@ -584,22 +555,79 @@ function makeBubble(text, variant, lensLabel){
   return el;
 }
 
-async function readCardAloud(includeWelcome=false){
+async function readCardAloud(){
   const c = currentCard;
   const parts = [];
-  if (includeWelcome){
-    parts.push("Welcome to PROMPT! Listen carefully, then tell me what you notice.");
-  }
+
   parts.push(`Card ${c.card_id || c.id}.`);
   parts.push(c.title);
+
   if (Array.isArray(c.body)){
     for (const t of c.body) parts.push(t);
   } else if (c.body){
     parts.push(String(c.body));
   }
+
   const q = PTYPE_QUESTION[c.problem_type];
   if (q) parts.push(q);
-  await speak(parts.join(' '), 'narrator');
+
+  await speakChain(parts.map(t => [t, 'narrator']), 'narrator');
+}
+
+function cleanupAudioMonitoring(){
+  if (silenceCheckTimer){
+    clearInterval(silenceCheckTimer);
+    silenceCheckTimer = null;
+  }
+  silenceStartedAt = null;
+
+  if (audioContext){
+    try { audioContext.close(); } catch(e){}
+    audioContext = null;
+  }
+
+  analyser = null;
+}
+
+function getAverageVolume(dataArray){
+  let sum = 0;
+  for (let i = 0; i < dataArray.length; i++){
+    const centered = dataArray[i] - 128;
+    sum += Math.abs(centered);
+  }
+  return sum / dataArray.length;
+}
+
+function startSilenceDetection(){
+  if (!analyser) return;
+
+  const dataArray = new Uint8Array(analyser.fftSize);
+  const SILENCE_THRESHOLD = 6;
+  const SILENCE_DURATION_MS = 1200;
+  const MIN_RECORDING_MS = 800;
+  const startedAt = Date.now();
+
+  silenceCheckTimer = setInterval(() => {
+    if (!isRecording || !mediaRecorder || mediaRecorder.state !== 'recording') return;
+
+    analyser.getByteTimeDomainData(dataArray);
+    const volume = getAverageVolume(dataArray);
+    const now = Date.now();
+
+    if (now - startedAt < MIN_RECORDING_MS){
+      return;
+    }
+
+    if (volume < SILENCE_THRESHOLD){
+      if (!silenceStartedAt){
+        silenceStartedAt = now;
+      } else if (now - silenceStartedAt >= SILENCE_DURATION_MS){
+        stopRecording();
+      }
+    } else {
+      silenceStartedAt = null;
+    }
+  }, 150);
 }
 
 function resetMicBtn(){
@@ -608,13 +636,10 @@ function resetMicBtn(){
   document.getElementById('mic-icon').textContent = '🎤';
 }
 
-async function onMicTap(){
-  if (uiPhase === 'done') return;
-  if (isRecording) {
-    stopRecording();
-    return;
-  }
-  startRecording();
+async function toggleRecording(){
+  if (answered) return;
+  if (isRecording) stopRecording();
+  else startRecording();
 }
 
 async function startRecording(){
@@ -622,6 +647,7 @@ async function startRecording(){
     micStream = await navigator.mediaDevices.getUserMedia({ audio:true });
     mediaRecorder = new MediaRecorder(micStream, { mimeType:'audio/webm' });
     audioChunks = [];
+    stopRequested = false;
 
     mediaRecorder.ondataavailable = e => {
       if (e.data.size > 0) audioChunks.push(e.data);
@@ -632,19 +658,26 @@ async function startRecording(){
         micStream.getTracks().forEach(t => t.stop());
         micStream = null;
       }
+      cleanupAudioMonitoring();
       processVoice();
     };
 
     mediaRecorder.start();
     isRecording = true;
 
-    document.getElementById('mic-ring').classList.add('recording');
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const source = audioContext.createMediaStreamSource(micStream);
+    analyser = audioContext.createAnalyser();
+    analyser.fftSize = 2048;
+    source.connect(analyser);
+    startSilenceDetection();
+
+    const ring = document.getElementById('mic-ring');
+    ring.classList.add('recording');
     document.getElementById('mic-icon').textContent = '⏹';
 
     const st = document.getElementById('voice-status');
-    st.textContent = uiPhase === 'followup'
-      ? '🎤 Ask me anything about this card... tap again when you are done'
-      : '🎤 Listening... tap again when you are done';
+    st.textContent = '🎤 Listening... pause when you are done';
     st.className = 'voice-status highlight';
   } catch(e) {
     document.getElementById('voice-status').textContent = 'Mic access denied';
@@ -652,9 +685,11 @@ async function startRecording(){
 }
 
 function stopRecording(){
-  if (!mediaRecorder || mediaRecorder.state !== 'recording') return;
+  if (!mediaRecorder || mediaRecorder.state !== 'recording' || stopRequested) return;
 
+  stopRequested = true;
   isRecording = false;
+  cleanupAudioMonitoring();
 
   const ring = document.getElementById('mic-ring');
   ring.classList.remove('recording');
@@ -670,7 +705,7 @@ async function processVoice(){
   const blob = new Blob(audioChunks, { type:'audio/webm' });
   const fd = new FormData();
   fd.append('audio', blob, 'recording.webm');
-  showLoading(uiPhase === 'followup' ? 'Listening to your question...' : 'Listening...');
+  showLoading('Listening...');
   try {
     const tr = await fetch(`${API}/api/transcribe`, { method:'POST', body:fd });
     const td = await tr.json();
@@ -682,12 +717,7 @@ async function processVoice(){
       return;
     }
     document.getElementById('voice-transcript').textContent = `"${text}"`;
-
-    if (uiPhase === 'followup') {
-      await submitFollowup(text);
-    } else {
-      await submitSpokenAnswer(text);
-    }
+    await submitSpokenAnswer(text);
   } catch(e){
     hideLoading();
     document.getElementById('voice-status').textContent = 'Error. Tap mic to retry.';
@@ -696,18 +726,13 @@ async function processVoice(){
 }
 
 async function skipAnswer(){
-  if (uiPhase !== 'answering') return;
+  if (answered) return;
   await submitSpokenAnswer('');
 }
 
-async function endGameEarly(){
-  await stopAudio();
-  uiPhase = 'done';
-  await showSummary();
-}
-
 async function submitSpokenAnswer(text){
-  document.getElementById('pre-answer-row').style.display = 'none';
+  answered = true;
+  document.getElementById('skip-btn').style.display = 'none';
   showLoading('Coach is thinking...');
   try {
     const r = await fetch(`${API}/api/answer`, {
@@ -718,7 +743,6 @@ async function submitSpokenAnswer(text){
     const d = await r.json();
     hideLoading();
     if (d.error){ document.getElementById('voice-status').textContent = 'Error: ' + d.error; return; }
-    followupsAllowed = d.followups_allowed || 4;
     await revealAnswer(d);
   } catch(e){
     hideLoading();
@@ -730,14 +754,24 @@ function renderReferences(refs){
   const wrap = document.getElementById('back-refs-wrap');
   const list = document.getElementById('back-refs');
   list.innerHTML = '';
-  if (!refs || !refs.length){ wrap.style.display = 'none'; return; }
+
+  if (!refs || !refs.length){
+    wrap.style.display = 'none';
+    return;
+  }
+
   wrap.style.display = '';
   refs.forEach(ref => {
     const item = document.createElement('div');
     item.className = 'ref-item';
+
     const title = ref.title || ref.url || 'Reference';
     const url = ref.url || '#';
-    item.innerHTML = `<a href="${url}" target="_blank" rel="noopener noreferrer">${title}</a><div class="ref-url">${url}</div>`;
+
+    item.innerHTML = `
+      <a href="${url}" target="_blank" rel="noopener noreferrer">${title}</a>
+      <div class="ref-url">${url}</div>
+    `;
     list.appendChild(item);
   });
 }
@@ -774,130 +808,48 @@ async function revealAnswer(data){
 
   setTimeout(()=> document.getElementById('card-flipper').classList.add('flipped'), 350);
 
-  const reaction = data.feedback.reaction || '';
-  const habit    = data.feedback.habit || '';
-  const invite   = data.feedback.invite || 'Anything about this you want to dig into?';
-
   const rBubble = document.getElementById('reaction-bubble');
   const hBubble = document.getElementById('habit-bubble');
-  const iBubble = document.getElementById('invite-bubble');
-  document.getElementById('reaction-text').textContent = reaction;
-  document.getElementById('habit-text').textContent = habit;
-  document.getElementById('invite-text').textContent = invite;
-  rBubble.style.display = reaction ? 'block' : 'none';
-  hBubble.style.display = habit ? 'block' : 'none';
-  iBubble.style.display = 'block';
-
-  window._nextCard = data.next_card || null;
-  window._hasNext = !!data.has_next;
-
-  uiPhase = 'followup';
-  document.getElementById('pre-answer-row').style.display = 'none';
-  document.getElementById('post-answer-row').style.display = 'flex';
-  document.getElementById('voice-label').textContent = 'Follow-up';
-  document.getElementById('prompt-bubble').textContent = invite;
-  document.getElementById('voice-status').textContent = 'Tap the mic to ask a question — or hit Next Card.';
-  document.getElementById('voice-status').className = 'voice-status';
+  document.getElementById('reaction-text').textContent = data.feedback.reaction || '';
+  document.getElementById('habit-text').textContent = data.feedback.habit || '';
+  rBubble.style.display = data.feedback.reaction ? '' : 'none';
+  hBubble.style.display = data.feedback.habit ? '' : 'none';
 
   const nextBtn = document.getElementById('next-btn');
-  nextBtn.textContent = data.has_next ? 'Next Card →' : 'See My Results →';
+  console.log('show next button', data.has_next);
 
-  updateFollowupCounter();
+  nextBtn.style.display = 'block';
+  nextBtn.style.visibility = 'visible';
+  nextBtn.style.opacity = '1';
+  nextBtn.disabled = false;
+  nextBtn.textContent = data.has_next ? 'Next Card →' : 'Finish Game →';
 
-  const feedbackText = [
-    (tier === 'deep' || tier === 'mid') ? 'Nice catch.' : '',
-    reaction, habit, invite,
-  ].filter(Boolean).join(' ');
-  if (feedbackText){
-    await speak(feedbackText, 'warm');
+  const segments = [];
+  if (tier === 'deep' || tier === 'mid'){
+    segments.push(['Nice catch.', 'warm']);
   }
-}
+  if (data.feedback.reaction) segments.push([data.feedback.reaction, 'warm']);
+  if (data.feedback.habit) segments.push([data.feedback.habit, 'warm']);
 
-function updateFollowupCounter(){
-  const el = document.getElementById('followup-counter');
-  if (followupsUsed <= 0) { el.style.display = 'none'; return; }
-  el.style.display = 'block';
-  el.textContent = `Follow-ups: ${followupsUsed} / ${followupsAllowed}`;
-}
+  await speakChain(segments, 'warm');
 
-function appendQATurn(question, answer){
-  const thread = document.getElementById('followup-thread');
-  const turn = document.createElement('div');
-  turn.className = 'qa-turn fade-in';
-  turn.innerHTML = `
-    <div class="qa-bubble q">
-      <div class="qa-lead">You asked</div>
-      <div>${escapeHtml(question)}</div>
-    </div>
-    <div class="qa-bubble a">
-      <div class="qa-lead">Coach</div>
-      <div>${escapeHtml(answer)}</div>
-    </div>
-  `;
-  thread.appendChild(turn);
-  const stack = document.getElementById('coach-stack');
-  stack.scrollTop = stack.scrollHeight;
-}
-
-function escapeHtml(s){
-  return (s || '').replace(/[&<>"']/g, c => ({
-    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-  }[c]));
-}
-
-async function submitFollowup(question){
-  showLoading('Thinking about your question...');
-  try {
-    const r = await fetch(`${API}/api/followup`, {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ session_id: sessionId, question }),
-    });
-    const d = await r.json();
-    hideLoading();
-    if (d.error){ document.getElementById('voice-status').textContent = 'Error: ' + d.error; resetMicBtn(); return; }
-
-    followupsUsed = d.followups_used || (followupsUsed + 1);
-    followupsAllowed = d.followups_allowed || followupsAllowed;
-    appendQATurn(question, d.answer || '');
-    updateFollowupCounter();
-    document.getElementById('voice-transcript').textContent = '';
-
-    if (d.limit_reached) {
-      document.getElementById('voice-status').textContent = 'That was the last follow-up for this card. Ready for the next one?';
-      document.getElementById('mic-ring').classList.add('disabled');
-    } else {
-      document.getElementById('voice-status').textContent = 'Tap the mic for another question — or hit Next Card.';
-    }
-    document.getElementById('voice-status').className = 'voice-status';
-    resetMicBtn();
-    if (d.limit_reached) document.getElementById('mic-ring').classList.add('disabled');
-
-    await speak(d.answer || '', 'warm');
-  } catch(e){
-    hideLoading();
-    document.getElementById('voice-status').textContent = 'Error. Please try again.';
-    resetMicBtn();
-  }
+  document.getElementById('voice-status').textContent = 'Tap the button when you are ready.';
+  document.getElementById('voice-status').className = 'voice-status';
 }
 
 async function nextCard(){
-  await stopAudio();
-  if (!window._hasNext || !window._nextCard){
+  if (currentIdx + 1 >= totalCards){
     await showSummary();
     return;
   }
   currentIdx++;
-  currentCard = window._nextCard;
-  window._nextCard = null;
   document.getElementById('voice-transcript').textContent = '';
   renderCard();
   document.getElementById('mic-ring').classList.remove('disabled');
-  await readCardAloud(false);
+  await readCardAloud();
 }
 
 async function showSummary(){
-  uiPhase = 'done';
   showLoading('Wrapping up...');
   try {
     const r = await fetch(`${API}/api/summary?session_id=${encodeURIComponent(sessionId)}`, { method:'POST' });
@@ -928,19 +880,11 @@ async function showSummary(){
         <div class="sum-cat-score" style="color:${color}">${s.score} / ${maxM}</div>`;
       ce.appendChild(div);
     }
-
-    const fuWrap = document.getElementById('sum-followups');
-    const fuCount = d.total_followups || 0;
-    if (fuCount > 0) {
-      document.getElementById('sum-followup-count').textContent = fuCount;
-      fuWrap.style.display = 'flex';
-    } else {
-      fuWrap.style.display = 'none';
-    }
-
     document.getElementById('sum-tip').textContent = `💡 ${d.tip}`;
     showScreen('summary');
-    await speak(`Game over. You scored ${d.score} out of ${d.max_score}. ${d.tip}`, 'warm');
+    await speakChain([
+      [`Game over. You scored ${d.score} out of ${d.max_score}. ${d.tip}`, 'narrator']
+    ], 'narrator');
   } catch(e){
     hideLoading();
     showScreen('summary');
