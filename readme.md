@@ -60,9 +60,9 @@ START
   ▼
 HOME ─────────────────┐
   │                   │
-  ├─► [📷 Scan Card]  │  scan a physical card
+  ├─► [Scan Card]     │  scan a physical card
   │                   │
-  └─► [🎲 Random]     │  pick a mode, get 6 cards dealt
+  └─► [Random]        │  pick a mode, get 6 cards dealt
                       │
                       ▼
                   SCAN screen (if scan mode)
@@ -136,27 +136,6 @@ Each answer falls into one of five tiers. The rule engine decides; the LLM never
 
 The Thor has two USB-C ports near each other. **Power and data go on different ports.** Specifically:
 
-```
-              ┌──────────────────────────────────────┐
-              │            JETSON AGX THOR           │
-              │                                      │
-              │   [USB-A]  [USB-A]  [HDMI]           │
-              │      │        │        │             │
-              │      │        │        └─► HDMI cable to NLIEOPDA 7" screen
-              │      │        │
-              │      │        └─► Logitech C270 webcam
-              │      │
-              │      └─► (free, or keyboard for setup)
-              │
-              │   [USB-C ❶]   [USB-C ❷]              │
-              │      │            │                   │
-              │      │            └─► USB-C data cable to NLIEOPDA touchscreen
-              │      │                                 (ENABLES touch input)
-              │      │
-              │      └─► Power adapter (FAR FROM HDMI)
-              │
-              └──────────────────────────────────────┘
-```
 
 **Step-by-step**:
 
