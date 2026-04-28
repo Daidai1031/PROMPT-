@@ -127,8 +127,8 @@ Each answer falls into one of five tiers. The rule engine decides; the LLM never
 | Component | Model | Role |
 |-----------|-------|------|
 | Compute | NVIDIA Jetson AGX Thor Developer Kit | Runs everything: Whisper, Llama 3, Kokoro, FastAPI |
-| Display | NLIEOPDA 7" HDMI Touchscreen (1024×600 IPS) | Kid-facing UI |
-| Camera | Logitech C270 USB Webcam | Card scanning |
+| Display | NLIEOPDA 7" HDMI Touchscreen (1024×600 IPS) | Kid-facing UI & Speaker|
+| Camera | Logitech C270 USB Webcam | Card scanning &v Microphone |
 | Power | USB-C PD adapter (Thor's stock supply) | Plugged into far-from-HDMI USB-C port |
 | Cables | HDMI cable + USB-C data cable | Display + touchscreen control |
 
@@ -214,7 +214,7 @@ When you see `[startup] Ready.` and `Uvicorn running`, open the **browser on Tho
 http://localhost:8000
 ```
 
-> ⚠️ **Critical**: the browser must be on Thor (not on a laptop accessing Thor over the LAN). Browsers refuse camera access on plain HTTP unless the origin is `localhost` or `127.0.0.1`. The intended deployment is a kiosk-style touchscreen plugged directly into Thor.
+>  **Critical**: the browser must be on Thor (not on a laptop accessing Thor over the LAN). Browsers refuse camera access on plain HTTP unless the origin is `localhost` or `127.0.0.1`. The intended deployment is a kiosk-style touchscreen plugged directly into Thor.
 
 ### Stopping the server
 
@@ -276,9 +276,9 @@ If you see `{"cards":[{"id":"#1",...` the server is healthy and the card index i
                 │  │ │ + Tesseract.js OCR │                  │   │
                 │  │ └────────┘ │         │                  │   │
                 │  └────────────┘         │                  │   │
-                │       │ ▲                │                  │   │
-                │  audio │ │ TTS audio    │                  │   │
-                │       ▼ │               │                  │   │
+                │       │  ▲              │                  │   │
+                │ audio │  │ TTS audio    │                  │   │
+                │       ▼  │              │                  │   │
                 │  ┌────────────┐         │                  │   │
                 │  │ Microphone │         │                  │   │
                 │  └────────────┘         │   ┌─────────┐    │   │
@@ -296,14 +296,14 @@ If you see `{"cards":[{"id":"#1",...` the server is healthy and the card index i
                 │                         │   │+Llama3  │    │   │
                 │                         │   └─────────┘    │   │
                 │                         └──────────────────┘   │
-                │                                                  │
-                │  All model weights cached locally:               │
-                │    Whisper:  ~/.cache/whisper/                  │
-                │    Kokoro:   ~/.cache/kokoro/                   │
-                │    Llama 3:  managed by ollama                  │
-                │    Tesseract:served from CDN, browser-cached    │
-                │                                                  │
-                └─────────────────────────────────────────────────┘
+                │                                                │
+                │  All model weights cached locally:             │
+                │    Whisper:  ~/.cache/whisper/                 │
+                │    Kokoro:   ~/.cache/kokoro/                  │
+                │    Llama 3:  managed by ollama                 │
+                │    Tesseract:served from CDN, browser-cached   │
+                │                                                │
+                └────────────────────────────────────────────────┘
 
                 NO INTERNET TRAFFIC AT RUNTIME
 ```
@@ -312,8 +312,8 @@ If you see `{"cards":[{"id":"#1",...` the server is healthy and the card index i
 
 ```
 1. ┌─────────────────────────────────────────────────────────────┐
-   │ Browser: child taps mic, speaks "I see two different       │
-   │          lenses, one nice and one scary..."                  │
+   │ Browser: child taps mic, speaks "I see two different        │
+   │          lenses, one nice and one scary..."                 │
    └─────────────────────────────────────────────────────────────┘
                                 │  webm audio (browser MediaRecorder)
                                 ▼
@@ -324,13 +324,13 @@ If you see `{"cards":[{"id":"#1",...` the server is healthy and the card index i
                                 │  text
                                 ▼
 3. ┌─────────────────────────────────────────────────────────────┐
-   │ POST /api/answer                                             │
+   │ POST /api/answer                                            │
    │   ├─► rules.py: keyword family matching                     │
    │   │     → tier = "mid", score = 7                           │
    │   ├─► (bias_inverter only) llm.judge_bias_inverter:         │
    │   │     can promote tier upward                             │
-   │   └─► llm.generate_feedback (Llama 3):                       │
-   │         → {reaction, habit, invite}                          │
+   │   └─► llm.generate_feedback (Llama 3):                      │
+   │         → {reaction, habit, invite}                         │
    └─────────────────────────────────────────────────────────────┘
                                 │  JSON: score + feedback + card_back
                                 ▼
@@ -340,14 +340,14 @@ If you see `{"cards":[{"id":"#1",...` the server is healthy and the card index i
                                 │  text "Nice catch. ..."
                                 ▼
 5. ┌─────────────────────────────────────────────────────────────┐
-   │ POST /api/tts  →  Kokoro  →  WAV                             │
+   │ POST /api/tts  →  Kokoro  →  WAV                            │
    └─────────────────────────────────────────────────────────────┘
                                 │  WAV bytes
                                 ▼
 6. ┌─────────────────────────────────────────────────────────────┐
    │ Browser plays the WAV. Child can now ask a follow-up        │
    │ question (loops to step 1 against /api/followup) or         │
-   │ tap "Scan Next Card" / "Next Card →".                        │
+   │ tap "Scan Next Card" / "Next Card →".                       │
    └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -436,36 +436,36 @@ After first run everything is local. No runtime internet required.
 ### Two card families, four problem types
 
 ```
-┌──────────────────────────────────────────────────────────────┐
+┌───────────────────────────────────────────────────────────── ─┐
 │ DISCERNMENT — "Spot the Frame"                                │
 │ ────────────────────────────────                              │
 │  perspective_lens_audit                                       │
 │    Two descriptions of the same thing. Find the hidden lens.  │
-│    Example: "Orbital Relics" — beautiful relics vs metal     │
-│             shards threatening satellites. Same satellites!  │
-│                                                                │
-│  affective_highjack                                            │
+│    Example: "Orbital Relics" — beautiful relics vs metal      │
+│             shards threatening satellites. Same satellites!   │
+│                                                               │
+│  affective_highjack                                           │
 │    A post engineered to grab a strong emotion. Name the       │
 │    feeling AND who gains if you share it.                     │
 │    Example: "ULTRA-GUM WILL EXPLODE!" — fear bait that        │
 │             only exists to spread panic.                      │
-└──────────────────────────────────────────────────────────────┘
+└─────────────────────────────────────────────────────── ───────┘
 
-┌──────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────── ──┐
 │ AI USAGE — "Better Prompts"                                   │
 │ ────────────────────────────────                              │
-│  bias_inverter                                                 │
-│    An AI answer secretly centers one viewpoint. Propose a      │
-│    follow-up prompt that exposes the bias.                     │
+│  bias_inverter                                                │
+│    An AI answer secretly centers one viewpoint. Propose a     │
+│    follow-up prompt that exposes the bias.                    │
 │    Example: "Mascot Remix" — answer says only teachers should │
-│             pick the school mascot. What about students?     │
-│                                                                │
-│  task_decomposition_map                                        │
-│    A big messy task. Break it into ordered sub-prompts.        │
-│    Example: "Volcano Quest" — plan a science fair project    │
-│             in steps: question → schedule → experiment →     │
-│             draft → review.                                    │
-└──────────────────────────────────────────────────────────────┘
+│             pick the school mascot. What about students?      │
+│                                                               │
+│  task_decomposition_map                                       │
+│    A big messy task. Break it into ordered sub-prompts.       │
+│    Example: "Volcano Quest" — plan a science fair project     │
+│             in steps: question → schedule → experiment →      │
+│             draft → review.                                   │
+└───────────────────────────────────────────────────────── ─────┘
 ```
 
 ### Card schema (JSON)
@@ -948,4 +948,4 @@ Hardware checklist:
 - [ ] Touchscreen data cable in USB-C port NEAR HDMI
 - [ ] HDMI cable from Thor to NLIEOPDA 7" screen
 - [ ] Logitech C270 in any USB-A port
-- [ ] Browser open at `http://localhost:8000` ON THOR (not LAN)
+- [ ] Browser open at `http://localhost:8000` or 'http://127.0.0.1:3000' ON THOR (not LAN)
