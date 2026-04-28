@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=no">
 <title>PROMPT! — AI Literacy Game</title>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- Tesseract.js for client-side OCR during card scanning -->
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <style>
 :root {
   --bg:#0c1220;
@@ -153,7 +155,10 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 .voice-status.speaking{color:var(--accent-sky);}
 .voice-transcript{font-size:12px;color:#a9b8d4;text-align:center;min-height:14px;max-width:95%;font-style:italic;line-height:1.3;}
 
+/* Bottom area uses flex:1 with internal scroll so feedback + follow-up
+   chat can grow without pushing buttons off-screen. */
 .voice-bottom{display:flex;flex-direction:column;align-items:stretch;gap:7px;width:100%;position:relative;z-index:1;flex:1;min-height:0;}
+
 .coach-stack{display:flex;flex-direction:column;gap:7px;overflow-y:auto;padding-right:2px;flex:1;min-height:0;}
 
 .reaction-bubble,.habit-bubble,.invite-bubble{
@@ -175,6 +180,7 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 .habit-bubble .bubble-lead{color:var(--accent-gold);}
 .invite-bubble .bubble-lead{color:var(--accent-sky);}
 
+/* Follow-up turns: each Q/A shown as an alternating bubble pair */
 .qa-turn{display:flex;flex-direction:column;gap:4px;}
 .qa-bubble{padding:8px 11px;border-radius:12px;font-size:12.5px;line-height:1.35;max-width:90%;}
 .qa-bubble.q{align-self:flex-end;background:rgba(177,151,252,0.14);border:1px solid rgba(177,151,252,0.3);color:#e4daff;}
@@ -185,6 +191,7 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 
 .followup-counter{font-size:10px;color:var(--text-dim);text-align:center;letter-spacing:1px;text-transform:uppercase;margin-top:2px;display:none;}
 
+/* Button groups */
 .btn-row{display:flex;gap:8px;width:100%;flex-shrink:0;}
 .action-btn{
   flex:1;
@@ -217,12 +224,131 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 .action-btn:active{transform:scale(0.97);}
 .action-btn:disabled{opacity:0.4;cursor:default;}
 
+/* Loading overlay */
 #loading{display:none;position:absolute;inset:0;background:rgba(8,10,22,0.85);backdrop-filter:blur(4px);flex-direction:column;align-items:center;justify-content:center;gap:12px;z-index:30;}
+
+/* ═══ SCAN screen ═══ */
+#scan{flex-direction:column;align-items:center;justify-content:flex-start;gap:10px;padding:12px 16px;background:radial-gradient(ellipse at 50% 30%,rgba(177,151,252,0.08) 0%,transparent 60%);}
+.scan-header{display:flex;align-items:center;justify-content:space-between;width:100%;max-width:640px;margin-top:4px;}
+.scan-title{font-family:'Baloo 2',cursive;font-size:18px;font-weight:700;color:var(--text);}
+.scan-subtitle{font-size:12px;color:var(--text-dim);text-align:center;margin-top:-4px;}
+.scan-back-btn{
+  background:transparent;border:1.5px solid var(--card-border);color:var(--text-dim);
+  font-family:'Quicksand',sans-serif;font-size:13px;font-weight:600;
+  padding:6px 14px;border-radius:18px;cursor:pointer;
+}
+.scan-back-btn:active{transform:scale(0.96);}
+
+/* Camera viewport + scanning frame */
+.scan-viewport{
+  position:relative;width:100%;max-width:640px;aspect-ratio:4/3;
+  background:#000;border-radius:var(--r-lg);overflow:hidden;
+  border:2px solid var(--card-border);
+  box-shadow:0 10px 40px rgba(0,0,0,0.5);
+}
+#scan-video{width:100%;height:100%;object-fit:cover;display:block;}
+.scan-frame{
+  position:absolute;inset:14% 10%;
+  border:3px dashed rgba(77,171,247,0.55);border-radius:var(--r-md);
+  pointer-events:none;transition:border-color .3s;
+}
+.scan-frame.detecting{border-color:var(--accent-gold);}
+.scan-frame.matched{border-color:var(--accent-mint);border-style:solid;}
+.scan-frame::before,.scan-frame::after{
+  content:'';position:absolute;width:24px;height:24px;border:3px solid rgba(77,171,247,0.8);
+}
+.scan-frame::before{top:-3px;left:-3px;border-right:none;border-bottom:none;}
+.scan-frame::after{bottom:-3px;right:-3px;border-left:none;border-top:none;}
+
+/* Laser scan animation */
+.scan-laser{
+  position:absolute;left:10%;right:10%;top:14%;height:2px;
+  background:linear-gradient(90deg,transparent,var(--accent-sky),transparent);
+  animation:laser-sweep 2.4s ease-in-out infinite;
+  pointer-events:none;
+  opacity:0.7;
+}
+@keyframes laser-sweep{
+  0%{transform:translateY(0);}
+  50%{transform:translateY(450%);}
+  100%{transform:translateY(0);}
+}
+
+.scan-status{
+  font-family:'Baloo 2',cursive;font-size:14px;color:var(--text-dim);
+  min-height:20px;text-align:center;letter-spacing:0.5px;
+}
+.scan-status.detecting{color:var(--accent-gold);}
+.scan-status.matched{color:var(--accent-mint);}
+.scan-status.error{color:var(--accent-coral);}
+
+.scan-preview-text{
+  font-size:11px;color:var(--text-dim);font-family:ui-monospace,monospace;
+  max-width:640px;min-height:30px;padding:6px 10px;
+  background:rgba(255,255,255,0.02);border:1px solid var(--card-border);border-radius:8px;
+  text-align:left;line-height:1.35;
+  overflow:hidden;text-overflow:ellipsis;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+}
+
+/* Candidate confirmation overlay */
+.scan-candidate{
+  width:100%;max-width:640px;
+  background:var(--card-front);border:2px solid var(--accent-mint);
+  border-radius:var(--r-lg);padding:14px 16px;
+  display:none;flex-direction:column;gap:8px;
+  box-shadow:0 6px 24px rgba(81,207,152,0.2);
+}
+.scan-candidate.active{display:flex;}
+.scan-candidate-label{
+  font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  color:var(--accent-mint);
+}
+.scan-candidate-title{font-family:'Baloo 2',cursive;font-size:20px;font-weight:700;color:#fff;}
+.scan-candidate-meta{font-size:11px;color:var(--text-dim);letter-spacing:1px;text-transform:uppercase;}
+.scan-candidate-row{display:flex;gap:8px;margin-top:6px;}
+.scan-candidate-row button{
+  flex:1;padding:10px 0;font-family:'Baloo 2',cursive;font-size:14px;font-weight:700;
+  border:none;border-radius:10px;cursor:pointer;transition:transform .15s;
+}
+.scan-candidate-row button:active{transform:scale(0.96);}
+.scan-candidate-row .confirm{background:linear-gradient(135deg,var(--accent-mint),var(--accent-sky));color:#fff;}
+.scan-candidate-row .rescan{background:transparent;border:1.5px solid var(--card-border);color:var(--text-dim);}
+
+.scan-fallback{display:flex;gap:8px;margin-top:2px;}
+.scan-fallback input{
+  flex:1;padding:8px 10px;background:var(--card-front);border:1.5px solid var(--card-border);
+  border-radius:10px;color:var(--text);font-family:inherit;font-size:13px;outline:none;
+}
+.scan-fallback input:focus{border-color:var(--accent-sky);}
+.scan-fallback button{
+  padding:8px 16px;font-family:'Baloo 2',cursive;font-size:13px;font-weight:700;
+  background:var(--accent-sky);border:none;border-radius:10px;color:#fff;cursor:pointer;
+}
+
+/* Home page: two entry-point cards */
+.entry-row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;max-width:640px;margin-top:8px;}
+.entry-card{
+  width:260px;background:var(--card-front);border:2px solid var(--card-border);
+  border-radius:var(--r-lg);padding:16px 16px 14px;cursor:pointer;
+  transition:transform .15s, border-color .15s, box-shadow .2s;text-align:left;
+}
+.entry-card:active{transform:scale(0.97);}
+.entry-card.scan:hover{border-color:var(--accent-violet);box-shadow:0 0 24px rgba(177,151,252,0.3);}
+.entry-card.quick:hover{border-color:var(--accent-sky);box-shadow:0 0 24px rgba(77,171,247,0.25);}
+.entry-badge{display:inline-block;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:3px 9px;border-radius:12px;margin-bottom:7px;}
+.entry-card.scan .entry-badge{background:rgba(177,151,252,0.14);color:var(--accent-violet);}
+.entry-card.quick .entry-badge{background:rgba(77,171,247,0.14);color:var(--accent-sky);}
+.entry-name{font-family:'Baloo 2',cursive;font-size:19px;font-weight:700;margin-bottom:5px;color:#fff;}
+.entry-desc{font-size:12px;line-height:1.4;color:var(--text-dim);}
+.entry-icon{font-size:28px;margin-bottom:6px;line-height:1;}
+
 #loading.active{display:flex;}
 .spinner{width:38px;height:38px;border:3px solid #1e2d4d;border-top-color:var(--accent-sky);border-radius:50%;animation:spin .7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
 .loading-text{font-family:'Baloo 2',cursive;font-size:14px;color:var(--text-dim);}
 
+/* Summary */
 #summary{flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:18px 28px;text-align:center;background:radial-gradient(ellipse at 50% 40%,rgba(81,207,152,0.05) 0%,transparent 50%);}
 .sum-trophy{font-size:46px;line-height:1;}
 .sum-title{font-family:'Baloo 2',cursive;font-size:28px;font-weight:800;background:linear-gradient(135deg,var(--accent-gold),var(--accent-mint));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
@@ -244,32 +370,90 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 </head>
 <body>
 
+<!-- HOME screen -->
 <div id="home" class="screen active">
   <div class="logo">PROMPT!</div>
   <div class="logo-sub">AI Literacy · Spoken Reflection</div>
-  <div class="home-tagline">Read the card, say what you notice out loud, and learn how to see through AI and online framing.</div>
-  <div class="mode-title">Pick your deck</div>
-  <div class="mode-row">
-    <div class="mode-card" data-mode="discernment" onclick="selectMode('discernment', this)">
-      <div class="mode-badge disc">Discernment</div>
-      <div class="mode-name">Spot the Frame</div>
-      <div class="mode-desc">Read two stories about the same thing. Can you tell which lens is pulling you in?</div>
+  <div class="home-tagline">Read a card, say what you notice out loud, and learn to see through AI and online framing.</div>
+
+  <div class="entry-row">
+    <div class="entry-card scan" onclick="openScanner()">
+      <div class="entry-icon">📷</div>
+      <div class="entry-badge">Scan Mode</div>
+      <div class="entry-name">Scan a Card</div>
+      <div class="entry-desc">Hold a physical card in front of the camera. Learn one card at a time — scan the next when you're ready.</div>
     </div>
-    <div class="mode-card" data-mode="usage" onclick="selectMode('usage', this)">
-      <div class="mode-badge usage">AI Usage</div>
-      <div class="mode-name">Better Prompts</div>
-      <div class="mode-desc">The AI gave a biased or messy answer. What would you ask to fix it?</div>
-    </div>
-    <div class="mode-card selected" data-mode="mixed" onclick="selectMode('mixed', this)">
-      <div class="mode-badge mix">Mixed</div>
-      <div class="mode-name">Full Deck</div>
-      <div class="mode-desc">A balanced run through both decks. Great for a first game.</div>
+    <div class="entry-card quick" onclick="openQuickPlay()">
+      <div class="entry-icon">🎲</div>
+      <div class="entry-badge">Quick Play</div>
+      <div class="entry-name">Random Deck</div>
+      <div class="entry-desc">No cards in hand? Pick a mode and get 6 cards dealt for you. Great for a first game.</div>
     </div>
   </div>
-  <button class="start-btn" id="start-btn" onclick="startGame()">Start Game</button>
+
+  <!-- Quick Play drawer: mode picker, hidden until "Random Deck" is tapped -->
+  <div id="quickplay-drawer" style="display:none;flex-direction:column;align-items:center;gap:12px;margin-top:4px;">
+    <div class="mode-title">Pick your deck</div>
+    <div class="mode-row">
+      <div class="mode-card" data-mode="discernment" onclick="selectMode('discernment', this)">
+        <div class="mode-badge disc">Discernment</div>
+        <div class="mode-name">Spot the Frame</div>
+        <div class="mode-desc">Read two stories about the same thing. Can you tell which lens is pulling you in?</div>
+      </div>
+      <div class="mode-card" data-mode="usage" onclick="selectMode('usage', this)">
+        <div class="mode-badge usage">AI Usage</div>
+        <div class="mode-name">Better Prompts</div>
+        <div class="mode-desc">The AI gave a biased or messy answer. What would you ask to fix it?</div>
+      </div>
+      <div class="mode-card selected" data-mode="mixed" onclick="selectMode('mixed', this)">
+        <div class="mode-badge mix">Mixed</div>
+        <div class="mode-name">Full Deck</div>
+        <div class="mode-desc">A balanced run through both decks. Great for a first game.</div>
+      </div>
+    </div>
+    <button class="start-btn" id="start-btn" onclick="startGame()">Start Game</button>
+  </div>
+
   <div class="home-hint">say what you think · no multiple choice · every answer counts</div>
 </div>
 
+<!-- SCAN screen -->
+<div id="scan" class="screen">
+  <div class="scan-header">
+    <button class="scan-back-btn" onclick="backToHome()">← Back</button>
+    <div class="scan-title">Show me a card</div>
+    <div style="width:66px;"></div><!-- spacer to keep title centered -->
+  </div>
+  <div class="scan-subtitle">Hold the card steady inside the box. I'll read the number and title.</div>
+
+  <div class="scan-viewport">
+    <video id="scan-video" autoplay playsinline muted></video>
+    <div class="scan-frame" id="scan-frame"></div>
+    <div class="scan-laser" id="scan-laser"></div>
+  </div>
+
+  <div class="scan-status" id="scan-status">Starting camera...</div>
+  <div class="scan-preview-text" id="scan-preview-text">—</div>
+
+  <!-- When OCR gets a confident match, this panel appears with Confirm/Rescan -->
+  <div class="scan-candidate" id="scan-candidate">
+    <div class="scan-candidate-label">Detected</div>
+    <div class="scan-candidate-title" id="scan-candidate-title">—</div>
+    <div class="scan-candidate-meta" id="scan-candidate-meta">—</div>
+    <div class="scan-candidate-row">
+      <button class="rescan" onclick="rescanCard()">Rescan</button>
+      <button class="confirm" onclick="confirmScan()">Yes, that's it</button>
+    </div>
+  </div>
+
+  <!-- Manual-entry fallback when OCR keeps failing -->
+  <div class="scan-fallback">
+    <input id="scan-manual-input" type="text" placeholder="Or type the card number, e.g. 14" inputmode="numeric">
+    <button onclick="manualEntry()">Go</button>
+  </div>
+</div>
+
+<!-- GAME screen -->
 <div id="game" class="screen">
   <div class="card-side">
     <div class="game-top-bar">
@@ -334,11 +518,12 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
       <div class="mic-ring" id="mic-ring" onclick="onMicTap()">
         <div class="mic-icon" id="mic-icon">🎤</div>
       </div>
-      <div class="voice-status" id="voice-status">Tap to speak</div>
+      <div class="voice-status" id="voice-status">Tap to speak · up to 15s</div>
       <div class="voice-transcript" id="voice-transcript"></div>
     </div>
 
     <div class="voice-bottom">
+      <!-- Coach + follow-up chat stack. Scrolls internally. -->
       <div class="coach-stack" id="coach-stack">
         <div class="reaction-bubble" id="reaction-bubble">
           <span class="bubble-lead">Coach Says</span>
@@ -352,15 +537,18 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
           <span class="bubble-lead">Ask Me Anything</span>
           <span id="invite-text"></span>
         </div>
+        <!-- Follow-up Q&A pairs are appended here -->
         <div id="followup-thread"></div>
         <div class="followup-counter" id="followup-counter"></div>
       </div>
 
+      <!-- Before answering: Skip + End game -->
       <div class="btn-row" id="pre-answer-row">
         <button class="action-btn skip" onclick="skipAnswer()">Skip card</button>
         <button class="action-btn end" onclick="endGameEarly()">End game</button>
       </div>
 
+      <!-- After answering: Next card + End game (main row) -->
       <div class="btn-row" id="post-answer-row" style="display:none;">
         <button class="action-btn next" id="next-btn" onclick="nextCard()">Next Card →</button>
         <button class="action-btn end" onclick="endGameEarly()">End game</button>
@@ -369,8 +557,10 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
   </div>
 </div>
 
+<!-- Loading overlay -->
 <div id="loading"><div class="spinner"></div><div class="loading-text" id="loading-text">Thinking...</div></div>
 
+<!-- SUMMARY screen -->
 <div id="summary" class="screen">
   <div class="sum-trophy" id="sum-trophy">🏆</div>
   <div class="sum-title">Game Complete!</div>
@@ -411,6 +601,7 @@ const TIER_UI = {
   silent:  { icon:'🤫', title:'Skipped',        cls:'incorrect' },
 };
 
+// ── Game state ──
 let sessionId = null;
 let currentCard = null;
 let currentIdx = 0;
@@ -419,17 +610,47 @@ let totalScore = 0;
 let maxScore = 0;
 let results = [];
 
+// UI state machine: 'answering' | 'followup' | 'done'
+// 'answering' — mic captures the card answer
+// 'followup'  — mic captures a follow-up question about the card
+// 'done'      — summary screen, mic hidden
 let uiPhase = 'answering';
+
 let followupsUsed = 0;
 let followupsAllowed = 4;
 
+// ── Recording state ──
 let isRecording = false;
 let mediaRecorder = null;
 let audioChunks = [];
 let selectedMode = 'mixed';
 let audioPlayer = null;
-let micStream = null;
 
+let micStream = null;
+let audioContext = null;
+let analyser = null;
+let silenceCheckTimer = null;
+let silenceStartedAt = null;
+let stopRequested = false;
+
+// ═══ Scan state (v4) ═══
+// `scanIndex` is the list of {id, id_num, title, body_snip} entries we fetched
+// from the server once. Every OCR frame matches against this in-memory list,
+// so recognition is server-free after the initial fetch.
+let scanIndex = null;
+let scanStream = null;          // MediaStream for the camera
+let scanWorker = null;          // Tesseract worker (reused across frames)
+let scanLoopTimer = null;       // setInterval handle for the OCR frame loop
+let scanBusy = false;           // true while one OCR pass is in flight
+let scanActive = false;         // true when the scan screen is open + live
+let scanCandidate = null;       // the last card we're proposing to the user
+let scanConsecutiveHits = 0;    // how many frames in a row said the same card
+let scanLastSeenId = null;      // which card id the previous frame matched
+// True when the current game session was started by a card scan. Affects
+// the post-answer flow (we show "Scan Next Card" instead of "Next Card →").
+let isScanSession = false;
+
+// ── Screen helpers ──
 function showScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
@@ -447,8 +668,355 @@ function selectMode(mode, el){
 }
 function goHome(){
   stopAudio();
+  stopScanner();
   showScreen('home');
   document.getElementById('start-btn').disabled = false;
+  document.getElementById('quickplay-drawer').style.display = 'none';
+}
+
+// ═══ Scan flow (v4) ═══════════════════════════════════════════
+
+// Reveal the Quick Play mode picker on the home screen.
+function openQuickPlay(){
+  document.getElementById('quickplay-drawer').style.display = 'flex';
+}
+
+// Enter the scan screen — triggered by the "Scan a Card" entry card on Home,
+// and re-entered between cards by the post-answer "Scan Next Card" button.
+async function openScanner(){
+  showScreen('scan');
+  resetScanUI();
+  setScanStatus('Starting camera...', null);
+
+  // Fetch the card index once per app lifetime — it's tiny (~40 entries).
+  if (!scanIndex) {
+    try {
+      const r = await fetch(`${API}/api/scan_index`);
+      const d = await r.json();
+      scanIndex = d.cards || [];
+    } catch (e) {
+      setScanStatus('Could not load card list. Check the server.', 'error');
+      return;
+    }
+  }
+
+  // Ask for camera access. On Jetson/localhost this should grant immediately.
+  try {
+    scanStream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } },
+      audio: false,
+    });
+  } catch (e) {
+    setScanStatus('Camera access denied. Try a USB webcam or check permissions.', 'error');
+    return;
+  }
+
+  const video = document.getElementById('scan-video');
+  video.srcObject = scanStream;
+  await video.play().catch(() => {});
+
+  // Spin up Tesseract worker lazily. ~8MB download first time, cached after.
+  if (!scanWorker) {
+    setScanStatus('Loading reader... (first time only)', 'detecting');
+    try {
+      scanWorker = await Tesseract.createWorker('eng');
+      // Tune for printed card text. PSM 6 = "assume a uniform block of text"
+      // which handles our 2-paragraph card faces well.
+      await scanWorker.setParameters({
+        tessedit_pageseg_mode: '6',
+        tessedit_char_whitelist:
+          'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789#!?.,\'"- ',
+      });
+    } catch (e) {
+      setScanStatus('OCR setup failed. Try typing the card number instead.', 'error');
+      return;
+    }
+  }
+
+  scanActive = true;
+  setScanStatus('Hold the card steady', null);
+  startScanLoop();
+}
+
+// Leave the scan screen and tear everything down so we don't pin camera/CPU.
+function stopScanner(){
+  scanActive = false;
+  if (scanLoopTimer) { clearInterval(scanLoopTimer); scanLoopTimer = null; }
+  if (scanStream) {
+    scanStream.getTracks().forEach(t => t.stop());
+    scanStream = null;
+  }
+  // Keep scanWorker alive — reinitialising costs ~2s and the worker is only
+  // ~8MB of RAM. Terminate explicitly if the tab becomes memory-pressured.
+}
+
+function backToHome(){
+  stopScanner();
+  showScreen('home');
+}
+
+function resetScanUI(){
+  scanCandidate = null;
+  scanConsecutiveHits = 0;
+  scanLastSeenId = null;
+  document.getElementById('scan-candidate').classList.remove('active');
+  document.getElementById('scan-preview-text').textContent = '—';
+  document.getElementById('scan-frame').className = 'scan-frame';
+  const input = document.getElementById('scan-manual-input');
+  if (input) input.value = '';
+}
+
+function setScanStatus(text, cls){
+  const el = document.getElementById('scan-status');
+  el.textContent = text;
+  el.className = 'scan-status' + (cls ? ' ' + cls : '');
+}
+
+// The OCR frame loop: every ~1.2s we grab the center of the video, send it to
+// Tesseract, and try to match whatever comes back to a card in scanIndex.
+// 1.2s is slow enough that the worker never backs up and the preview stays
+// smooth, and fast enough that a steady card is recognized in 1-2 frames.
+function startScanLoop(){
+  if (scanLoopTimer) clearInterval(scanLoopTimer);
+  scanLoopTimer = setInterval(() => {
+    if (!scanActive || scanBusy || scanCandidate) return;
+    grabAndRecognise();
+  }, 1200);
+}
+
+async function grabAndRecognise(){
+  scanBusy = true;
+  try {
+    const video = document.getElementById('scan-video');
+    if (!video.videoWidth) { scanBusy = false; return; }
+
+    // Crop to the scanning frame region (matches the dashed box in the UI:
+    // inset 14% vertical, 10% horizontal). Cropping before OCR cuts noise
+    // from the background and speeds recognition by ~3x on Jetson.
+    const vw = video.videoWidth, vh = video.videoHeight;
+    const sx = Math.round(vw * 0.10);
+    const sy = Math.round(vh * 0.14);
+    const sw = Math.round(vw * 0.80);
+    const sh = Math.round(vh * 0.72);
+
+    const canvas = document.createElement('canvas');
+    canvas.width = sw;
+    canvas.height = sh;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(video, sx, sy, sw, sh, 0, 0, sw, sh);
+
+    const { data } = await scanWorker.recognize(canvas);
+    const text = (data.text || '').trim();
+    document.getElementById('scan-preview-text').textContent = text || '—';
+    matchAgainstIndex(text);
+  } catch (e) {
+    console.warn('[scan] OCR error:', e);
+  } finally {
+    scanBusy = false;
+  }
+}
+
+// Fuzzy matcher: runs against the pre-fetched card index.
+// Two independent signals must both agree:
+//   1. id_num: find a "#NN" or bare number in the OCR output
+//   2. title fuzzy score: share of distinctive title words also in OCR text
+// Minimum confidence = both signals agree OR one signal is very strong.
+function matchAgainstIndex(rawText){
+  if (!scanIndex || !scanIndex.length) return;
+
+  const lower = rawText.toLowerCase();
+  // Strip weird whitespace / line breaks for keyword matching.
+  const flat  = lower.replace(/[^a-z0-9#! ]+/g, ' ').replace(/\s+/g, ' ').trim();
+
+  // Signal 1 — extract ID candidates (prefer "#NN", fall back to bare numbers
+  // that look like card IDs: 1-2 digits within our known range).
+  const idCandidates = new Set();
+  const hashMatches = rawText.match(/#\s*(\d{1,3})/g) || [];
+  for (const h of hashMatches) {
+    idCandidates.add(h.replace(/[^\d]/g, '').replace(/^0+/, '') || '0');
+  }
+  // Also look for bare 1-3 digit numbers — card IDs in this game go 1..60ish.
+  const bareNums = rawText.match(/\b(\d{1,3})\b/g) || [];
+  for (const n of bareNums) {
+    const canon = n.replace(/^0+/, '') || '0';
+    if (parseInt(canon, 10) >= 1 && parseInt(canon, 10) <= 200) {
+      idCandidates.add(canon);
+    }
+  }
+
+  // Score each card in the index.
+  let best = null;
+  let bestScore = 0;
+  for (const c of scanIndex) {
+    const idHit = idCandidates.has(c.id_num);
+
+    // Signal 2 — count distinctive title words present in the OCR text.
+    // "distinctive" = length >= 4, skipping common articles.
+    const titleWords = c.title.toLowerCase()
+      .split(/[^a-z0-9]+/)
+      .filter(w => w.length >= 4);
+    const titleHits = titleWords.filter(w => flat.includes(w)).length;
+    const titleScore = titleWords.length ? titleHits / titleWords.length : 0;
+
+    // Signal 3 (weak) — body snippet overlap, just for tiebreaking.
+    const bodyHits = c.body_snip
+      .split(/[^a-z0-9]+/)
+      .filter(w => w.length >= 5 && flat.includes(w)).length;
+
+    // Combine. Both-signals-agree is the strong path; a single overwhelming
+    // signal (ID plus ANY title overlap, or very high title score alone) also
+    // passes but with lower confidence.
+    let score = 0;
+    if (idHit && titleScore >= 0.25)   score = 100 + titleHits * 5 + bodyHits;
+    else if (idHit && titleScore > 0)  score = 70  + titleHits * 5;
+    else if (idHit)                     score = 40; // id-only — needs confirmation
+    else if (titleScore >= 0.5)        score = 60  + bodyHits; // title-strong
+    else                                 score = 0;
+
+    if (score > bestScore) {
+      bestScore = score;
+      best = c;
+    }
+  }
+
+  // Decide whether we have enough confidence to show a candidate.
+  // We ALSO require the same match on two consecutive frames before showing
+  // the confirmation card — prevents flickering on a jittery camera.
+  if (best && bestScore >= 70) {
+    if (scanLastSeenId === best.id) scanConsecutiveHits++;
+    else { scanLastSeenId = best.id; scanConsecutiveHits = 1; }
+
+    if (scanConsecutiveHits >= 1 && bestScore >= 100) {
+      showScanCandidate(best);
+    } else if (scanConsecutiveHits >= 2) {
+      showScanCandidate(best);
+    } else {
+      document.getElementById('scan-frame').className = 'scan-frame detecting';
+      setScanStatus(`Looks like ${best.id} — hold steady`, 'detecting');
+    }
+  } else if (best && bestScore >= 40) {
+    setScanStatus(`Saw number — hold a bit closer`, 'detecting');
+    document.getElementById('scan-frame').className = 'scan-frame detecting';
+    scanConsecutiveHits = 0;
+    scanLastSeenId = null;
+  } else {
+    scanConsecutiveHits = 0;
+    scanLastSeenId = null;
+    setScanStatus('Looking for a card...', null);
+    document.getElementById('scan-frame').className = 'scan-frame';
+  }
+}
+
+function showScanCandidate(card){
+  scanCandidate = card;
+  document.getElementById('scan-candidate-title').textContent = card.title;
+  document.getElementById('scan-candidate-meta').textContent =
+    `${card.id}  ·  ${card.category}  ·  ${card.difficulty}`;
+  document.getElementById('scan-candidate').classList.add('active');
+  document.getElementById('scan-frame').className = 'scan-frame matched';
+  setScanStatus(`Detected ${card.id}: ${card.title}`, 'matched');
+}
+
+function rescanCard(){
+  scanCandidate = null;
+  scanConsecutiveHits = 0;
+  scanLastSeenId = null;
+  document.getElementById('scan-candidate').classList.remove('active');
+  document.getElementById('scan-frame').className = 'scan-frame';
+  setScanStatus('Looking for a card...', null);
+}
+
+// Confirm the detected card and start / extend the game session.
+async function confirmScan(){
+  if (!scanCandidate) return;
+  const chosenId = scanCandidate.id;
+  scanCandidate = null;
+  stopScanner();
+
+  if (sessionId && isScanSession) {
+    // Mid-game: append this card to the running session's deck.
+    await appendScannedCard(chosenId);
+  } else {
+    // First card: start a fresh single-card session.
+    await startScanSession(chosenId);
+  }
+}
+
+// Manual fallback — typing "14" or "#14" directly.
+async function manualEntry(){
+  const raw = (document.getElementById('scan-manual-input').value || '').trim();
+  if (!raw) return;
+  const canon = '#' + raw.replace(/[^\d]/g, '').replace(/^0+/, '');
+  stopScanner();
+  if (sessionId && isScanSession) {
+    await appendScannedCard(canon);
+  } else {
+    await startScanSession(canon);
+  }
+}
+
+async function startScanSession(cardId){
+  showLoading('Loading card...');
+  try {
+    const r = await fetch(`${API}/api/start_single`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ card_id: cardId }),
+    });
+    const d = await r.json();
+    hideLoading();
+    if (d.error) { alert(d.error); backToHome(); return; }
+
+    sessionId = d.session_id;
+    totalCards = d.total_cards;
+    currentCard = d.card;
+    currentIdx = 0;
+    totalScore = 0;
+    maxScore = totalCards * 10;
+    results = [];
+    isScanSession = true;
+
+    showScreen('game');
+    renderCard();
+    await readCardAloud(true);
+  } catch (e) {
+    hideLoading();
+    alert('Cannot reach the server.');
+    backToHome();
+  }
+}
+
+async function appendScannedCard(cardId){
+  showLoading('Loading card...');
+  try {
+    const r = await fetch(`${API}/api/append_card`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ session_id: sessionId, card_id: cardId }),
+    });
+    const d = await r.json();
+    hideLoading();
+    if (d.error === 'already_seen') {
+      alert('You already played that card in this session. Try a different one.');
+      openScanner();
+      return;
+    }
+    if (d.error) { alert(d.error); openScanner(); return; }
+
+    // Extend local state to point at the new card.
+    totalCards = d.total_cards;
+    maxScore = totalCards * 10;
+    currentIdx = totalCards - 1;       // newly appended slot
+    currentCard = d.card;
+
+    showScreen('game');
+    renderCard();
+    await readCardAloud(false);
+  } catch (e) {
+    hideLoading();
+    alert('Cannot reach the server.');
+    openScanner();
+  }
 }
 
 async function stopAudio(){
@@ -458,6 +1026,7 @@ async function stopAudio(){
   }
 }
 
+// ── TTS: single-call, no chaining (v3 pattern kept) ──
 async function speak(text, tone='narrator'){
   if (!text || !text.trim()) return;
   try {
@@ -498,6 +1067,7 @@ async function startGame(){
     totalScore = 0;
     maxScore = totalCards * 10;
     results = [];
+    isScanSession = false;
     hideLoading();
     showScreen('game');
     renderCard();
@@ -549,20 +1119,23 @@ function renderCard(){
   }
   document.getElementById('score-pill').textContent = `${totalScore} pts`;
 
+  // Voice panel reset
   document.getElementById('voice-label').textContent = 'Your Turn';
   document.getElementById('prompt-bubble').textContent =
     PTYPE_QUESTION[c.problem_type] || "Say what you notice out loud.";
 
+  // Coach stack: clear everything
   document.getElementById('reaction-bubble').style.display = 'none';
   document.getElementById('habit-bubble').style.display = 'none';
   document.getElementById('invite-bubble').style.display = 'none';
   document.getElementById('followup-thread').innerHTML = '';
   document.getElementById('followup-counter').style.display = 'none';
 
-  document.getElementById('voice-status').textContent = 'Tap to speak';
+  document.getElementById('voice-status').textContent = 'Tap to speak · up to 15s';
   document.getElementById('voice-status').className = 'voice-status';
   document.getElementById('voice-transcript').textContent = '';
 
+  // Button rows: show answering row, hide post-answer row
   document.getElementById('pre-answer-row').style.display = 'flex';
   document.getElementById('post-answer-row').style.display = 'none';
 
@@ -602,12 +1175,46 @@ async function readCardAloud(includeWelcome=false){
   await speak(parts.join(' '), 'narrator');
 }
 
+// ── Mic + audio monitoring (from v3, unchanged) ──
+function cleanupAudioMonitoring(){
+  if (silenceCheckTimer){ clearInterval(silenceCheckTimer); silenceCheckTimer = null; }
+  silenceStartedAt = null;
+  if (audioContext){ try { audioContext.close(); } catch(e){} audioContext = null; }
+  analyser = null;
+}
+function getAverageVolume(dataArray){
+  let sum = 0;
+  for (let i = 0; i < dataArray.length; i++) sum += Math.abs(dataArray[i] - 128);
+  return sum / dataArray.length;
+}
+function startSilenceDetection(){
+  if (!analyser) return;
+  const dataArray = new Uint8Array(analyser.fftSize);
+  const SILENCE_THRESHOLD = 6;
+  const SILENCE_DURATION_MS = 1200;
+  const MIN_RECORDING_MS = 800;
+  const startedAt = Date.now();
+  silenceCheckTimer = setInterval(() => {
+    if (!isRecording || !mediaRecorder || mediaRecorder.state !== 'recording') return;
+    analyser.getByteTimeDomainData(dataArray);
+    const volume = getAverageVolume(dataArray);
+    const now = Date.now();
+    if (now - startedAt < MIN_RECORDING_MS) return;
+    if (volume < SILENCE_THRESHOLD){
+      if (!silenceStartedAt) silenceStartedAt = now;
+      else if (now - silenceStartedAt >= SILENCE_DURATION_MS) stopRecording();
+    } else {
+      silenceStartedAt = null;
+    }
+  }, 150);
+}
 function resetMicBtn(){
   const ring = document.getElementById('mic-ring');
   ring.className = 'mic-ring';
   document.getElementById('mic-icon').textContent = '🎤';
 }
 
+// Mic tap behaviour depends on phase — this is the entry point from the UI.
 async function onMicTap(){
   if (uiPhase === 'done') return;
   if (isRecording) {
@@ -622,29 +1229,27 @@ async function startRecording(){
     micStream = await navigator.mediaDevices.getUserMedia({ audio:true });
     mediaRecorder = new MediaRecorder(micStream, { mimeType:'audio/webm' });
     audioChunks = [];
-
-    mediaRecorder.ondataavailable = e => {
-      if (e.data.size > 0) audioChunks.push(e.data);
-    };
-
+    stopRequested = false;
+    mediaRecorder.ondataavailable = e => { if (e.data.size > 0) audioChunks.push(e.data); };
     mediaRecorder.onstop = () => {
-      if (micStream){
-        micStream.getTracks().forEach(t => t.stop());
-        micStream = null;
-      }
+      if (micStream){ micStream.getTracks().forEach(t => t.stop()); micStream = null; }
+      cleanupAudioMonitoring();
       processVoice();
     };
-
     mediaRecorder.start();
     isRecording = true;
-
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const source = audioContext.createMediaStreamSource(micStream);
+    analyser = audioContext.createAnalyser();
+    analyser.fftSize = 2048;
+    source.connect(analyser);
+    startSilenceDetection();
     document.getElementById('mic-ring').classList.add('recording');
     document.getElementById('mic-icon').textContent = '⏹';
-
     const st = document.getElementById('voice-status');
     st.textContent = uiPhase === 'followup'
-      ? '🎤 Ask me anything about this card... tap again when you are done'
-      : '🎤 Listening... tap again when you are done';
+      ? '🎤 Ask me anything about this card...'
+      : '🎤 Listening... pause when you are done';
     st.className = 'voice-status highlight';
   } catch(e) {
     document.getElementById('voice-status').textContent = 'Mic access denied';
@@ -652,17 +1257,15 @@ async function startRecording(){
 }
 
 function stopRecording(){
-  if (!mediaRecorder || mediaRecorder.state !== 'recording') return;
-
+  if (!mediaRecorder || mediaRecorder.state !== 'recording' || stopRequested) return;
+  stopRequested = true;
   isRecording = false;
-
+  cleanupAudioMonitoring();
   const ring = document.getElementById('mic-ring');
   ring.classList.remove('recording');
   ring.classList.add('processing');
-
   document.getElementById('mic-icon').textContent = '⏳';
   document.getElementById('voice-status').textContent = 'Transcribing...';
-
   mediaRecorder.stop();
 }
 
@@ -683,6 +1286,7 @@ async function processVoice(){
     }
     document.getElementById('voice-transcript').textContent = `"${text}"`;
 
+    // Route the transcribed text based on phase.
     if (uiPhase === 'followup') {
       await submitFollowup(text);
     } else {
@@ -774,6 +1378,7 @@ async function revealAnswer(data){
 
   setTimeout(()=> document.getElementById('card-flipper').classList.add('flipped'), 350);
 
+  // Three feedback bubbles — reaction + habit + invite
   const reaction = data.feedback.reaction || '';
   const habit    = data.feedback.habit || '';
   const invite   = data.feedback.invite || 'Anything about this you want to dig into?';
@@ -788,9 +1393,11 @@ async function revealAnswer(data){
   hBubble.style.display = habit ? 'block' : 'none';
   iBubble.style.display = 'block';
 
+  // Stash next-card payload so nextCard() can advance without a repeat fetch.
   window._nextCard = data.next_card || null;
   window._hasNext = !!data.has_next;
 
+  // Switch to post-answer UI: Next card + End game visible, mic now asks follow-ups.
   uiPhase = 'followup';
   document.getElementById('pre-answer-row').style.display = 'none';
   document.getElementById('post-answer-row').style.display = 'flex';
@@ -800,10 +1407,17 @@ async function revealAnswer(data){
   document.getElementById('voice-status').className = 'voice-status';
 
   const nextBtn = document.getElementById('next-btn');
-  nextBtn.textContent = data.has_next ? 'Next Card →' : 'See My Results →';
+  // In scan sessions there is no pre-loaded next card. The button sends the
+  // child back to the scanner screen to grab another physical card.
+  if (data.is_scan_session || isScanSession) {
+    nextBtn.textContent = 'Scan Next Card 📷';
+  } else {
+    nextBtn.textContent = data.has_next ? 'Next Card →' : 'See My Results →';
+  }
 
   updateFollowupCounter();
 
+  // One merged warm-tone clip — reaction + habit + invite.
   const feedbackText = [
     (tier === 'deep' || tier === 'mid') ? 'Nice catch.' : '',
     reaction, habit, invite,
@@ -812,6 +1426,8 @@ async function revealAnswer(data){
     await speak(feedbackText, 'warm');
   }
 }
+
+// ── Follow-up turn ──
 
 function updateFollowupCounter(){
   const el = document.getElementById('followup-counter');
@@ -835,6 +1451,7 @@ function appendQATurn(question, answer){
     </div>
   `;
   thread.appendChild(turn);
+  // Scroll the coach-stack to the bottom so the latest turn is in view.
   const stack = document.getElementById('coach-stack');
   stack.scrollTop = stack.scrollHeight;
 }
@@ -883,6 +1500,15 @@ async function submitFollowup(question){
 
 async function nextCard(){
   await stopAudio();
+
+  // Scan session path: re-open the scanner screen instead of auto-advancing.
+  // The child physically scans the next card; /api/append_card picks it up
+  // from there via confirmScan() → appendScannedCard().
+  if (isScanSession) {
+    openScanner();
+    return;
+  }
+
   if (!window._hasNext || !window._nextCard){
     await showSummary();
     return;
@@ -929,6 +1555,7 @@ async function showSummary(){
       ce.appendChild(div);
     }
 
+    // Follow-up count line — show only when the child actually asked questions.
     const fuWrap = document.getElementById('sum-followups');
     const fuCount = d.total_followups || 0;
     if (fuCount > 0) {

@@ -73,6 +73,56 @@ def load_all_cards() -> Dict[str, List[Dict[str, Any]]]:
     usage = _load_file(USAGE_PATH,"usage")
     return {"discernment":disc,"usage":usage,"all":disc+usage}
 
+def get_card_by_id(card_id: str) -> Dict[str, Any] | None:
+    """
+    Look up a single card by its `card_id` (e.g. "#14" or "14").
+    Accepts IDs with or without the leading '#', with or without leading zeros.
+    """
+    if not card_id:
+        return None
+    raw = str(card_id).strip().lstrip("#").lstrip("0") or "0"
+    all_cards = load_all_cards()["all"]
+    for c in all_cards:
+        cid = str(c.get("id", "")).lstrip("#").lstrip("0") or "0"
+        if cid == raw:
+            return c
+    return None
+
+
+def build_scan_index() -> List[Dict[str, Any]]:
+    """
+    Build a compact card index for the frontend scanner.
+
+    Each entry has the absolute minimum the OCR matcher needs:
+      - id        : "#14"
+      - id_num    : "14" (canonical, no '#', no leading zeros)
+      - title     : card title
+      - body_snip : first 80 chars of body, lowercased, for fuzzy matching
+
+    The frontend ships this list to the OCR loop so we can match offline
+    without round-tripping candidate strings to the server every frame.
+    """
+    out = []
+    for c in load_all_cards()["all"]:
+        raw_id = str(c.get("id", "")).strip()
+        id_num = raw_id.lstrip("#").lstrip("0") or "0"
+        body = c.get("body") or []
+        if isinstance(body, list):
+            body_text = " ".join(body)
+        else:
+            body_text = str(body)
+        out.append({
+            "id": raw_id,
+            "id_num": id_num,
+            "title": c.get("title", ""),
+            "category": c.get("category", ""),
+            "problem_type": c.get("problem_type", ""),
+            "difficulty": c.get("difficulty", ""),
+            "body_snip": (body_text[:120] or "").lower(),
+        })
+    return out
+
+
 def pick_deck(mode: str, n: int = 6) -> List[Dict[str, Any]]:
     import random
     decks = load_all_cards()

@@ -21,7 +21,7 @@ from fastapi.responses import FileResponse, HTMLResponse
 from pydantic import BaseModel
 
 import tts
-from cards_loader import pick_deck
+from cards_loader import build_scan_index, get_card_by_id, pick_deck
 from llm import (
     answer_followup,
     generate_feedback,
@@ -51,6 +51,23 @@ _sessions: Dict[str, Dict[str, Any]] = {}
 class StartRequest(BaseModel):
     mode: str = "mixed"
     num_cards: Optional[int] = None
+
+
+class StartSingleRequest(BaseModel):
+    """Start a single-card session triggered by a card scan.
+
+    A single-card session is a 1-card deck; the scan flow will grow it by
+    appending more cards as the child scans them. This keeps the per-card
+    bookkeeping (follow-ups, feedback history) identical to the normal
+    multi-card flow.
+    """
+    card_id: str
+
+
+class AppendCardRequest(BaseModel):
+    """Append a freshly-scanned card to an existing session's deck."""
+    session_id: str
+    card_id: str
 
 
 class AnswerRequest(BaseModel):
@@ -181,6 +198,94 @@ async def start_game(req: StartRequest) -> Dict[str, Any]:
     }
 
 
+# ═══ Scan-flow routes (NEW in v4) ═══
+
+@app.get("/api/scan_index")
+async def scan_index() -> Dict[str, Any]:
+    """
+    Return a compact card index the frontend OCR loop matches against.
+
+    Shipped once at the start of the scan flow, so every subsequent frame
+    is matched locally in the browser without a server round-trip.
+    """
+    return {"cards": build_scan_index()}
+
+
+@app.post("/api/start_single")
+async def start_single(req: StartSingleRequest) -> Dict[str, Any]:
+    """
+    Start a new session from ONE scanned card.
+
+    The session's deck begins with just that one card. The child can later
+    scan additional cards via /api/append_card, which extends the deck.
+    Total-cards in the UI becomes "cards scanned so far" rather than a
+    fixed target, and Summary honours that.
+    """
+    card = get_card_by_id(req.card_id)
+    if not card:
+        return {"error": f"Card '{req.card_id}' not found"}
+
+    session_id = f"s_{int(time.time() * 1000)}"
+    _sessions[session_id] = {
+        "mode": "scan",         # marker so summary knows how to phrase things
+        "deck": [card],
+        "index": 0,
+        "total_cards": 1,
+        "score": 0,
+        "per_mode": {},
+        "history": [],
+        "is_scan_session": True,
+    }
+    return {
+        "session_id": session_id,
+        "mode": "scan",
+        "total_cards": 1,
+        "card": _public_card(card),
+    }
+
+
+@app.post("/api/append_card")
+async def append_card(req: AppendCardRequest) -> Dict[str, Any]:
+    """
+    Append a newly-scanned card to an existing scan session and advance
+    the index to it (so /api/answer hits the new card next).
+
+    Safety rails:
+      - Only works on sessions created via /api/start_single.
+      - Refuses to append a card the child has already answered.
+      - The previous card must be answered first; otherwise there's a
+        stuck index that /api/answer would try to re-enter.
+    """
+    session = _sessions.get(req.session_id)
+    if not session:
+        return {"error": "Invalid session"}
+    if not session.get("is_scan_session"):
+        return {"error": "This session is not a scan session"}
+
+    # The prior card must have been answered before the next one is appended.
+    # `index` points at the *next* slot to answer; if it equals the deck size,
+    # all current cards are answered and we are ready for a new one.
+    if session["index"] != session["total_cards"]:
+        return {"error": "Finish answering the current card first."}
+
+    # De-dup: same id cannot appear twice.
+    answered_ids = {c["id"] for c in session["deck"]}
+    card = get_card_by_id(req.card_id)
+    if not card:
+        return {"error": f"Card '{req.card_id}' not found"}
+    if card["id"] in answered_ids:
+        return {"error": "already_seen", "card_id": card["id"]}
+
+    session["deck"].append(card)
+    session["total_cards"] += 1
+    # index stays at the new slot (old total), which is now the fresh card
+    return {
+        "session_id": req.session_id,
+        "total_cards": session["total_cards"],
+        "card": _public_card(card),
+    }
+
+
 @app.post("/api/answer")
 async def submit_answer(req: AnswerRequest) -> Dict[str, Any]:
     session = _sessions.get(req.session_id)
@@ -223,8 +328,15 @@ async def submit_answer(req: AnswerRequest) -> Dict[str, Any]:
     })
 
     session["index"] += 1
-    has_next = session["index"] < session["total_cards"]
-    next_card = session["deck"][session["index"]] if has_next else None
+    is_scan = session.get("is_scan_session", False)
+    # In scan sessions there is no "next card" until the child physically
+    # scans one — expose the waiting state instead of synthesising a next card.
+    if is_scan:
+        has_next = False
+        next_card = None
+    else:
+        has_next = session["index"] < session["total_cards"]
+        next_card = session["deck"][session["index"]] if has_next else None
 
     return {
         "score": result["score"],
@@ -238,6 +350,7 @@ async def submit_answer(req: AnswerRequest) -> Dict[str, Any]:
         "has_next": has_next,
         "next_card": _public_card(next_card) if next_card else None,
         "followups_allowed": MAX_FOLLOWUPS_PER_CARD,
+        "is_scan_session": is_scan,
     }
 
 

@@ -34,7 +34,8 @@ from kokoro import KPipeline
 
 # ── Config ─────────────────────────────────────────────────────────
 # af_heart / af_bella / af_sarah are the community-tested warm female voices.
-VOICE_ID = "af_bella"
+# af_heart is the kindest/most kid-friendly in our tests.
+VOICE_ID = "af_heart"
 LANG_CODE = "a"   # 'a' = American English
 SAMPLE_RATE = 24_000
 
