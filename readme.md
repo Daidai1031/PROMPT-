@@ -90,9 +90,11 @@ HOME ─────────────────┐
 ```
 ### Demo Video
 
-#### Random Deck Mode
+#### Quick Play Mode
+![Quick Play Demo](https://raw.githubusercontent.com/Daidai1031/PROMPT-/main/assets/quick%20play.gif)
 
 #### Scan Mode
+![Scan Mode Demo](https://raw.githubusercontent.com/Daidai1031/PROMPT-/main/assets/scan%20mode.gif)
 
 
 
