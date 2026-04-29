@@ -88,6 +88,15 @@ HOME ─────────────────┐
                       ▼
                   [Play Again 🔄]
 ```
+### Demo Video
+
+#### Random Deck Mode
+
+#### Scan Mode
+
+
+
+
 
 ### Detailed answering loop
 
