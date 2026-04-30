@@ -4,376 +4,1448 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=no">
 <title>PROMPT! — AI Literacy Game</title>
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Caveat:wght@500;600;700&family=Quicksand:wght@400;500;600;700&family=Patrick+Hand&display=swap" rel="stylesheet">
 <!-- Tesseract.js for client-side OCR during card scanning -->
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <style>
 :root {
-  --bg:#0c1220;
-  --panel-bg:#111c30;
-  --card-front:#1a2744;
-  --card-back:#12203a;
-  --card-border:#2a3f6e;
-  --card-accent:#4dabf7;
-  --bubble-a:#202d50;
-  --bubble-b:#172544;
+  /* ── Paper / sketchbook base ─────────────────────────── */
+  --paper:        #f8f1e0;
+  --paper-2:      #efe5cf;
+  --paper-warm:   #f3ebd6;
+  --paper-shadow: rgba(110, 80, 30, 0.08);
 
-  --accent-coral:#ff6b6b;
-  --accent-mint:#51cf98;
-  --accent-gold:#ffc857;
-  --accent-sky:#4dabf7;
-  --accent-violet:#b197fc;
-  --accent-orange:#ff922b;
+  /* ── Ink + pencil ──────────────────────────────────── */
+  --ink:        #2a1f12;       /* warm black */
+  --ink-soft:   #5c4a30;       /* faded fountain pen */
+  --ink-thin:   #8a7657;       /* light pencil */
+  --pencil:     #b6a482;       /* graphite gray-tan */
+  --paper-line: #e0d2b0;       /* notebook rule line */
 
-  --text:#e8edf5;
-  --text-dim:#6b7d9e;
-  --correct:#51cf98;
-  --good:#8cd9b7;
-  --partial:#ffc857;
-  --incorrect:#ff6b6b;
+  /* ── Card family colors (match physical decks) ──────── */
+  --c-perspective: #7a1a1f;    /* deep crimson — Orbital Relics */
+  --c-affective:   #1f3aa6;    /* cobalt blue — Ultra-Gum */
+  --c-bias:        #1f6b2a;    /* forest green — Mascot Remix */
+  --c-decomp:      #8a3a14;    /* caramel brown — Volcano Quest */
 
-  --r-sm:10px; --r-md:14px; --r-lg:18px;
+  /* Lighter tints for backs / accents */
+  --c-perspective-soft: #b85358;
+  --c-affective-soft:   #5b75d1;
+  --c-bias-soft:        #5b9c5b;
+  --c-decomp-soft:      #c2693a;
+
+  /* ── Crayon accents ──────────────────────────────────── */
+  --crayon-coral:  #e85a4f;
+  --crayon-yellow: #f1bf3b;
+  --crayon-mint:   #5cb88c;
+  --crayon-sky:    #3d8eb9;
+  --crayon-violet: #8c6bb8;
+
+  /* ── Status colors (re-tuned for paper) ─────────────── */
+  --good-deep:    #1f6b2a;
+  --good-mid:     #5b9c5b;
+  --partial:      #d99e2b;
+  --bad:          #c14a3d;
+
+  --r-sm: 10px;
+  --r-md: 14px;
+  --r-lg: 22px;
+
+  /* Hard-drop shadow used for hand-drawn feel */
+  --hand-shadow: 4px 4px 0 var(--ink);
+  --hand-shadow-sm: 3px 3px 0 var(--ink);
 }
-*{margin:0;padding:0;box-sizing:border-box;}
-html,body{width:100vw;height:100vh;overflow:hidden;font-family:'Quicksand',sans-serif;background:var(--bg);color:var(--text);user-select:none;-webkit-tap-highlight-color:transparent;}
-body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:0.5;}
-.screen{display:none;width:100vw;height:100vh;position:absolute;inset:0;z-index:1;}
-.screen.active{display:flex;}
 
-/* ═══ HOME ═══ */
-#home{flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;background:radial-gradient(ellipse at 30% 40%,rgba(77,171,247,0.07) 0%,transparent 60%);padding:18px;}
-.logo{font-family:'Baloo 2',cursive;font-size:56px;font-weight:800;background:linear-gradient(135deg,var(--accent-coral),var(--accent-gold),var(--accent-mint));-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:3px;line-height:1;}
-.logo-sub{font-size:12px;color:var(--text-dim);font-weight:700;letter-spacing:6px;text-transform:uppercase;}
-.home-tagline{font-size:13px;color:var(--text-dim);margin-top:-4px;max-width:520px;line-height:1.4;}
-.mode-title{font-family:'Baloo 2',cursive;font-size:16px;color:var(--text);font-weight:700;margin-top:10px;}
-.mode-row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;max-width:860px;}
-.mode-card{width:190px;background:var(--card-front);border:2px solid var(--card-border);border-radius:var(--r-lg);padding:14px 14px 12px;cursor:pointer;transition:transform .15s, border-color .15s, box-shadow .2s;text-align:left;}
-.mode-card:active{transform:scale(0.97);}
-.mode-card.selected{border-color:var(--accent-sky);box-shadow:0 0 20px rgba(77,171,247,0.25);}
-.mode-badge{display:inline-block;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:2px 8px;border-radius:10px;margin-bottom:6px;}
-.mode-badge.disc{background:rgba(255,107,107,0.12);color:var(--accent-coral);}
-.mode-badge.usage{background:rgba(77,171,247,0.12);color:var(--accent-sky);}
-.mode-badge.mix{background:rgba(177,151,252,0.12);color:var(--accent-violet);}
-.mode-name{font-family:'Baloo 2',cursive;font-size:16px;font-weight:700;margin-bottom:4px;}
-.mode-desc{font-size:11px;line-height:1.3;color:var(--text-dim);}
-.start-btn{margin-top:6px;padding:13px 54px;font-family:'Baloo 2',cursive;font-size:21px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--accent-coral),var(--accent-violet));border:none;border-radius:40px;cursor:pointer;box-shadow:0 4px 20px rgba(255,107,107,0.3);transition:transform .15s;}
-.start-btn:disabled{opacity:0.4;cursor:default;}
-.start-btn:not(:disabled):active{transform:scale(0.94);}
-.home-hint{font-size:11px;color:var(--text-dim);margin-top:2px;}
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body {
+  width:100vw; height:100vh; overflow:hidden;
+  font-family:'Quicksand', sans-serif;
+  background:var(--paper);
+  color:var(--ink);
+  user-select:none;
+  -webkit-tap-highlight-color:transparent;
+}
 
-/* ═══ GAME ═══ */
-#game{flex-direction:row;padding:0;background:radial-gradient(ellipse at 20% 50%,rgba(77,171,247,0.04) 0%,transparent 50%);}
+/* Paper grain — subtle noise on top of cream */
+body::before {
+  content:'';
+  position:fixed; inset:0;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(255,240,200,0.4), transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(180,140,80,0.06), transparent 50%),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.18 0 0 0 0 0.13 0 0 0 0 0.07 0 0 0 0.4 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  background-size: cover, cover, 240px 240px;
+  pointer-events:none;
+  z-index:0;
+  opacity:0.6;
+}
 
-.card-side{width:58%;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 14px 10px 18px;position:relative;}
-.game-top-bar{position:absolute;top:7px;left:14px;right:14px;display:flex;align-items:center;justify-content:space-between;z-index:2;}
-.game-logo{font-family:'Baloo 2',cursive;font-size:15px;font-weight:800;color:var(--accent-gold);}
-.top-info{display:flex;align-items:center;gap:7px;}
-.dots{display:flex;gap:4px;}
-.dot{width:9px;height:9px;border-radius:50%;background:#1e2d4d;border:2px solid #2a3f5e;transition:all .3s;}
-.dot.tier-deep{background:var(--correct);border-color:var(--correct);}
-.dot.tier-mid{background:var(--good);border-color:var(--good);}
-.dot.tier-surface{background:var(--partial);border-color:var(--partial);}
-.dot.tier-off,.dot.tier-silent{background:var(--incorrect);border-color:var(--incorrect);}
-.dot.current{border-color:var(--accent-sky);box-shadow:0 0 6px rgba(77,171,247,0.55);}
-.score-pill{font-family:'Baloo 2',cursive;font-size:12px;font-weight:700;color:var(--accent-gold);background:rgba(255,200,87,0.08);padding:2px 10px;border-radius:12px;border:1px solid rgba(255,200,87,0.15);}
+/* Faint horizontal ruled lines, like a notebook */
+body::after {
+  content:'';
+  position:fixed; inset:0;
+  background-image: repeating-linear-gradient(
+    transparent 0,
+    transparent 31px,
+    var(--paper-line) 31px,
+    var(--paper-line) 32px
+  );
+  opacity:0.18;
+  pointer-events:none;
+  z-index:0;
+}
 
-.card-meta-bar{width:100%;max-width:420px;display:flex;justify-content:space-between;align-items:center;margin-top:36px;margin-bottom:8px;gap:10px;}
-.card-id-pill,.progress-pill{font-size:11px;font-weight:700;letter-spacing:1px;padding:6px 10px;border-radius:12px;background:rgba(255,255,255,0.04);border:1px solid var(--card-border);color:var(--text-dim);}
-.card-id-pill strong,.progress-pill strong{color:var(--text);}
-
-.card-container{width:100%;max-width:420px;height:82%;max-height:560px;perspective:1200px;}
-.card-flipper{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 0.7s cubic-bezier(0.4,0,0.2,1);}
-.card-flipper.flipped{transform:rotateY(180deg);}
-.card-face{position:absolute;inset:0;border-radius:var(--r-lg);backface-visibility:hidden;overflow:hidden;}
-
-.card-front{background:linear-gradient(155deg,var(--card-front) 0%,#1e3355 100%);border:2px solid var(--card-border);box-shadow:0 10px 40px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.04);display:flex;flex-direction:column;padding:14px 18px 12px;}
-.card-front::before{content:'';position:absolute;top:0;right:0;width:120px;height:120px;background:radial-gradient(circle at top right,rgba(77,171,247,0.07) 0%,transparent 70%);pointer-events:none;}
-
-.card-header-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:2px 0 8px;flex-shrink:0;}
-.card-cat{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;padding:3px 10px;border-radius:10px;}
-.cat-discernment{background:rgba(255,107,107,0.12);color:var(--accent-coral);}
-.cat-usage{background:rgba(77,171,247,0.12);color:var(--accent-sky);}
-.card-diff{font-size:9px;font-weight:700;letter-spacing:1px;color:var(--text-dim);padding:3px 8px;border:1px solid var(--card-border);border-radius:10px;text-transform:uppercase;}
-
-.card-title{font-family:'Baloo 2',cursive;font-size:22px;font-weight:700;line-height:1.15;color:#fff;margin-bottom:10px;flex-shrink:0;}
-.ptype-label{font-size:10px;color:var(--text-dim);margin-top:-6px;margin-bottom:10px;letter-spacing:1px;text-transform:uppercase;}
-
-.body-area{flex:1;display:flex;flex-direction:column;gap:8px;overflow-y:auto;padding-right:4px;}
-.body-bubble{padding:11px 13px;border-radius:var(--r-md);font-size:14px;line-height:1.4;font-weight:500;border:1.5px solid transparent;}
-.body-bubble.a{background:var(--bubble-a);border-color:rgba(255,107,107,0.2);}
-.body-bubble.b{background:var(--bubble-b);border-color:rgba(77,171,247,0.2);}
-.body-bubble.solo{background:var(--bubble-a);border-color:rgba(177,151,252,0.25);}
-.bubble-lens{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px;opacity:0.75;}
-.body-bubble.a .bubble-lens{color:var(--accent-coral);}
-.body-bubble.b .bubble-lens{color:var(--accent-sky);}
-.body-bubble.solo .bubble-lens{color:var(--accent-violet);}
-
-.card-back{background:linear-gradient(155deg,#0e1e38 0%,#162a48 100%);border:2px solid var(--card-border);box-shadow:0 10px 40px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.04);transform:rotateY(180deg);display:flex;flex-direction:column;padding:14px 18px 12px;gap:8px;overflow-y:auto;}
-.back-top{display:flex;align-items:center;gap:10px;}
-.back-icon{font-size:28px;}
-.back-title{font-family:'Baloo 2',cursive;font-size:19px;font-weight:700;flex:1;}
-.back-title.correct,.back-title.good{color:var(--correct);}
-.back-title.partial{color:var(--partial);}
-.back-title.incorrect{color:var(--incorrect);}
-.back-score{font-family:'Baloo 2',cursive;font-size:20px;font-weight:800;color:var(--accent-gold);}
-.back-section{padding:10px 12px;border-radius:var(--r-md);background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);}
-.back-section-label{font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--accent-sky);text-transform:uppercase;margin-bottom:5px;}
-.back-section-text{font-size:12.5px;line-height:1.4;color:var(--text);}
-.back-section.insight{border-color:rgba(77,171,247,0.18);}
-.back-section.habit{border-color:rgba(255,200,87,0.22);background:rgba(255,200,87,0.05);}
-.back-section.habit .back-section-label{color:var(--accent-gold);}
-.back-section.sugg{border-color:rgba(177,151,252,0.2);background:rgba(177,151,252,0.04);}
-.back-section.sugg .back-section-label{color:var(--accent-violet);}
-.back-section.sugg .back-section-text{font-style:italic;}
-.back-section.refs{border-color:rgba(81,207,152,0.22);background:rgba(81,207,152,0.04);}
-.back-section.refs .back-section-label{color:var(--accent-mint);}
-.refs-list{display:flex;flex-direction:column;gap:6px;}
-.ref-item a{color:#bdebd2;text-decoration:none;font-size:12px;line-height:1.35;}
-.ref-item a:hover{text-decoration:underline;}
-.ref-item .ref-url{font-size:10px;color:var(--text-dim);word-break:break-all;}
-
-/* Right panel */
-.voice-side{width:42%;height:100vh;background:var(--panel-bg);border-left:1px solid rgba(255,255,255,0.04);display:flex;flex-direction:column;align-items:center;padding:22px 16px 18px;gap:8px;position:relative;}
-.voice-side::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 30%,rgba(177,151,252,0.05) 0%,transparent 60%);pointer-events:none;}
-
-.voice-top{display:flex;flex-direction:column;align-items:center;gap:8px;width:100%;position:relative;z-index:1;flex-shrink:0;}
-.voice-label{font-family:'Baloo 2',cursive;font-size:11px;font-weight:700;color:var(--text-dim);letter-spacing:2px;text-transform:uppercase;}
-.prompt-bubble{width:100%;background:var(--card-front);border:1.5px solid var(--card-border);border-radius:var(--r-md);padding:10px 13px;font-size:12.5px;color:var(--text);line-height:1.4;text-align:center;min-height:48px;display:flex;align-items:center;justify-content:center;}
-
-.voice-mid{display:flex;flex-direction:column;align-items:center;gap:10px;position:relative;z-index:1;flex-shrink:0;}
-.mic-ring{width:92px;height:92px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle,rgba(77,171,247,0.07) 0%,transparent 70%);position:relative;cursor:pointer;transition:transform .2s;}
-.mic-ring::before{content:'';position:absolute;inset:0;border-radius:50%;border:2.5px solid rgba(77,171,247,0.25);transition:all .3s;}
-.mic-ring:active{transform:scale(0.94);}
-.mic-ring.recording::before{border-color:var(--accent-coral);animation:ring-pulse 1.1s ease-in-out infinite;}
-.mic-ring.processing::before{border-color:var(--accent-gold);border-style:dashed;animation:ring-spin 1.8s linear infinite;}
-.mic-ring.disabled{opacity:0.35;pointer-events:none;}
-@keyframes ring-pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,107,107,0.35);}50%{box-shadow:0 0 0 16px rgba(255,107,107,0);}}
-@keyframes ring-spin{to{transform:rotate(360deg);}}
-.mic-icon{font-size:32px;z-index:1;}
-.voice-status{font-family:'Baloo 2',cursive;font-size:13px;color:var(--text-dim);text-align:center;min-height:18px;max-width:95%;line-height:1.3;}
-.voice-status.highlight{color:var(--accent-gold);}
-.voice-status.speaking{color:var(--accent-sky);}
-.voice-transcript{font-size:12px;color:#a9b8d4;text-align:center;min-height:14px;max-width:95%;font-style:italic;line-height:1.3;}
-
-/* Bottom area uses flex:1 with internal scroll so feedback + follow-up
-   chat can grow without pushing buttons off-screen. */
-.voice-bottom{display:flex;flex-direction:column;align-items:stretch;gap:7px;width:100%;position:relative;z-index:1;flex:1;min-height:0;}
-
-.coach-stack{display:flex;flex-direction:column;gap:7px;overflow-y:auto;padding-right:2px;flex:1;min-height:0;}
-
-.reaction-bubble,.habit-bubble,.invite-bubble{
-  width:100%;
-  border-radius:var(--r-md);
-  padding:9px 12px;
-  font-size:12.5px;
-  line-height:1.35;
+.screen {
   display:none;
-  text-align:left;
-  border:1.5px solid transparent;
+  width:100vw; height:100vh;
+  position:absolute; inset:0;
+  z-index:1;
 }
-.reaction-bubble{background:rgba(81,207,152,0.08);border-color:rgba(81,207,152,0.28);color:#c8f3dd;}
-.habit-bubble{background:rgba(255,200,87,0.07);border-color:rgba(255,200,87,0.3);color:#ffe5a3;font-style:italic;}
-.invite-bubble{background:rgba(77,171,247,0.07);border-color:rgba(77,171,247,0.3);color:#cbe3ff;}
+.screen.active { display:flex; }
 
-.bubble-lead{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;opacity:0.85;display:block;margin-bottom:3px;}
-.reaction-bubble .bubble-lead{color:var(--accent-mint);}
-.habit-bubble .bubble-lead{color:var(--accent-gold);}
-.invite-bubble .bubble-lead{color:var(--accent-sky);}
-
-/* Follow-up turns: each Q/A shown as an alternating bubble pair */
-.qa-turn{display:flex;flex-direction:column;gap:4px;}
-.qa-bubble{padding:8px 11px;border-radius:12px;font-size:12.5px;line-height:1.35;max-width:90%;}
-.qa-bubble.q{align-self:flex-end;background:rgba(177,151,252,0.14);border:1px solid rgba(177,151,252,0.3);color:#e4daff;}
-.qa-bubble.a{align-self:flex-start;background:rgba(81,207,152,0.1);border:1px solid rgba(81,207,152,0.28);color:#d6f3e4;}
-.qa-lead{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;opacity:0.75;margin-bottom:2px;}
-.qa-bubble.q .qa-lead{color:var(--accent-violet);}
-.qa-bubble.a .qa-lead{color:var(--accent-mint);}
-
-.followup-counter{font-size:10px;color:var(--text-dim);text-align:center;letter-spacing:1px;text-transform:uppercase;margin-top:2px;display:none;}
-
-/* Button groups */
-.btn-row{display:flex;gap:8px;width:100%;flex-shrink:0;}
-.action-btn{
-  flex:1;
-  padding:11px 0;
-  font-family:'Baloo 2',cursive;
-  font-size:14px;
-  font-weight:700;
-  border:none;
-  border-radius:12px;
-  cursor:pointer;
-  transition:transform .15s, opacity .15s;
-  background:transparent;
-  border:1.5px solid var(--card-border);
-  color:var(--text-dim);
+/* ════════════════════════════════════════════════════════
+   HOME SCREEN
+   ════════════════════════════════════════════════════════ */
+#home {
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;       /* was center — top-anchored so scroll works */
+  gap:12px;                          /* was 18px */
+  text-align:center;
+  padding:18px 18px 24px;            /* was 24px 18px */
+  position:relative;
+  overflow-y:auto;                   /* allow scroll when viewport is short */
+  overflow-x:hidden;
 }
-.action-btn.skip:hover,.action-btn.end:hover{border-color:var(--accent-coral);color:#ffb4b4;}
-.action-btn.ask{
-  background:linear-gradient(135deg,var(--accent-sky),var(--accent-violet));
-  border:none;
-  color:#fff;
-  box-shadow:0 3px 12px rgba(77,171,247,0.28);
+/* Push content into vertical center when there IS room, but allow
+   overflow to scroll naturally when there isn't. */
+#home::after {
+  content:'';
+  margin-top:auto;                   /* spacer that absorbs extra height */
 }
-.action-btn.next{
-  background:linear-gradient(135deg,var(--accent-mint),var(--accent-sky));
-  border:none;
-  color:#fff;
-  box-shadow:0 3px 12px rgba(81,207,152,0.25);
-  font-size:15px;
-}
-.action-btn:active{transform:scale(0.97);}
-.action-btn:disabled{opacity:0.4;cursor:default;}
+#home > * { flex-shrink:0; }
 
-/* Loading overlay */
-#loading{display:none;position:absolute;inset:0;background:rgba(8,10,22,0.85);backdrop-filter:blur(4px);flex-direction:column;align-items:center;justify-content:center;gap:12px;z-index:30;}
-
-/* ═══ SCAN screen ═══ */
-#scan{flex-direction:column;align-items:center;justify-content:flex-start;gap:10px;padding:12px 16px;background:radial-gradient(ellipse at 50% 30%,rgba(177,151,252,0.08) 0%,transparent 60%);}
-.scan-header{display:flex;align-items:center;justify-content:space-between;width:100%;max-width:640px;margin-top:4px;}
-.scan-title{font-family:'Baloo 2',cursive;font-size:18px;font-weight:700;color:var(--text);}
-.scan-subtitle{font-size:12px;color:var(--text-dim);text-align:center;margin-top:-4px;}
-.scan-back-btn{
-  background:transparent;border:1.5px solid var(--card-border);color:var(--text-dim);
-  font-family:'Quicksand',sans-serif;font-size:13px;font-weight:600;
-  padding:6px 14px;border-radius:18px;cursor:pointer;
-}
-.scan-back-btn:active{transform:scale(0.96);}
-
-/* Camera viewport + scanning frame */
-.scan-viewport{
-  position:relative;width:100%;max-width:640px;aspect-ratio:4/3;
-  background:#000;border-radius:var(--r-lg);overflow:hidden;
-  border:2px solid var(--card-border);
-  box-shadow:0 10px 40px rgba(0,0,0,0.5);
-}
-#scan-video{width:100%;height:100%;object-fit:cover;display:block;}
-.scan-frame{
-  position:absolute;inset:14% 10%;
-  border:3px dashed rgba(77,171,247,0.55);border-radius:var(--r-md);
-  pointer-events:none;transition:border-color .3s;
-}
-.scan-frame.detecting{border-color:var(--accent-gold);}
-.scan-frame.matched{border-color:var(--accent-mint);border-style:solid;}
-.scan-frame::before,.scan-frame::after{
-  content:'';position:absolute;width:24px;height:24px;border:3px solid rgba(77,171,247,0.8);
-}
-.scan-frame::before{top:-3px;left:-3px;border-right:none;border-bottom:none;}
-.scan-frame::after{bottom:-3px;right:-3px;border-left:none;border-top:none;}
-
-/* Laser scan animation */
-.scan-laser{
-  position:absolute;left:10%;right:10%;top:14%;height:2px;
-  background:linear-gradient(90deg,transparent,var(--accent-sky),transparent);
-  animation:laser-sweep 2.4s ease-in-out infinite;
+/* Decorative doodles around the home screen */
+#home::before {
+  content:'';
+  position:absolute; inset:0;
+  background-image:
+    url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%238a7657' stroke-width='1.5' stroke-linecap='round'%3E%3Cpath d='M10 40 Q15 30 20 40 T30 40' opacity='0.25'/%3E%3Ccircle cx='60' cy='20' r='4' opacity='0.18'/%3E%3Cpath d='M55 60 L65 60 M60 55 L60 65' opacity='0.2'/%3E%3C/g%3E%3C/svg%3E");
+  background-position: 5% 8%, 92% 12%, 8% 88%, 88% 85%;
+  background-repeat: no-repeat;
+  background-size: 80px 80px;
   pointer-events:none;
   opacity:0.7;
 }
-@keyframes laser-sweep{
-  0%{transform:translateY(0);}
-  50%{transform:translateY(450%);}
-  100%{transform:translateY(0);}
+
+/* Top spacer before logo when there's vertical room */
+#home > .logo-wrap { margin-top:auto; }
+
+.logo-wrap {
+  position:relative;
+  display:inline-block;
+}
+.logo {
+  font-family:'Fredoka', sans-serif;
+  font-size:48px;                    /* was 64px */
+  font-weight:700;
+  color:var(--ink);
+  letter-spacing:-1px;
+  line-height:1;
+  position:relative;
+  display:inline-block;
+  transform:rotate(-2deg);
+}
+/* Hand-drawn underline under the logo */
+.logo::after {
+  content:'';
+  position:absolute;
+  left:-6px; right:-6px;
+  bottom:-10px;                      /* was -12px */
+  height:7px;                        /* was 8px */
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 12' xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='none'%3E%3Cpath d='M2 8 Q 30 2 60 6 T 120 5 T 198 7' fill='none' stroke='%23e85a4f' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-size:100% 100%;
+  background-repeat:no-repeat;
+}
+.logo-star {
+  position:absolute;
+  top:-10px; right:-26px;            /* tightened */
+  font-family:'Caveat', cursive;
+  font-size:28px;                    /* was 34px */
+  color:var(--crayon-yellow);
+  transform:rotate(18deg);
+  text-shadow: 1px 1px 0 var(--ink);
 }
 
-.scan-status{
-  font-family:'Baloo 2',cursive;font-size:14px;color:var(--text-dim);
-  min-height:20px;text-align:center;letter-spacing:0.5px;
-}
-.scan-status.detecting{color:var(--accent-gold);}
-.scan-status.matched{color:var(--accent-mint);}
-.scan-status.error{color:var(--accent-coral);}
-
-.scan-preview-text{
-  font-size:11px;color:var(--text-dim);font-family:ui-monospace,monospace;
-  max-width:640px;min-height:30px;padding:6px 10px;
-  background:rgba(255,255,255,0.02);border:1px solid var(--card-border);border-radius:8px;
-  text-align:left;line-height:1.35;
-  overflow:hidden;text-overflow:ellipsis;
-  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+.logo-sub {
+  margin-top:10px;                   /* was 14px */
+  font-family:'Caveat', cursive;
+  font-size:19px;                    /* was 22px */
+  font-weight:600;
+  color:var(--ink-soft);
+  letter-spacing:1px;
 }
 
-/* Candidate confirmation overlay */
-.scan-candidate{
-  width:100%;max-width:640px;
-  background:var(--card-front);border:2px solid var(--accent-mint);
-  border-radius:var(--r-lg);padding:14px 16px;
-  display:none;flex-direction:column;gap:8px;
-  box-shadow:0 6px 24px rgba(81,207,152,0.2);
-}
-.scan-candidate.active{display:flex;}
-.scan-candidate-label{
-  font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
-  color:var(--accent-mint);
-}
-.scan-candidate-title{font-family:'Baloo 2',cursive;font-size:20px;font-weight:700;color:#fff;}
-.scan-candidate-meta{font-size:11px;color:var(--text-dim);letter-spacing:1px;text-transform:uppercase;}
-.scan-candidate-row{display:flex;gap:8px;margin-top:6px;}
-.scan-candidate-row button{
-  flex:1;padding:10px 0;font-family:'Baloo 2',cursive;font-size:14px;font-weight:700;
-  border:none;border-radius:10px;cursor:pointer;transition:transform .15s;
-}
-.scan-candidate-row button:active{transform:scale(0.96);}
-.scan-candidate-row .confirm{background:linear-gradient(135deg,var(--accent-mint),var(--accent-sky));color:#fff;}
-.scan-candidate-row .rescan{background:transparent;border:1.5px solid var(--card-border);color:var(--text-dim);}
-
-.scan-fallback{display:flex;gap:8px;margin-top:2px;}
-.scan-fallback input{
-  flex:1;padding:8px 10px;background:var(--card-front);border:1.5px solid var(--card-border);
-  border-radius:10px;color:var(--text);font-family:inherit;font-size:13px;outline:none;
-}
-.scan-fallback input:focus{border-color:var(--accent-sky);}
-.scan-fallback button{
-  padding:8px 16px;font-family:'Baloo 2',cursive;font-size:13px;font-weight:700;
-  background:var(--accent-sky);border:none;border-radius:10px;color:#fff;cursor:pointer;
+.home-tagline {
+  font-size:13px;
+  color:var(--ink-soft);
+  max-width:500px;
+  line-height:1.45;
+  font-weight:500;
 }
 
-/* Home page: two entry-point cards */
-.entry-row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;max-width:640px;margin-top:8px;}
-.entry-card{
-  width:260px;background:var(--card-front);border:2px solid var(--card-border);
-  border-radius:var(--r-lg);padding:16px 16px 14px;cursor:pointer;
-  transition:transform .15s, border-color .15s, box-shadow .2s;text-align:left;
+/* Two big entry cards */
+.entry-row {
+  display:flex; gap:18px;            /* was 22px */
+  flex-wrap:wrap; justify-content:center;
+  max-width:680px;
+  margin-top:4px;
 }
-.entry-card:active{transform:scale(0.97);}
-.entry-card.scan:hover{border-color:var(--accent-violet);box-shadow:0 0 24px rgba(177,151,252,0.3);}
-.entry-card.quick:hover{border-color:var(--accent-sky);box-shadow:0 0 24px rgba(77,171,247,0.25);}
-.entry-badge{display:inline-block;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:3px 9px;border-radius:12px;margin-bottom:7px;}
-.entry-card.scan .entry-badge{background:rgba(177,151,252,0.14);color:var(--accent-violet);}
-.entry-card.quick .entry-badge{background:rgba(77,171,247,0.14);color:var(--accent-sky);}
-.entry-name{font-family:'Baloo 2',cursive;font-size:19px;font-weight:700;margin-bottom:5px;color:#fff;}
-.entry-desc{font-size:12px;line-height:1.4;color:var(--text-dim);}
-.entry-icon{font-size:28px;margin-bottom:6px;line-height:1;}
 
-#loading.active{display:flex;}
-.spinner{width:38px;height:38px;border:3px solid #1e2d4d;border-top-color:var(--accent-sky);border-radius:50%;animation:spin .7s linear infinite;}
-@keyframes spin{to{transform:rotate(360deg);}}
-.loading-text{font-family:'Baloo 2',cursive;font-size:14px;color:var(--text-dim);}
+.entry-card {
+  width:248px;                       /* was 268px */
+  background:#fff;
+  border:2.5px solid var(--ink);
+  border-radius:var(--r-lg);
+  padding:14px 16px 14px;            /* was 18px ... 16px */
+  cursor:pointer;
+  text-align:center;                 /* was left — centers icon, badge, name, desc */
+  position:relative;
+  transition:transform .15s ease, box-shadow .15s ease;
+  box-shadow: var(--hand-shadow);
+}
+.entry-card:nth-child(1) { transform:rotate(-1.2deg); }
+.entry-card:nth-child(2) { transform:rotate(1.2deg); }
+.entry-card:hover {
+  transform:rotate(0) translate(-1px,-1px);
+  box-shadow: 5px 5px 0 var(--ink);
+}
+.entry-card:active {
+  transform:translate(2px,2px) rotate(0);
+  box-shadow: 1px 1px 0 var(--ink);
+}
 
-/* Summary */
-#summary{flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:18px 28px;text-align:center;background:radial-gradient(ellipse at 50% 40%,rgba(81,207,152,0.05) 0%,transparent 50%);}
-.sum-trophy{font-size:46px;line-height:1;}
-.sum-title{font-family:'Baloo 2',cursive;font-size:28px;font-weight:800;background:linear-gradient(135deg,var(--accent-gold),var(--accent-mint));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.sum-score{font-family:'Baloo 2',cursive;font-size:44px;font-weight:800;color:#fff;line-height:1;}
-.sum-score span{color:var(--text-dim);font-size:22px;}
-.sum-cats{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
-.sum-cat{background:var(--card-front);border-radius:12px;padding:8px 16px;min-width:120px;border:1px solid var(--card-border);}
-.sum-cat-name{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim);margin-bottom:3px;}
-.sum-cat-score{font-family:'Baloo 2',cursive;font-size:18px;font-weight:700;}
-.sum-followups{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--accent-violet);margin-top:-2px;}
-.sum-followups strong{font-family:'Baloo 2',cursive;font-size:15px;color:#e4daff;}
-.sum-tip{font-size:13px;color:var(--accent-gold);max-width:460px;line-height:1.4;}
-.replay-btn{padding:12px 42px;font-family:'Baloo 2',cursive;font-size:19px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--accent-coral),var(--accent-violet));border:none;border-radius:40px;cursor:pointer;box-shadow:0 4px 18px rgba(255,107,107,0.3);transition:transform .15s;}
-.replay-btn:active{transform:scale(0.95);}
+/* Tape strip at the top of each entry card */
+.entry-card::before {
+  content:'';
+  position:absolute;
+  top:-9px; left:50%;
+  transform:translateX(-50%) rotate(-3deg);
+  width:60px; height:16px;            /* was 64x18 */
+  background:rgba(244, 207, 100, 0.7);
+  border:1px dashed rgba(120,90,30,0.4);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+}
 
-.fade-in{animation:fadeIn .3s ease-out;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.entry-icon {
+  font-size:30px;                     /* was 34px */
+  line-height:1;
+  margin-bottom:4px;
+  display:inline-block;
+  transform:rotate(-4deg);
+}
+.entry-badge {
+  display:inline-block;
+  font-family:'Patrick Hand', cursive;
+  font-size:13px;
+  font-weight:600;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  padding:3px 12px;
+  border:2px solid var(--ink);
+  border-radius:14px;
+  margin-bottom:6px;                  /* was 8px */
+  background:#fff;
+}
+.entry-card.scan  .entry-badge { background:#fdebc7; }
+.entry-card.quick .entry-badge { background:#d9eaf7; }
+
+.entry-name {
+  font-family:'Fredoka', sans-serif;
+  font-size:20px;                     /* was 22px */
+  font-weight:600;
+  color:var(--ink);
+  margin-bottom:4px;
+}
+.entry-desc {
+  font-size:12.5px;                   /* was 13px */
+  line-height:1.4;
+  color:var(--ink-soft);
+}
+
+/* Quick play drawer — appears when "Random Deck" tapped */
+#quickplay-drawer {
+  display:none;
+  flex-direction:column;
+  align-items:center;
+  gap:10px;                           /* was 14px */
+  margin-top:2px;
+}
+.mode-title {
+  font-family:'Caveat', cursive;
+  font-size:22px;                     /* was 26px */
+  font-weight:700;
+  color:var(--ink);
+  margin-top:0;
+}
+.mode-row {
+  display:flex; gap:12px;             /* was 14px */
+  flex-wrap:wrap; justify-content:center;
+  max-width:700px;
+}
+
+.mode-card {
+  width:190px;                        /* was 200px */
+  background:#fff;
+  border:2px solid var(--ink);
+  border-radius:var(--r-md);
+  padding:11px 12px 10px;             /* was 14 14 12 */
+  cursor:pointer;
+  text-align:center;                  /* was left */
+  box-shadow: var(--hand-shadow-sm);
+  transition:transform .12s ease, box-shadow .12s ease;
+}
+.mode-card:nth-child(1) { transform:rotate(-1deg); }
+.mode-card:nth-child(2) { transform:rotate(0.6deg); }
+.mode-card:nth-child(3) { transform:rotate(-0.4deg); }
+.mode-card:hover { transform:rotate(0) translate(-1px,-1px); }
+.mode-card:active { transform:translate(2px,2px); box-shadow: 1px 1px 0 var(--ink); }
+.mode-card.selected {
+  background:#fff7e0;
+  box-shadow: 4px 4px 0 var(--crayon-yellow), 4px 4px 0 1.5px var(--ink);
+}
+
+.mode-badge {
+  display:inline-block;
+  font-family:'Patrick Hand', cursive;
+  font-size:11px; font-weight:600;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  padding:2px 10px;
+  border:1.5px solid var(--ink);
+  border-radius:10px;
+  margin-bottom:5px;
+  background:#fff;
+}
+.mode-badge.disc  { background:#f7d8d6; }
+.mode-badge.usage { background:#d6e5f7; }
+.mode-badge.mix   { background:#e8dcf3; }
+
+.mode-name {
+  font-family:'Fredoka', sans-serif;
+  font-size:16px;
+  font-weight:600;
+  margin-bottom:3px;
+}
+.mode-desc {
+  font-size:11.5px;
+  line-height:1.35;
+  color:var(--ink-soft);
+}
+
+/* Big primary button — used on home + summary */
+.big-btn {
+  font-family:'Fredoka', sans-serif;
+  font-size:20px;                     /* was 22px */
+  font-weight:600;
+  color:#fff;
+  background:var(--crayon-coral);
+  border:2.5px solid var(--ink);
+  border-radius:40px;
+  padding:11px 44px;                  /* was 13px 50px */
+  cursor:pointer;
+  box-shadow: var(--hand-shadow);
+  transition:transform .12s ease, box-shadow .12s ease;
+  position:relative;
+  letter-spacing:0.5px;
+  margin-top:2px;
+}
+.big-btn:hover { transform:translate(-1px,-1px); box-shadow: 5px 5px 0 var(--ink); }
+.big-btn:active { transform:translate(2px,2px); box-shadow: 1px 1px 0 var(--ink); }
+.big-btn:disabled { opacity:0.45; cursor:default; transform:none; box-shadow: var(--hand-shadow); }
+
+.home-hint {
+  font-family:'Caveat', cursive;
+  font-size:16px;                     /* was 18px */
+  color:var(--ink-thin);
+  margin-top:2px;
+}
+
+/* ════════════════════════════════════════════════════════
+   GAME SCREEN
+   ════════════════════════════════════════════════════════ */
+#game {
+  flex-direction:row;
+  padding:0;
+}
+
+.card-side {
+  width:58%;
+  height:100vh;
+  display:flex; flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;          /* was center — top-anchor so flex sizing works */
+  padding:46px 14px 10px 18px;          /* top padding clears absolute top bar */
+  position:relative;
+}
+
+/* Top bar */
+.game-top-bar {
+  position:absolute;
+  top:10px; left:18px; right:18px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  z-index:2;
+}
+.game-logo {
+  font-family:'Fredoka', sans-serif;
+  font-size:18px;
+  font-weight:700;
+  color:var(--ink);
+  letter-spacing:0.5px;
+  transform:rotate(-2deg);
+}
+.game-logo::after {
+  content:'!';
+  color:var(--crayon-coral);
+}
+.top-info {
+  display:flex; align-items:center; gap:10px;
+}
+
+/* Progress dots — chalk circles */
+.dots { display:flex; gap:5px; }
+.dot {
+  width:14px; height:14px;
+  border-radius:50%;
+  background:#fff;
+  border:2px solid var(--ink);
+  transition:all .3s;
+}
+.dot.tier-deep    { background:var(--good-deep);  }
+.dot.tier-mid     { background:var(--good-mid);   }
+.dot.tier-surface { background:var(--partial);    }
+.dot.tier-off,
+.dot.tier-silent  { background:var(--bad);        }
+.dot.current {
+  box-shadow: 0 0 0 3px var(--crayon-yellow), 0 0 0 4.5px var(--ink);
+}
+
+.score-pill {
+  font-family:'Fredoka', sans-serif;
+  font-size:14px; font-weight:600;
+  color:var(--ink);
+  background:#fff;
+  border:2px solid var(--ink);
+  padding:3px 13px;
+  border-radius:20px;
+  box-shadow: 2px 2px 0 var(--ink);
+}
+.score-pill::before {
+  content:'★';
+  color:var(--crayon-yellow);
+  margin-right:4px;
+}
+
+/* Card meta bar */
+.card-meta-bar {
+  width:100%;
+  max-width:430px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:0;                         /* was 42px — top padding handles top-bar clearance */
+  margin-bottom:8px;
+  gap:10px;
+  flex-shrink:0;
+}
+.card-id-pill, .progress-pill {
+  font-family:'Patrick Hand', cursive;
+  font-size:13px; font-weight:600;
+  letter-spacing:0.5px;
+  padding:4px 12px;
+  border:2px solid var(--ink);
+  border-radius:14px;
+  background:#fff;
+  color:var(--ink-soft);
+}
+.card-id-pill strong, .progress-pill strong {
+  color:var(--ink);
+  font-weight:700;
+}
+
+/* ── The card itself — replicates physical card ─────── */
+.card-container {
+  width:100%;
+  max-width:430px;
+  flex:1;                               /* fills remaining height */
+  min-height:0;                         /* allow shrinking below 580 */
+  max-height:580px;
+  perspective:1400px;
+}
+.card-flipper {
+  width:100%; height:100%;
+  position:relative;
+  transform-style:preserve-3d;
+  transition:transform 0.7s cubic-bezier(0.4,0,0.2,1);
+}
+.card-flipper.flipped {
+  transform:rotateY(180deg);
+}
+.card-face {
+  position:absolute; inset:0;
+  border-radius:var(--r-lg);
+  backface-visibility:hidden;
+  overflow:hidden;
+  border:3px solid var(--ink);
+  box-shadow: 6px 6px 0 var(--ink), 0 0 0 1px rgba(0,0,0,0.05);
+}
+
+/* The colored front face — color set by problem-type class */
+.card-front {
+  background:var(--card-color, var(--c-perspective));
+  display:flex; flex-direction:column;
+  padding:18px 20px 16px;              /* was 22 — slightly tighter */
+  color:#fff;
+  position:relative;
+}
+/* Subtle paper texture overlay on the colored face */
+.card-front::after {
+  content:'';
+  position:absolute; inset:0;
+  background:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.7' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+  opacity:0.06;
+  pointer-events:none;
+}
+
+/* Notched corner — exact replica of physical card */
+.card-corner {
+  position:absolute;
+  top:0; left:0;
+  width:74px; height:54px;
+  background:#fff;
+  z-index:3;
+  border-bottom-right-radius:20px;
+  border-right:2px solid var(--ink);
+  border-bottom:2px solid var(--ink);
+  display:flex;
+  align-items:center; justify-content:center;
+  font-family:'Fredoka', sans-serif;
+  font-size:26px; font-weight:700;
+  color:var(--card-color, var(--c-perspective));
+  letter-spacing:-1px;
+}
+
+/* Title pill — the white pill in the middle of the physical card */
+.title-pill-wrap {
+  display:flex; justify-content:center;
+  margin-top:44px;                      /* card padding 18 + 44 = 62 → 8px clear of 54px corner */
+  margin-bottom:14px;
+  flex-shrink:0;
+  position:relative;
+  z-index:1;
+}
+.title-pill {
+  font-family:'Fredoka', sans-serif;
+  font-size:clamp(14px, 1.5vw, 16px);   /* responsive */
+  font-weight:600;
+  color:var(--card-color, var(--c-perspective));
+  background:#fff;
+  padding:6px 18px;
+  border:2px solid rgba(0,0,0,0.15);
+  border-radius:30px;
+  text-align:center;
+  letter-spacing:0.3px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  max-width:88%;
+  box-shadow: 0 2px 0 rgba(0,0,0,0.08);
+}
+
+/* Body text area — white text on colored card */
+.body-area {
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap:12px;                            /* was 14 */
+  overflow-y:auto;
+  padding:0 6px 6px;                   /* was 0 8 8 */
+  position:relative;
+  z-index:2;
+  min-height:0;
+}
+.body-bubble {
+  font-family:'Fredoka', sans-serif;
+  font-size:clamp(14px, 1.7vw, 18px);  /* responsive — scales with viewport */
+  line-height:1.35;
+  color:#fff;
+  font-weight:600;
+  text-align:center;
+  letter-spacing:0.2px;
+}
+.body-bubble.solo { /* single-paragraph cards */ }
+.body-bubble.a, .body-bubble.b {
+  /* For perspective cards — both texts in same white style */
+}
+/* "vs" separator between two lens texts */
+.vs-divider {
+  font-family:'Fredoka', sans-serif;
+  font-size:16px; font-weight:700;
+  color:rgba(255,255,255,0.55);
+  text-align:center;
+  letter-spacing:2px;
+  text-transform:lowercase;
+  margin:0;
+}
+.body-bubble .quote-mark {
+  font-family:'Fredoka', sans-serif;
+  display:inline;
+}
+
+/* Tiny problem-type tag at bottom-left of card front */
+.card-ptype-tag {
+  position:absolute;
+  bottom:14px; left:14px;
+  font-family:'Patrick Hand', cursive;
+  font-size:11px;
+  color:rgba(255,255,255,0.65);
+  letter-spacing:1px;
+  text-transform:uppercase;
+  z-index:2;
+}
+.card-diff-tag {
+  position:absolute;
+  bottom:14px; right:14px;
+  font-family:'Patrick Hand', cursive;
+  font-size:11px;
+  color:rgba(255,255,255,0.65);
+  letter-spacing:1px;
+  text-transform:uppercase;
+  z-index:2;
+}
+
+/* ── Card BACK ──────────────────────────────────────── */
+.card-back {
+  background:var(--paper);
+  transform:rotateY(180deg);
+  display:flex; flex-direction:column;
+  padding:18px 20px 16px;
+  gap:10px;
+  overflow-y:auto;
+  color:var(--ink);
+}
+.card-back::after {
+  content:'';
+  position:absolute; inset:0;
+  background:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/%3E%3C/filter%3E%3C/svg%3E");
+  opacity:0.05;
+  pointer-events:none;
+}
+
+.back-top {
+  display:flex; align-items:center; gap:12px;
+  padding-bottom:8px;
+  border-bottom:2px dashed var(--paper-line);
+}
+.back-icon {
+  font-size:34px;
+  transform:rotate(-6deg);
+  display:inline-block;
+}
+.back-title {
+  font-family:'Fredoka', sans-serif;
+  font-size:22px; font-weight:700;
+  flex:1;
+  letter-spacing:0.3px;
+}
+.back-title.correct, .back-title.good { color:var(--good-deep); }
+.back-title.partial { color:var(--partial); }
+.back-title.incorrect { color:var(--bad); }
+
+.back-score {
+  font-family:'Fredoka', sans-serif;
+  font-size:24px; font-weight:700;
+  color:var(--crayon-yellow);
+  -webkit-text-stroke: 1.5px var(--ink);
+  text-stroke: 1.5px var(--ink);
+  paint-order: stroke fill;
+}
+
+.back-section {
+  padding:11px 13px;
+  border:2px solid var(--ink);
+  border-radius:var(--r-md);
+  background:#fff;
+  position:relative;
+  z-index:1;
+}
+.back-section.insight  { background:#eaf3fa; }
+.back-section.habit    { background:#fff5d8; transform:rotate(-0.3deg); }
+.back-section.sugg     { background:#f0e6f7; transform:rotate(0.3deg); }
+.back-section.refs     { background:#e6f3e9; }
+
+.back-section-label {
+  font-family:'Patrick Hand', cursive;
+  font-size:12px; font-weight:600;
+  letter-spacing:1.2px;
+  text-transform:uppercase;
+  color:var(--ink-soft);
+  margin-bottom:5px;
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.back-section-label::before {
+  content:'';
+  display:inline-block;
+  width:6px; height:6px;
+  background:var(--ink);
+  border-radius:50%;
+}
+.back-section.insight .back-section-label { color:var(--crayon-sky); }
+.back-section.insight .back-section-label::before { background:var(--crayon-sky); }
+.back-section.habit .back-section-label   { color:#a17800; }
+.back-section.habit .back-section-label::before   { background:var(--crayon-yellow); }
+.back-section.sugg .back-section-label    { color:var(--crayon-violet); }
+.back-section.sugg .back-section-label::before    { background:var(--crayon-violet); }
+.back-section.refs .back-section-label    { color:var(--good-deep); }
+.back-section.refs .back-section-label::before    { background:var(--good-deep); }
+
+.back-section-text {
+  font-size:13px;
+  line-height:1.45;
+  color:var(--ink);
+  font-weight:500;
+}
+.back-section.sugg .back-section-text { font-style:italic; font-family:'Caveat', cursive; font-size:17px; }
+
+.refs-list { display:flex; flex-direction:column; gap:6px; }
+.ref-item a {
+  color:var(--good-deep);
+  text-decoration:none;
+  font-size:13px;
+  font-weight:600;
+  border-bottom:1.5px dotted var(--good-mid);
+}
+.ref-item a:hover { background:#d2eed8; }
+.ref-item .ref-url {
+  font-size:10px;
+  color:var(--ink-thin);
+  word-break:break-all;
+  font-family:'Patrick Hand', cursive;
+}
+
+/* ════════════════════════════════════════════════════════
+   RIGHT PANEL — Voice / Coach
+   ════════════════════════════════════════════════════════ */
+.voice-side {
+  width:42%;
+  height:100vh;
+  background:var(--paper-warm);
+  border-left:3px dashed var(--paper-line);
+  display:flex; flex-direction:column;
+  align-items:center;
+  padding:18px 16px 14px;            /* was 24 18 18 */
+  gap:8px;                            /* was 10 */
+  position:relative;
+}
+.voice-side::before {
+  content:'';
+  position:absolute; inset:0;
+  background-image: repeating-linear-gradient(
+    transparent 0,
+    transparent 31px,
+    rgba(160,130,80,0.08) 31px,
+    rgba(160,130,80,0.08) 32px
+  );
+  pointer-events:none;
+}
+
+.voice-top {
+  display:flex; flex-direction:column;
+  align-items:center; gap:8px;
+  width:100%;
+  position:relative; z-index:1;
+  flex-shrink:0;
+}
+.voice-label {
+  font-family:'Caveat', cursive;
+  font-size:24px; font-weight:700;
+  color:var(--ink);
+  letter-spacing:0.5px;
+  position:relative;
+  display:inline-block;
+}
+.voice-label::before {
+  content:'✏️';
+  margin-right:6px;
+  font-size:18px;
+}
+
+.prompt-bubble {
+  width:100%;
+  background:#fff;
+  border:2.5px solid var(--ink);
+  border-radius:var(--r-md);
+  padding:11px 14px;
+  font-size:14px;
+  font-weight:500;
+  color:var(--ink);
+  line-height:1.45;
+  text-align:center;
+  min-height:54px;
+  display:flex; align-items:center; justify-content:center;
+  position:relative;
+  box-shadow: 3px 3px 0 var(--ink);
+}
+/* Speech-bubble tail */
+.prompt-bubble::before {
+  content:'';
+  position:absolute;
+  bottom:-12px;
+  left:30px;
+  width:0; height:0;
+  border-left:10px solid transparent;
+  border-right:10px solid transparent;
+  border-top:14px solid var(--ink);
+}
+.prompt-bubble::after {
+  content:'';
+  position:absolute;
+  bottom:-7px;
+  left:33px;
+  width:0; height:0;
+  border-left:7px solid transparent;
+  border-right:7px solid transparent;
+  border-top:10px solid #fff;
+}
+
+.voice-mid {
+  display:flex; flex-direction:column;
+  align-items:center; gap:10px;
+  position:relative; z-index:1;
+  flex-shrink:0;
+  margin-top:6px;
+}
+
+/* Mic button — looks like a hand-drawn record button */
+.mic-ring {
+  width:96px; height:96px;
+  border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  background:#fff;
+  border:3px solid var(--ink);
+  position:relative;
+  cursor:pointer;
+  transition:transform .15s ease, box-shadow .15s ease;
+  box-shadow: 4px 4px 0 var(--ink);
+}
+.mic-ring:hover { transform:translate(-1px,-1px); box-shadow: 5px 5px 0 var(--ink); }
+.mic-ring:active { transform:translate(2px,2px); box-shadow: 2px 2px 0 var(--ink); }
+
+.mic-ring.recording {
+  background:var(--crayon-coral);
+  animation:mic-pulse 1.1s ease-in-out infinite;
+}
+.mic-ring.recording .mic-icon { color:#fff; filter:none; }
+
+.mic-ring.processing {
+  background:var(--crayon-yellow);
+  animation:mic-spin 1.6s linear infinite;
+}
+.mic-ring.disabled { opacity:0.4; pointer-events:none; }
+
+@keyframes mic-pulse {
+  0%, 100% { box-shadow: 4px 4px 0 var(--ink), 0 0 0 0 rgba(232, 90, 79, 0.35); }
+  50%      { box-shadow: 4px 4px 0 var(--ink), 0 0 0 18px rgba(232, 90, 79, 0); }
+}
+@keyframes mic-spin {
+  from { box-shadow: 4px 4px 0 var(--ink); }
+  to   { box-shadow: -4px -4px 0 var(--ink); }
+}
+
+.mic-icon {
+  font-size:36px;
+  z-index:1;
+  line-height:1;
+}
+
+.voice-status {
+  font-family:'Patrick Hand', cursive;
+  font-size:15px;
+  font-weight:600;
+  color:var(--ink-soft);
+  text-align:center;
+  min-height:20px;
+  max-width:95%;
+  line-height:1.3;
+  letter-spacing:0.3px;
+}
+.voice-status.highlight { color:var(--crayon-coral); }
+.voice-status.speaking { color:var(--crayon-sky); }
+
+.voice-transcript {
+  font-family:'Caveat', cursive;
+  font-size:17px;
+  color:var(--ink-thin);
+  text-align:center;
+  min-height:18px;
+  max-width:95%;
+  line-height:1.3;
+}
+
+/* ── Coach feedback stack ──────────────────────────────── */
+.voice-bottom {
+  display:flex; flex-direction:column;
+  align-items:stretch; gap:8px;
+  width:100%;
+  position:relative; z-index:1;
+  flex:1; min-height:0;
+}
+
+.coach-stack {
+  display:flex; flex-direction:column;
+  gap:8px;
+  overflow-y:auto;
+  padding-right:2px;
+  flex:1; min-height:0;
+}
+
+.reaction-bubble, .habit-bubble, .invite-bubble {
+  width:100%;
+  border-radius:var(--r-md);
+  padding:10px 13px;
+  font-size:13.5px;
+  line-height:1.4;
+  display:none;
+  text-align:left;
+  border:2px solid var(--ink);
+  background:#fff;
+  font-weight:500;
+  color:var(--ink);
+  position:relative;
+  box-shadow: 2.5px 2.5px 0 var(--ink);
+}
+.reaction-bubble { background:#e6f3e9; transform:rotate(-0.4deg); }
+.habit-bubble    { background:#fff5d8; transform:rotate(0.3deg); }
+.invite-bubble   { background:#eaf0fa; transform:rotate(-0.2deg); }
+
+.bubble-lead {
+  font-family:'Patrick Hand', cursive;
+  font-size:11px; font-weight:600;
+  letter-spacing:1.2px;
+  text-transform:uppercase;
+  display:block;
+  margin-bottom:3px;
+}
+.reaction-bubble .bubble-lead { color:var(--good-deep); }
+.habit-bubble .bubble-lead    { color:#a17800; }
+.invite-bubble .bubble-lead   { color:var(--crayon-sky); }
+
+/* Q&A turns */
+.qa-turn { display:flex; flex-direction:column; gap:5px; }
+.qa-bubble {
+  padding:9px 12px;
+  border-radius:14px;
+  font-size:13px;
+  line-height:1.4;
+  max-width:90%;
+  border:2px solid var(--ink);
+  font-weight:500;
+}
+.qa-bubble.q {
+  align-self:flex-end;
+  background:#e8dcf3;
+  border-bottom-right-radius:4px;
+  transform:rotate(0.5deg);
+}
+.qa-bubble.a {
+  align-self:flex-start;
+  background:#d8efdc;
+  border-bottom-left-radius:4px;
+  transform:rotate(-0.5deg);
+}
+.qa-lead {
+  font-family:'Patrick Hand', cursive;
+  font-size:10px; font-weight:600;
+  letter-spacing:1.2px;
+  text-transform:uppercase;
+  margin-bottom:2px;
+  opacity:0.75;
+}
+.qa-bubble.q .qa-lead { color:var(--crayon-violet); }
+.qa-bubble.a .qa-lead { color:var(--good-deep); }
+
+.followup-counter {
+  font-family:'Patrick Hand', cursive;
+  font-size:12px;
+  color:var(--ink-thin);
+  text-align:center;
+  letter-spacing:1px;
+  margin-top:2px;
+  display:none;
+}
+
+/* ── Action buttons ────────────────────────────────────── */
+.btn-row {
+  display:flex; gap:8px;
+  width:100%;
+  flex-shrink:0;
+}
+.action-btn {
+  flex:1;
+  padding:11px 0;
+  font-family:'Fredoka', sans-serif;
+  font-size:14.5px;
+  font-weight:600;
+  border:2.5px solid var(--ink);
+  border-radius:14px;
+  cursor:pointer;
+  background:#fff;
+  color:var(--ink);
+  transition:transform .12s ease, box-shadow .12s ease;
+  box-shadow: 3px 3px 0 var(--ink);
+  letter-spacing:0.3px;
+}
+.action-btn:hover { transform:translate(-1px,-1px); box-shadow: 4px 4px 0 var(--ink); }
+.action-btn:active { transform:translate(2px,2px); box-shadow: 1px 1px 0 var(--ink); }
+
+.action-btn.skip { background:#fff; color:var(--ink-soft); }
+.action-btn.end  { background:#fbe5e3; color:var(--bad); }
+.action-btn.ask  { background:var(--crayon-violet); color:#fff; }
+.action-btn.next {
+  background:var(--crayon-mint);
+  color:#fff;
+  font-size:15.5px;
+}
+.action-btn:disabled { opacity:0.45; cursor:default; transform:none; box-shadow: 3px 3px 0 var(--ink); }
+
+/* ════════════════════════════════════════════════════════
+   LOADING OVERLAY
+   ════════════════════════════════════════════════════════ */
+#loading {
+  display:none;
+  position:absolute; inset:0;
+  background:rgba(248, 241, 224, 0.92);
+  backdrop-filter:blur(3px);
+  flex-direction:column;
+  align-items:center; justify-content:center;
+  gap:14px; z-index:30;
+}
+#loading.active { display:flex; }
+
+.spinner {
+  width:42px; height:42px;
+  border:3.5px solid var(--ink);
+  border-top-color:var(--crayon-coral);
+  border-right-color:var(--crayon-yellow);
+  border-radius:50%;
+  animation:spin .9s linear infinite;
+}
+@keyframes spin { to { transform:rotate(360deg); } }
+
+.loading-text {
+  font-family:'Caveat', cursive;
+  font-size:20px;
+  font-weight:600;
+  color:var(--ink-soft);
+}
+
+/* ════════════════════════════════════════════════════════
+   SCAN SCREEN
+   ════════════════════════════════════════════════════════ */
+#scan {
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  gap:10px;                            /* was 12 */
+  padding:10px 18px 14px;              /* was 14 18 */
+  overflow-y:auto;
+}
+
+.scan-header {
+  display:flex; align-items:center;
+  justify-content:space-between;
+  width:100%; max-width:660px;
+  margin-top:4px;
+  flex-shrink:0;
+}
+.scan-title {
+  font-family:'Fredoka', sans-serif;
+  font-size:22px;                      /* was 24 */
+  font-weight:700;
+  color:var(--ink);
+  transform:rotate(-1deg);
+}
+.scan-subtitle {
+  font-family:'Caveat', cursive;
+  font-size:17px;                      /* was 18 */
+  color:var(--ink-soft);
+  text-align:center;
+  margin-top:-2px;
+  flex-shrink:0;
+}
+
+.scan-back-btn {
+  background:#fff;
+  border:2.5px solid var(--ink);
+  color:var(--ink);
+  font-family:'Patrick Hand', cursive;
+  font-size:14px; font-weight:600;
+  padding:6px 16px;
+  border-radius:18px;
+  cursor:pointer;
+  box-shadow: 2.5px 2.5px 0 var(--ink);
+  letter-spacing:0.5px;
+  transition:transform .12s ease, box-shadow .12s ease;
+}
+.scan-back-btn:hover { transform:translate(-1px,-1px); }
+.scan-back-btn:active { transform:translate(2px,2px); box-shadow: 1px 1px 0 var(--ink); }
+
+/* Camera viewport */
+.scan-viewport {
+  position:relative;
+  width:100%; max-width:520px;          /* was 660 — narrower so it fits short screens */
+  aspect-ratio:4/3;
+  max-height:55vh;                       /* extra cap for short viewports */
+  background:#000;
+  border-radius:var(--r-lg);
+  overflow:hidden;
+  border:3px solid var(--ink);
+  box-shadow: 5px 5px 0 var(--ink);
+  flex-shrink:0;
+}
+#scan-video { width:100%; height:100%; object-fit:cover; display:block; }
+
+/* Hand-drawn dashed scanning frame */
+.scan-frame {
+  position:absolute;
+  inset:14% 10%;
+  border:4px dashed rgba(255, 255, 255, 0.7);
+  border-radius:var(--r-md);
+  pointer-events:none;
+  transition:border-color .3s;
+}
+.scan-frame.detecting { border-color:var(--crayon-yellow); }
+.scan-frame.matched   { border-color:var(--crayon-mint); border-style:solid; }
+.scan-frame::before, .scan-frame::after {
+  content:'';
+  position:absolute;
+  width:28px; height:28px;
+  border:4px solid #fff;
+}
+.scan-frame.detecting::before, .scan-frame.detecting::after { border-color:var(--crayon-yellow); }
+.scan-frame.matched::before,   .scan-frame.matched::after   { border-color:var(--crayon-mint); }
+.scan-frame::before { top:-4px; left:-4px; border-right:none; border-bottom:none; }
+.scan-frame::after  { bottom:-4px; right:-4px; border-left:none; border-top:none; }
+
+.scan-laser {
+  position:absolute;
+  left:10%; right:10%; top:14%;
+  height:3px;
+  background:linear-gradient(90deg, transparent, var(--crayon-yellow), transparent);
+  animation:laser-sweep 2.4s ease-in-out infinite;
+  pointer-events:none;
+  opacity:0.85;
+}
+@keyframes laser-sweep {
+  0%   { transform:translateY(0); }
+  50%  { transform:translateY(450%); }
+  100% { transform:translateY(0); }
+}
+
+.scan-status {
+  font-family:'Patrick Hand', cursive;
+  font-size:16px;                      /* was 17 */
+  font-weight:600;
+  color:var(--ink-soft);
+  min-height:20px;                     /* was 22 */
+  text-align:center;
+  letter-spacing:0.5px;
+  flex-shrink:0;
+}
+.scan-status.detecting { color:#a17800; }
+.scan-status.matched   { color:var(--good-deep); }
+.scan-status.error     { color:var(--bad); }
+
+.scan-preview-text {
+  font-size:11px;
+  color:var(--ink-thin);
+  font-family:'Patrick Hand', cursive;
+  width:100%; max-width:520px;          /* was 660 */
+  min-height:32px;
+  padding:6px 12px;
+  background:#fff;
+  border:2px dashed var(--ink-thin);
+  border-radius:10px;
+  text-align:left;
+  line-height:1.4;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  letter-spacing:0.5px;
+  flex-shrink:0;
+}
+
+/* Candidate confirmation */
+.scan-candidate {
+  width:100%; max-width:520px;          /* was 660 */
+  background:#fff;
+  border:3px solid var(--ink);
+  border-radius:var(--r-lg);
+  padding:14px 16px;                   /* was 16 18 */
+  display:none; flex-direction:column;
+  gap:8px;                              /* was 10 */
+  box-shadow: 5px 5px 0 var(--crayon-mint), 5px 5px 0 1.5px var(--ink);
+  position:relative;
+  flex-shrink:0;
+}
+.scan-candidate.active { display:flex; }
+.scan-candidate-label {
+  font-family:'Patrick Hand', cursive;
+  font-size:13px;
+  font-weight:600;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+  color:var(--good-deep);
+}
+.scan-candidate-title {
+  font-family:'Fredoka', sans-serif;
+  font-size:22px; font-weight:700;
+  color:var(--ink);
+}
+.scan-candidate-meta {
+  font-family:'Patrick Hand', cursive;
+  font-size:13px;
+  color:var(--ink-soft);
+  letter-spacing:0.5px;
+}
+.scan-candidate-row {
+  display:flex; gap:10px;
+  margin-top:6px;
+}
+.scan-candidate-row button {
+  flex:1;
+  padding:11px 0;
+  font-family:'Fredoka', sans-serif;
+  font-size:15px; font-weight:600;
+  border:2.5px solid var(--ink);
+  border-radius:12px;
+  cursor:pointer;
+  box-shadow: 3px 3px 0 var(--ink);
+  transition:transform .12s ease;
+}
+.scan-candidate-row button:hover { transform:translate(-1px,-1px); }
+.scan-candidate-row button:active { transform:translate(2px,2px); box-shadow: 1px 1px 0 var(--ink); }
+.scan-candidate-row .confirm { background:var(--crayon-mint); color:#fff; }
+.scan-candidate-row .rescan  { background:#fff; color:var(--ink-soft); }
+
+.scan-fallback {
+  display:flex; gap:8px;
+  margin-top:2px;
+  width:100%;
+  max-width:520px;                     /* was 660 */
+  flex-shrink:0;
+}
+.scan-fallback input {
+  flex:1;
+  padding:9px 12px;
+  background:#fff;
+  border:2px solid var(--ink);
+  border-radius:10px;
+  color:var(--ink);
+  font-family:'Patrick Hand', cursive;
+  font-size:15px;
+  outline:none;
+  letter-spacing:0.5px;
+}
+.scan-fallback input:focus { border-color:var(--crayon-sky); box-shadow: 0 0 0 2px rgba(61,142,185,0.2); }
+.scan-fallback button {
+  padding:9px 20px;
+  font-family:'Fredoka', sans-serif;
+  font-size:14px; font-weight:600;
+  background:var(--crayon-sky);
+  border:2px solid var(--ink);
+  border-radius:10px;
+  color:#fff;
+  cursor:pointer;
+  box-shadow: 2.5px 2.5px 0 var(--ink);
+}
+.scan-fallback button:active { transform:translate(2px,2px); box-shadow: 1px 1px 0 var(--ink); }
+
+/* ════════════════════════════════════════════════════════
+   SUMMARY SCREEN
+   ════════════════════════════════════════════════════════ */
+#summary {
+  flex-direction:column;
+  align-items:center; justify-content:center;
+  gap:14px;
+  padding:22px 30px;
+  text-align:center;
+}
+
+.sum-trophy {
+  font-size:54px;
+  line-height:1;
+  transform:rotate(-6deg);
+  display:inline-block;
+  animation:trophy-bob 2.4s ease-in-out infinite;
+}
+@keyframes trophy-bob {
+  0%, 100% { transform:rotate(-6deg) translateY(0); }
+  50%      { transform:rotate(-3deg) translateY(-4px); }
+}
+
+.sum-title {
+  font-family:'Fredoka', sans-serif;
+  font-size:36px;
+  font-weight:700;
+  color:var(--ink);
+  position:relative;
+  display:inline-block;
+}
+.sum-title::after {
+  content:'';
+  position:absolute;
+  left:-4px; right:-4px;
+  bottom:-8px;
+  height:6px;
+  background:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 12' xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='none'%3E%3Cpath d='M2 8 Q 30 2 60 6 T 120 5 T 198 7' fill='none' stroke='%23f1bf3b' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-size:100% 100%;
+  background-repeat:no-repeat;
+}
+
+.sum-score {
+  font-family:'Fredoka', sans-serif;
+  font-size:50px;
+  font-weight:700;
+  color:var(--crayon-coral);
+  -webkit-text-stroke:2.5px var(--ink);
+  paint-order:stroke fill;
+  line-height:1;
+  margin-top:6px;
+}
+.sum-score span {
+  color:var(--ink-soft);
+  font-size:24px;
+  -webkit-text-stroke:0;
+}
+
+.sum-cats {
+  display:flex; gap:12px;
+  flex-wrap:wrap;
+  justify-content:center;
+}
+.sum-cat {
+  background:#fff;
+  border:2.5px solid var(--ink);
+  border-radius:14px;
+  padding:9px 18px;
+  min-width:130px;
+  box-shadow: 3px 3px 0 var(--ink);
+}
+.sum-cat:nth-child(1) { transform:rotate(-1.5deg); }
+.sum-cat:nth-child(2) { transform:rotate(1.5deg); }
+.sum-cat-name {
+  font-family:'Patrick Hand', cursive;
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:1.5px;
+  color:var(--ink-soft);
+  margin-bottom:3px;
+}
+.sum-cat-score {
+  font-family:'Fredoka', sans-serif;
+  font-size:20px; font-weight:700;
+}
+
+.sum-followups {
+  display:flex; align-items:center; gap:6px;
+  font-family:'Caveat', cursive;
+  font-size:18px;
+  color:var(--crayon-violet);
+  margin-top:-2px;
+}
+.sum-followups strong {
+  font-family:'Fredoka', sans-serif;
+  font-size:20px;
+  color:var(--ink);
+}
+
+.sum-tip {
+  font-family:'Caveat', cursive;
+  font-size:22px;
+  font-weight:600;
+  color:var(--ink);
+  max-width:480px;
+  line-height:1.4;
+  background:#fff5d8;
+  padding:12px 22px;
+  border:2.5px solid var(--ink);
+  border-radius:18px;
+  box-shadow: 3px 3px 0 var(--ink);
+  position:relative;
+  transform:rotate(-0.6deg);
+}
+.sum-tip::before {
+  content:'💡';
+  position:absolute;
+  top:-14px; left:18px;
+  font-size:24px;
+  background:#fff5d8;
+  padding:0 6px;
+}
+
+.replay-btn {
+  font-family:'Fredoka', sans-serif;
+  font-size:22px; font-weight:600;
+  color:#fff;
+  background:var(--crayon-violet);
+  border:2.5px solid var(--ink);
+  border-radius:40px;
+  padding:13px 46px;
+  cursor:pointer;
+  box-shadow: var(--hand-shadow);
+  letter-spacing:0.5px;
+}
+.replay-btn:hover { transform:translate(-1px,-1px); box-shadow: 5px 5px 0 var(--ink); }
+.replay-btn:active { transform:translate(2px,2px); box-shadow: 1px 1px 0 var(--ink); }
+
+/* ════════════════════════════════════════════════════════
+   UTILITIES
+   ════════════════════════════════════════════════════════ */
+.fade-in { animation:fadeIn .35s ease-out; }
+@keyframes fadeIn {
+  from { opacity:0; transform:translateY(8px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width:8px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb {
+  background:var(--ink-thin);
+  border-radius:4px;
+  border:2px solid var(--paper-warm);
+}
 </style>
 </head>
 <body>
 
 <!-- HOME screen -->
 <div id="home" class="screen active">
-  <div class="logo">PROMPT!</div>
-  <div class="logo-sub">AI Literacy · Spoken Reflection</div>
+  <div class="logo-wrap">
+    <div class="logo">PROMPT</div>
+    <span class="logo-star">✦</span>
+  </div>
+  <div class="logo-sub">~ AI literacy & spoken reflection ~</div>
   <div class="home-tagline">Read a card, say what you notice out loud, and learn to see through AI and online framing.</div>
 
   <div class="entry-row">
@@ -391,9 +1463,8 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
     </div>
   </div>
 
-  <!-- Quick Play drawer: mode picker, hidden until "Random Deck" is tapped -->
-  <div id="quickplay-drawer" style="display:none;flex-direction:column;align-items:center;gap:12px;margin-top:4px;">
-    <div class="mode-title">Pick your deck</div>
+  <div id="quickplay-drawer">
+    <div class="mode-title">Pick your deck ✎</div>
     <div class="mode-row">
       <div class="mode-card" data-mode="discernment" onclick="selectMode('discernment', this)">
         <div class="mode-badge disc">Discernment</div>
@@ -411,7 +1482,7 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
         <div class="mode-desc">A balanced run through both decks. Great for a first game.</div>
       </div>
     </div>
-    <button class="start-btn" id="start-btn" onclick="startGame()">Start Game</button>
+    <button class="big-btn" id="start-btn" onclick="startGame()">Start Game ✦</button>
   </div>
 
   <div class="home-hint">say what you think · no multiple choice · every answer counts</div>
@@ -422,9 +1493,9 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
   <div class="scan-header">
     <button class="scan-back-btn" onclick="backToHome()">← Back</button>
     <div class="scan-title">Show me a card</div>
-    <div style="width:66px;"></div><!-- spacer to keep title centered -->
+    <div style="width:72px;"></div>
   </div>
-  <div class="scan-subtitle">Hold the card steady inside the box. I'll read the number and title.</div>
+  <div class="scan-subtitle">Hold the card steady inside the box ~ I'll read the number and title.</div>
 
   <div class="scan-viewport">
     <video id="scan-video" autoplay playsinline muted></video>
@@ -435,21 +1506,19 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
   <div class="scan-status" id="scan-status">Starting camera...</div>
   <div class="scan-preview-text" id="scan-preview-text">—</div>
 
-  <!-- When OCR gets a confident match, this panel appears with Confirm/Rescan -->
   <div class="scan-candidate" id="scan-candidate">
-    <div class="scan-candidate-label">Detected</div>
+    <div class="scan-candidate-label">✓ Detected</div>
     <div class="scan-candidate-title" id="scan-candidate-title">—</div>
     <div class="scan-candidate-meta" id="scan-candidate-meta">—</div>
     <div class="scan-candidate-row">
       <button class="rescan" onclick="rescanCard()">Rescan</button>
-      <button class="confirm" onclick="confirmScan()">Yes, that's it</button>
+      <button class="confirm" onclick="confirmScan()">Yes, that's it ✓</button>
     </div>
   </div>
 
-  <!-- Manual-entry fallback when OCR keeps failing -->
   <div class="scan-fallback">
     <input id="scan-manual-input" type="text" placeholder="Or type the card number, e.g. 14" inputmode="numeric">
-    <button onclick="manualEntry()">Go</button>
+    <button onclick="manualEntry()">Go →</button>
   </div>
 </div>
 
@@ -457,7 +1526,7 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 <div id="game" class="screen">
   <div class="card-side">
     <div class="game-top-bar">
-      <div class="game-logo">PROMPT!</div>
+      <div class="game-logo">PROMPT</div>
       <div class="top-info">
         <div class="dots" id="dots"></div>
         <div class="score-pill" id="score-pill">0 pts</div>
@@ -465,20 +1534,20 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
     </div>
 
     <div class="card-meta-bar">
-      <div class="card-id-pill">Card ID: <strong id="card-id-display">—</strong></div>
+      <div class="card-id-pill">Card: <strong id="card-id-display">—</strong></div>
       <div class="progress-pill"><strong id="card-progress-display">1 / 6</strong></div>
     </div>
 
     <div class="card-container">
       <div class="card-flipper" id="card-flipper">
         <div class="card-face card-front" id="card-front">
-          <div class="card-header-row">
-            <div class="card-cat" id="card-cat"></div>
-            <div class="card-diff" id="card-diff"></div>
+          <div class="card-corner" id="card-corner-num">?</div>
+          <div class="title-pill-wrap">
+            <div class="title-pill" id="card-title">—</div>
           </div>
-          <div class="card-title" id="card-title"></div>
-          <div class="ptype-label" id="card-ptype"></div>
           <div class="body-area" id="body-area"></div>
+          <div class="card-ptype-tag" id="card-ptype">—</div>
+          <div class="card-diff-tag" id="card-diff">easy</div>
         </div>
 
         <div class="card-face card-back" id="card-back">
@@ -523,7 +1592,6 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
     </div>
 
     <div class="voice-bottom">
-      <!-- Coach + follow-up chat stack. Scrolls internally. -->
       <div class="coach-stack" id="coach-stack">
         <div class="reaction-bubble" id="reaction-bubble">
           <span class="bubble-lead">Coach Says</span>
@@ -537,18 +1605,15 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
           <span class="bubble-lead">Ask Me Anything</span>
           <span id="invite-text"></span>
         </div>
-        <!-- Follow-up Q&A pairs are appended here -->
         <div id="followup-thread"></div>
         <div class="followup-counter" id="followup-counter"></div>
       </div>
 
-      <!-- Before answering: Skip + End game -->
       <div class="btn-row" id="pre-answer-row">
         <button class="action-btn skip" onclick="skipAnswer()">Skip card</button>
         <button class="action-btn end" onclick="endGameEarly()">End game</button>
       </div>
 
-      <!-- After answering: Next card + End game (main row) -->
       <div class="btn-row" id="post-answer-row" style="display:none;">
         <button class="action-btn next" id="next-btn" onclick="nextCard()">Next Card →</button>
         <button class="action-btn end" onclick="endGameEarly()">End game</button>
@@ -578,6 +1643,14 @@ const API = '';
 
 const CAT_LABELS = { discernment:'Discernment', usage:'AI Usage' };
 const CAT_EMOJI  = { discernment:'🔍', usage:'🤖' };
+
+// Color mapping by problem_type — matches the physical decks
+const PTYPE_COLOR = {
+  perspective_lens_audit: 'var(--c-perspective)',  // crimson — #1
+  affective_highjack:     'var(--c-affective)',    // cobalt  — #14
+  bias_inverter:          'var(--c-bias)',         // green   — #27
+  task_decomposition_map: 'var(--c-decomp)',       // brown   — #40
+};
 
 const PTYPE_LABEL = {
   perspective_lens_audit: 'Perspective · Lens Audit',
@@ -610,16 +1683,10 @@ let totalScore = 0;
 let maxScore = 0;
 let results = [];
 
-// UI state machine: 'answering' | 'followup' | 'done'
-// 'answering' — mic captures the card answer
-// 'followup'  — mic captures a follow-up question about the card
-// 'done'      — summary screen, mic hidden
 let uiPhase = 'answering';
-
 let followupsUsed = 0;
 let followupsAllowed = 4;
 
-// ── Recording state ──
 let isRecording = false;
 let mediaRecorder = null;
 let audioChunks = [];
@@ -633,21 +1700,16 @@ let silenceCheckTimer = null;
 let silenceStartedAt = null;
 let stopRequested = false;
 
-// ═══ Scan state (v4) ═══
-// `scanIndex` is the list of {id, id_num, title, body_snip} entries we fetched
-// from the server once. Every OCR frame matches against this in-memory list,
-// so recognition is server-free after the initial fetch.
+// Scan state
 let scanIndex = null;
-let scanStream = null;          // MediaStream for the camera
-let scanWorker = null;          // Tesseract worker (reused across frames)
-let scanLoopTimer = null;       // setInterval handle for the OCR frame loop
-let scanBusy = false;           // true while one OCR pass is in flight
-let scanActive = false;         // true when the scan screen is open + live
-let scanCandidate = null;       // the last card we're proposing to the user
-let scanConsecutiveHits = 0;    // how many frames in a row said the same card
-let scanLastSeenId = null;      // which card id the previous frame matched
-// True when the current game session was started by a card scan. Affects
-// the post-answer flow (we show "Scan Next Card" instead of "Next Card →").
+let scanStream = null;
+let scanWorker = null;
+let scanLoopTimer = null;
+let scanBusy = false;
+let scanActive = false;
+let scanCandidate = null;
+let scanConsecutiveHits = 0;
+let scanLastSeenId = null;
 let isScanSession = false;
 
 // ── Screen helpers ──
@@ -674,21 +1736,15 @@ function goHome(){
   document.getElementById('quickplay-drawer').style.display = 'none';
 }
 
-// ═══ Scan flow (v4) ═══════════════════════════════════════════
-
-// Reveal the Quick Play mode picker on the home screen.
 function openQuickPlay(){
   document.getElementById('quickplay-drawer').style.display = 'flex';
 }
 
-// Enter the scan screen — triggered by the "Scan a Card" entry card on Home,
-// and re-entered between cards by the post-answer "Scan Next Card" button.
 async function openScanner(){
   showScreen('scan');
   resetScanUI();
   setScanStatus('Starting camera...', null);
 
-  // Fetch the card index once per app lifetime — it's tiny (~40 entries).
   if (!scanIndex) {
     try {
       const r = await fetch(`${API}/api/scan_index`);
@@ -700,7 +1756,6 @@ async function openScanner(){
     }
   }
 
-  // Ask for camera access. On Jetson/localhost this should grant immediately.
   try {
     scanStream = await navigator.mediaDevices.getUserMedia({
       video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } },
@@ -715,13 +1770,10 @@ async function openScanner(){
   video.srcObject = scanStream;
   await video.play().catch(() => {});
 
-  // Spin up Tesseract worker lazily. ~8MB download first time, cached after.
   if (!scanWorker) {
     setScanStatus('Loading reader... (first time only)', 'detecting');
     try {
       scanWorker = await Tesseract.createWorker('eng');
-      // Tune for printed card text. PSM 6 = "assume a uniform block of text"
-      // which handles our 2-paragraph card faces well.
       await scanWorker.setParameters({
         tessedit_pageseg_mode: '6',
         tessedit_char_whitelist:
@@ -738,7 +1790,6 @@ async function openScanner(){
   startScanLoop();
 }
 
-// Leave the scan screen and tear everything down so we don't pin camera/CPU.
 function stopScanner(){
   scanActive = false;
   if (scanLoopTimer) { clearInterval(scanLoopTimer); scanLoopTimer = null; }
@@ -746,8 +1797,6 @@ function stopScanner(){
     scanStream.getTracks().forEach(t => t.stop());
     scanStream = null;
   }
-  // Keep scanWorker alive — reinitialising costs ~2s and the worker is only
-  // ~8MB of RAM. Terminate explicitly if the tab becomes memory-pressured.
 }
 
 function backToHome(){
@@ -772,10 +1821,6 @@ function setScanStatus(text, cls){
   el.className = 'scan-status' + (cls ? ' ' + cls : '');
 }
 
-// The OCR frame loop: every ~1.2s we grab the center of the video, send it to
-// Tesseract, and try to match whatever comes back to a card in scanIndex.
-// 1.2s is slow enough that the worker never backs up and the preview stays
-// smooth, and fast enough that a steady card is recognized in 1-2 frames.
 function startScanLoop(){
   if (scanLoopTimer) clearInterval(scanLoopTimer);
   scanLoopTimer = setInterval(() => {
@@ -790,9 +1835,6 @@ async function grabAndRecognise(){
     const video = document.getElementById('scan-video');
     if (!video.videoWidth) { scanBusy = false; return; }
 
-    // Crop to the scanning frame region (matches the dashed box in the UI:
-    // inset 14% vertical, 10% horizontal). Cropping before OCR cuts noise
-    // from the background and speeds recognition by ~3x on Jetson.
     const vw = video.videoWidth, vh = video.videoHeight;
     const sx = Math.round(vw * 0.10);
     const sy = Math.round(vh * 0.14);
@@ -816,26 +1858,17 @@ async function grabAndRecognise(){
   }
 }
 
-// Fuzzy matcher: runs against the pre-fetched card index.
-// Two independent signals must both agree:
-//   1. id_num: find a "#NN" or bare number in the OCR output
-//   2. title fuzzy score: share of distinctive title words also in OCR text
-// Minimum confidence = both signals agree OR one signal is very strong.
 function matchAgainstIndex(rawText){
   if (!scanIndex || !scanIndex.length) return;
 
   const lower = rawText.toLowerCase();
-  // Strip weird whitespace / line breaks for keyword matching.
   const flat  = lower.replace(/[^a-z0-9#! ]+/g, ' ').replace(/\s+/g, ' ').trim();
 
-  // Signal 1 — extract ID candidates (prefer "#NN", fall back to bare numbers
-  // that look like card IDs: 1-2 digits within our known range).
   const idCandidates = new Set();
   const hashMatches = rawText.match(/#\s*(\d{1,3})/g) || [];
   for (const h of hashMatches) {
     idCandidates.add(h.replace(/[^\d]/g, '').replace(/^0+/, '') || '0');
   }
-  // Also look for bare 1-3 digit numbers — card IDs in this game go 1..60ish.
   const bareNums = rawText.match(/\b(\d{1,3})\b/g) || [];
   for (const n of bareNums) {
     const canon = n.replace(/^0+/, '') || '0';
@@ -844,33 +1877,24 @@ function matchAgainstIndex(rawText){
     }
   }
 
-  // Score each card in the index.
   let best = null;
   let bestScore = 0;
   for (const c of scanIndex) {
     const idHit = idCandidates.has(c.id_num);
-
-    // Signal 2 — count distinctive title words present in the OCR text.
-    // "distinctive" = length >= 4, skipping common articles.
     const titleWords = c.title.toLowerCase()
       .split(/[^a-z0-9]+/)
       .filter(w => w.length >= 4);
     const titleHits = titleWords.filter(w => flat.includes(w)).length;
     const titleScore = titleWords.length ? titleHits / titleWords.length : 0;
-
-    // Signal 3 (weak) — body snippet overlap, just for tiebreaking.
     const bodyHits = c.body_snip
       .split(/[^a-z0-9]+/)
       .filter(w => w.length >= 5 && flat.includes(w)).length;
 
-    // Combine. Both-signals-agree is the strong path; a single overwhelming
-    // signal (ID plus ANY title overlap, or very high title score alone) also
-    // passes but with lower confidence.
     let score = 0;
     if (idHit && titleScore >= 0.25)   score = 100 + titleHits * 5 + bodyHits;
     else if (idHit && titleScore > 0)  score = 70  + titleHits * 5;
-    else if (idHit)                     score = 40; // id-only — needs confirmation
-    else if (titleScore >= 0.5)        score = 60  + bodyHits; // title-strong
+    else if (idHit)                     score = 40;
+    else if (titleScore >= 0.5)        score = 60  + bodyHits;
     else                                 score = 0;
 
     if (score > bestScore) {
@@ -879,9 +1903,6 @@ function matchAgainstIndex(rawText){
     }
   }
 
-  // Decide whether we have enough confidence to show a candidate.
-  // We ALSO require the same match on two consecutive frames before showing
-  // the confirmation card — prevents flickering on a jittery camera.
   if (best && bestScore >= 70) {
     if (scanLastSeenId === best.id) scanConsecutiveHits++;
     else { scanLastSeenId = best.id; scanConsecutiveHits = 1; }
@@ -926,7 +1947,6 @@ function rescanCard(){
   setScanStatus('Looking for a card...', null);
 }
 
-// Confirm the detected card and start / extend the game session.
 async function confirmScan(){
   if (!scanCandidate) return;
   const chosenId = scanCandidate.id;
@@ -934,15 +1954,12 @@ async function confirmScan(){
   stopScanner();
 
   if (sessionId && isScanSession) {
-    // Mid-game: append this card to the running session's deck.
     await appendScannedCard(chosenId);
   } else {
-    // First card: start a fresh single-card session.
     await startScanSession(chosenId);
   }
 }
 
-// Manual fallback — typing "14" or "#14" directly.
 async function manualEntry(){
   const raw = (document.getElementById('scan-manual-input').value || '').trim();
   if (!raw) return;
@@ -1003,10 +2020,9 @@ async function appendScannedCard(cardId){
     }
     if (d.error) { alert(d.error); openScanner(); return; }
 
-    // Extend local state to point at the new card.
     totalCards = d.total_cards;
     maxScore = totalCards * 10;
-    currentIdx = totalCards - 1;       // newly appended slot
+    currentIdx = totalCards - 1;
     currentCard = d.card;
 
     showScreen('game');
@@ -1026,7 +2042,6 @@ async function stopAudio(){
   }
 }
 
-// ── TTS: single-call, no chaining (v3 pattern kept) ──
 async function speak(text, tone='narrator'){
   if (!text || !text.trim()) return;
   try {
@@ -1087,27 +2102,48 @@ function renderCard(){
   const flipper = document.getElementById('card-flipper');
   flipper.classList.remove('flipped');
 
+  // Apply problem-type color to the card front (CSS variable cascade)
+  const cardFront = document.getElementById('card-front');
+  const cardColor = PTYPE_COLOR[c.problem_type] || 'var(--c-perspective)';
+  cardFront.style.setProperty('--card-color', cardColor);
+
+  // Card ID (the number in the corner notch)
+  const rawId = String(c.card_id || c.id || '?').replace('#', '');
+  document.getElementById('card-corner-num').textContent = rawId;
   document.getElementById('card-id-display').textContent = c.card_id || c.id || '—';
   document.getElementById('card-progress-display').textContent = `${currentIdx + 1} / ${totalCards}`;
 
-  const catEl = document.getElementById('card-cat');
-  catEl.textContent = `${CAT_EMOJI[c.category]||''} ${CAT_LABELS[c.category]||c.category}`;
-  catEl.className = `card-cat cat-${c.category}`;
-
-  document.getElementById('card-diff').textContent = c.difficulty || 'easy';
+  // Title pill
   document.getElementById('card-title').textContent = c.title;
-  document.getElementById('card-ptype').textContent = PTYPE_LABEL[c.problem_type] || c.problem_type;
 
+  // Tags at bottom of card front
+  document.getElementById('card-ptype').textContent = PTYPE_LABEL[c.problem_type] || c.problem_type;
+  document.getElementById('card-diff').textContent = c.difficulty || 'easy';
+
+  // Body — the white text on the colored card
   const body = document.getElementById('body-area');
   body.innerHTML = '';
   const texts = Array.isArray(c.body) ? c.body : [String(c.body||'')];
+
+  // Quote-wrap rules match the physical cards exactly:
+  //  - perspective_lens_audit: source has no quotes → we add curly quotes
+  //  - bias_inverter:          source already has quotes baked into JSON
+  //  - affective / decomp:     plain text, no quotes
+  const wrapInQuotes = (c.problem_type === 'perspective_lens_audit');
+
   if (c.problem_type === 'perspective_lens_audit' && texts.length >= 2){
-    body.appendChild(makeBubble(texts[0], 'a', 'Lens A'));
-    body.appendChild(makeBubble(texts[1], 'b', 'Lens B'));
+    // Two lens texts separated by "vs" — matches the physical card layout
+    body.appendChild(makeBubble(texts[0], 'a', wrapInQuotes));
+    const vs = document.createElement('div');
+    vs.className = 'vs-divider';
+    vs.textContent = 'vs';
+    body.appendChild(vs);
+    body.appendChild(makeBubble(texts[1], 'b', wrapInQuotes));
   } else {
-    texts.forEach((t, i) => body.appendChild(makeBubble(t, 'solo', i === 0 ? 'The Post' : 'More')));
+    texts.forEach((t) => body.appendChild(makeBubble(t, 'solo', wrapInQuotes)));
   }
 
+  // Progress dots
   const dotsEl = document.getElementById('dots');
   dotsEl.innerHTML = '';
   for (let i=0; i<totalCards; i++){
@@ -1124,7 +2160,6 @@ function renderCard(){
   document.getElementById('prompt-bubble').textContent =
     PTYPE_QUESTION[c.problem_type] || "Say what you notice out loud.";
 
-  // Coach stack: clear everything
   document.getElementById('reaction-bubble').style.display = 'none';
   document.getElementById('habit-bubble').style.display = 'none';
   document.getElementById('invite-bubble').style.display = 'none';
@@ -1135,7 +2170,6 @@ function renderCard(){
   document.getElementById('voice-status').className = 'voice-status';
   document.getElementById('voice-transcript').textContent = '';
 
-  // Button rows: show answering row, hide post-answer row
   document.getElementById('pre-answer-row').style.display = 'flex';
   document.getElementById('post-answer-row').style.display = 'none';
 
@@ -1144,16 +2178,14 @@ function renderCard(){
   resetMicBtn();
 }
 
-function makeBubble(text, variant, lensLabel){
+function makeBubble(text, variant, wrapInQuotes){
   const el = document.createElement('div');
   el.className = `body-bubble ${variant} fade-in`;
-  const lens = document.createElement('div');
-  lens.className = 'bubble-lens';
-  lens.textContent = lensLabel || '';
-  const body = document.createElement('div');
-  body.textContent = text;
-  el.appendChild(lens);
-  el.appendChild(body);
+  const t = text.trim();
+  // If JSON already has straight or curly quotes baked in, leave them alone.
+  // Only perspective cards (no quotes in JSON) get wrapped in curly quotes here.
+  const alreadyQuoted = /^[""''"]/.test(t);
+  el.textContent = (wrapInQuotes && !alreadyQuoted) ? `"${t}"` : t;
   return el;
 }
 
@@ -1175,7 +2207,7 @@ async function readCardAloud(includeWelcome=false){
   await speak(parts.join(' '), 'narrator');
 }
 
-// ── Mic + audio monitoring (from v3, unchanged) ──
+// ── Mic + audio monitoring ──
 function cleanupAudioMonitoring(){
   if (silenceCheckTimer){ clearInterval(silenceCheckTimer); silenceCheckTimer = null; }
   silenceStartedAt = null;
@@ -1214,7 +2246,6 @@ function resetMicBtn(){
   document.getElementById('mic-icon').textContent = '🎤';
 }
 
-// Mic tap behaviour depends on phase — this is the entry point from the UI.
 async function onMicTap(){
   if (uiPhase === 'done') return;
   if (isRecording) {
@@ -1286,7 +2317,6 @@ async function processVoice(){
     }
     document.getElementById('voice-transcript').textContent = `"${text}"`;
 
-    // Route the transcribed text based on phase.
     if (uiPhase === 'followup') {
       await submitFollowup(text);
     } else {
@@ -1378,7 +2408,6 @@ async function revealAnswer(data){
 
   setTimeout(()=> document.getElementById('card-flipper').classList.add('flipped'), 350);
 
-  // Three feedback bubbles — reaction + habit + invite
   const reaction = data.feedback.reaction || '';
   const habit    = data.feedback.habit || '';
   const invite   = data.feedback.invite || 'Anything about this you want to dig into?';
@@ -1393,11 +2422,9 @@ async function revealAnswer(data){
   hBubble.style.display = habit ? 'block' : 'none';
   iBubble.style.display = 'block';
 
-  // Stash next-card payload so nextCard() can advance without a repeat fetch.
   window._nextCard = data.next_card || null;
   window._hasNext = !!data.has_next;
 
-  // Switch to post-answer UI: Next card + End game visible, mic now asks follow-ups.
   uiPhase = 'followup';
   document.getElementById('pre-answer-row').style.display = 'none';
   document.getElementById('post-answer-row').style.display = 'flex';
@@ -1407,8 +2434,6 @@ async function revealAnswer(data){
   document.getElementById('voice-status').className = 'voice-status';
 
   const nextBtn = document.getElementById('next-btn');
-  // In scan sessions there is no pre-loaded next card. The button sends the
-  // child back to the scanner screen to grab another physical card.
   if (data.is_scan_session || isScanSession) {
     nextBtn.textContent = 'Scan Next Card 📷';
   } else {
@@ -1417,7 +2442,6 @@ async function revealAnswer(data){
 
   updateFollowupCounter();
 
-  // One merged warm-tone clip — reaction + habit + invite.
   const feedbackText = [
     (tier === 'deep' || tier === 'mid') ? 'Nice catch.' : '',
     reaction, habit, invite,
@@ -1426,8 +2450,6 @@ async function revealAnswer(data){
     await speak(feedbackText, 'warm');
   }
 }
-
-// ── Follow-up turn ──
 
 function updateFollowupCounter(){
   const el = document.getElementById('followup-counter');
@@ -1451,7 +2473,6 @@ function appendQATurn(question, answer){
     </div>
   `;
   thread.appendChild(turn);
-  // Scroll the coach-stack to the bottom so the latest turn is in view.
   const stack = document.getElementById('coach-stack');
   stack.scrollTop = stack.scrollHeight;
 }
@@ -1501,9 +2522,6 @@ async function submitFollowup(question){
 async function nextCard(){
   await stopAudio();
 
-  // Scan session path: re-open the scanner screen instead of auto-advancing.
-  // The child physically scans the next card; /api/append_card picks it up
-  // from there via confirmScan() → appendScannedCard().
   if (isScanSession) {
     openScanner();
     return;
@@ -1546,7 +2564,7 @@ async function showSummary(){
     for (const [mode, s] of Object.entries(d.per_mode || {})){
       const maxM = s.total * 10;
       const p = maxM ? Math.round((s.score / maxM) * 100) : 0;
-      const color = p >= 75 ? 'var(--correct)' : p >= 50 ? 'var(--partial)' : 'var(--incorrect)';
+      const color = p >= 75 ? 'var(--good-deep)' : p >= 50 ? 'var(--partial)' : 'var(--bad)';
       const div = document.createElement('div');
       div.className = 'sum-cat fade-in';
       div.innerHTML = `
@@ -1555,7 +2573,6 @@ async function showSummary(){
       ce.appendChild(div);
     }
 
-    // Follow-up count line — show only when the child actually asked questions.
     const fuWrap = document.getElementById('sum-followups');
     const fuCount = d.total_followups || 0;
     if (fuCount > 0) {
@@ -1565,7 +2582,7 @@ async function showSummary(){
       fuWrap.style.display = 'none';
     }
 
-    document.getElementById('sum-tip').textContent = `💡 ${d.tip}`;
+    document.getElementById('sum-tip').textContent = d.tip;
     showScreen('summary');
     await speak(`Game over. You scored ${d.score} out of ${d.max_score}. ${d.tip}`, 'warm');
   } catch(e){

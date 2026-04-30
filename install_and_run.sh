@@ -26,7 +26,7 @@ case "$cmd" in
     ;;
 
   run)
-    echo "[run] Starting PROMPT! v3 server on :8000 ..."
+    echo "[run] Starting PROMPT! v4 server on :8000 ..."
     pkill -f "uvicorn server:app" || true
     python -m uvicorn server:app --host 0.0.0.0 --port 8000
     ;;

@@ -271,9 +271,9 @@ If you see `{"cards":[{"id":"#1",...` the server is healthy and the card index i
 ### High-level diagram
 
 ```
-                ┌─────────────────────────────────────────────────┐
-                │                NVIDIA JETSON AGX THOR            │
-                │                                                  │
+                ┌────────────────────────────────────────────────┐
+                │                NVIDIA JETSON AGX THOR          │
+                │                                                │
                 │  ┌────────────┐         ┌──────────────────┐   │
                 │  │  Browser   │ ◄────►  │  FastAPI server  │   │
                 │  │ (Chromium) │  HTTP   │   (uvicorn)      │   │
@@ -304,7 +304,7 @@ If you see `{"cards":[{"id":"#1",...` the server is healthy and the card index i
                 │  │ Touchscreen│         │                  │   │
                 │  └────────────┘         │   ┌─────────┐    │   │
                 │                         │   │ Ollama  │    │   │
-                │                         │   │+Llama3  │    │   │
+                │                         │   │ +Llama3 │    │   │
                 │                         │   └─────────┘    │   │
                 │                         └──────────────────┘   │
                 │                                                │
@@ -945,9 +945,12 @@ source .venv/bin/activate
 
 # Open in browser ON THOR
 http://localhost:8000
-http://127.0.0.1:3000
+http://127.0.0.1:8000
 # Stop
 # Ctrl+C  (or)  pkill -f "uvicorn server:app"
+
+# restart back to login
+sudo systemctl restart gdm
 
 # Smoke test
 curl http://localhost:8000/api/scan_index | head -c 200
@@ -959,4 +962,5 @@ Hardware checklist:
 - [ ] Touchscreen data cable in USB-C port NEAR HDMI
 - [ ] HDMI cable from Thor to NLIEOPDA 7" screen
 - [ ] Logitech C270 in any USB-A port
+
 - [ ] Browser open at `http://localhost:8000` or 'http://127.0.0.1:3000' ON THOR (not LAN)
