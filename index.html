@@ -7,7 +7,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Caveat:wght@500;600;700&family=Quicksand:wght@400;500;600;700&family=Patrick+Hand&display=swap" rel="stylesheet">
-<!-- Tesseract.js for client-side OCR during card scanning -->
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <style>
 :root {
@@ -111,23 +110,20 @@ body::after {
 #home {
   flex-direction:column;
   align-items:center;
-  justify-content:flex-start;       /* was center — top-anchored so scroll works */
-  gap:12px;                          /* was 18px */
+  justify-content:flex-start;
+  gap:12px;
   text-align:center;
-  padding:18px 18px 24px;            /* was 24px 18px */
+  padding:18px 18px 24px;
   position:relative;
-  overflow-y:auto;                   /* allow scroll when viewport is short */
+  overflow-y:auto;
   overflow-x:hidden;
 }
-/* Push content into vertical center when there IS room, but allow
-   overflow to scroll naturally when there isn't. */
 #home::after {
   content:'';
-  margin-top:auto;                   /* spacer that absorbs extra height */
+  margin-top:auto;
 }
 #home > * { flex-shrink:0; }
 
-/* Decorative doodles around the home screen */
 #home::before {
   content:'';
   position:absolute; inset:0;
@@ -140,16 +136,17 @@ body::after {
   opacity:0.7;
 }
 
-/* Top spacer before logo when there's vertical room */
 #home > .logo-wrap { margin-top:auto; }
-
+#home.quickplay-active > .logo-wrap {
+  margin-top: 3vh !important;
+}
 .logo-wrap {
   position:relative;
   display:inline-block;
 }
 .logo {
   font-family:'Fredoka', sans-serif;
-  font-size:48px;                    /* was 64px */
+  font-size:48px;
   font-weight:700;
   color:var(--ink);
   letter-spacing:-1px;
@@ -158,31 +155,30 @@ body::after {
   display:inline-block;
   transform:rotate(-2deg);
 }
-/* Hand-drawn underline under the logo */
 .logo::after {
   content:'';
   position:absolute;
   left:-6px; right:-6px;
-  bottom:-10px;                      /* was -12px */
-  height:7px;                        /* was 8px */
+  bottom:-10px;
+  height:7px;
   background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 12' xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='none'%3E%3Cpath d='M2 8 Q 30 2 60 6 T 120 5 T 198 7' fill='none' stroke='%23e85a4f' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E");
   background-size:100% 100%;
   background-repeat:no-repeat;
 }
 .logo-star {
   position:absolute;
-  top:-10px; right:-26px;            /* tightened */
+  top:-10px; right:-26px;
   font-family:'Caveat', cursive;
-  font-size:28px;                    /* was 34px */
+  font-size:28px;
   color:var(--crayon-yellow);
   transform:rotate(18deg);
   text-shadow: 1px 1px 0 var(--ink);
 }
 
 .logo-sub {
-  margin-top:10px;                   /* was 14px */
+  margin-top:10px;
   font-family:'Caveat', cursive;
-  font-size:19px;                    /* was 22px */
+  font-size:19px;
   font-weight:600;
   color:var(--ink-soft);
   letter-spacing:1px;
@@ -196,22 +192,25 @@ body::after {
   font-weight:500;
 }
 
-/* Two big entry cards */
 .entry-row {
-  display:flex; gap:18px;            /* was 22px */
-  flex-wrap:wrap; justify-content:center;
-  max-width:680px;
-  margin-top:4px;
+  display: flex; 
+  gap: 18px;
+  flex-wrap: wrap; 
+  justify-content: center;
+  max-width: 680px;
+  
+  /* 关键修改：把原本的 4px 改大，数值越大，卡片离上面的文字就越远 */
+  margin-top: 20px; 
 }
 
 .entry-card {
-  width:248px;                       /* was 268px */
+  width:248px;
   background:#fff;
   border:2.5px solid var(--ink);
   border-radius:var(--r-lg);
-  padding:14px 16px 14px;            /* was 18px ... 16px */
+  padding:14px 16px 14px;
   cursor:pointer;
-  text-align:center;                 /* was left — centers icon, badge, name, desc */
+  text-align:center;
   position:relative;
   transition:transform .15s ease, box-shadow .15s ease;
   box-shadow: var(--hand-shadow);
@@ -227,20 +226,19 @@ body::after {
   box-shadow: 1px 1px 0 var(--ink);
 }
 
-/* Tape strip at the top of each entry card */
 .entry-card::before {
   content:'';
   position:absolute;
   top:-9px; left:50%;
   transform:translateX(-50%) rotate(-3deg);
-  width:60px; height:16px;            /* was 64x18 */
+  width:60px; height:16px;
   background:rgba(244, 207, 100, 0.7);
   border:1px dashed rgba(120,90,30,0.4);
   box-shadow: 0 2px 4px rgba(0,0,0,0.08);
 }
 
 .entry-icon {
-  font-size:30px;                     /* was 34px */
+  font-size:30px;
   line-height:1;
   margin-bottom:4px;
   display:inline-block;
@@ -256,7 +254,7 @@ body::after {
   padding:3px 12px;
   border:2px solid var(--ink);
   border-radius:14px;
-  margin-bottom:6px;                  /* was 8px */
+  margin-bottom:6px;
   background:#fff;
 }
 .entry-card.scan  .entry-badge { background:#fdebc7; }
@@ -264,46 +262,45 @@ body::after {
 
 .entry-name {
   font-family:'Fredoka', sans-serif;
-  font-size:20px;                     /* was 22px */
+  font-size:20px;
   font-weight:600;
   color:var(--ink);
   margin-bottom:4px;
 }
 .entry-desc {
-  font-size:12.5px;                   /* was 13px */
+  font-size:12.5px;
   line-height:1.4;
   color:var(--ink-soft);
 }
 
-/* Quick play drawer — appears when "Random Deck" tapped */
 #quickplay-drawer {
   display:none;
   flex-direction:column;
   align-items:center;
-  gap:10px;                           /* was 14px */
-  margin-top:2px;
+  gap:12px;
+  margin-top: -35px;
 }
 .mode-title {
   font-family:'Caveat', cursive;
-  font-size:22px;                     /* was 26px */
+  font-size:22px;
   font-weight:700;
   color:var(--ink);
   margin-top:0;
 }
 .mode-row {
-  display:flex; gap:12px;             /* was 14px */
+  display:flex; gap:12px;
   flex-wrap:wrap; justify-content:center;
   max-width:700px;
 }
 
 .mode-card {
-  width:190px;                        /* was 200px */
+  width:190px;
   background:#fff;
   border:2px solid var(--ink);
   border-radius:var(--r-md);
-  padding:11px 12px 10px;             /* was 14 14 12 */
+  padding:11px 12px 10px;
   cursor:pointer;
-  text-align:center;                  /* was left */
+  text-align:center;
   box-shadow: var(--hand-shadow-sm);
   transition:transform .12s ease, box-shadow .12s ease;
 }
@@ -345,16 +342,15 @@ body::after {
   color:var(--ink-soft);
 }
 
-/* Big primary button — used on home + summary */
 .big-btn {
   font-family:'Fredoka', sans-serif;
-  font-size:20px;                     /* was 22px */
+  font-size:20px;
   font-weight:600;
   color:#fff;
   background:var(--crayon-coral);
   border:2.5px solid var(--ink);
   border-radius:40px;
-  padding:11px 44px;                  /* was 13px 50px */
+  padding:11px 44px;
   cursor:pointer;
   box-shadow: var(--hand-shadow);
   transition:transform .12s ease, box-shadow .12s ease;
@@ -368,7 +364,7 @@ body::after {
 
 .home-hint {
   font-family:'Caveat', cursive;
-  font-size:16px;                     /* was 18px */
+  font-size:16px;
   color:var(--ink-thin);
   margin-top:2px;
 }
@@ -386,12 +382,11 @@ body::after {
   height:100vh;
   display:flex; flex-direction:column;
   align-items:center;
-  justify-content:flex-start;          /* was center — top-anchor so flex sizing works */
-  padding:46px 14px 10px 18px;          /* top padding clears absolute top bar */
+  justify-content:flex-start;
+  padding:46px 14px 10px 18px;
   position:relative;
 }
 
-/* Top bar */
 .game-top-bar {
   position:absolute;
   top:10px; left:18px; right:18px;
@@ -416,7 +411,6 @@ body::after {
   display:flex; align-items:center; gap:10px;
 }
 
-/* Progress dots — chalk circles */
 .dots { display:flex; gap:5px; }
 .dot {
   width:14px; height:14px;
@@ -450,14 +444,13 @@ body::after {
   margin-right:4px;
 }
 
-/* Card meta bar */
 .card-meta-bar {
   width:100%;
   max-width:430px;
   display:flex;
   justify-content:space-between;
   align-items:center;
-  margin-top:0;                         /* was 42px — top padding handles top-bar clearance */
+  margin-top:0;
   margin-bottom:8px;
   gap:10px;
   flex-shrink:0;
@@ -477,42 +470,58 @@ body::after {
   font-weight:700;
 }
 
-/* ── The card itself — replicates physical card ─────── */
 .card-container {
-  width:100%;
-  max-width:430px;
-  flex:1;                               /* fills remaining height */
-  min-height:0;                         /* allow shrinking below 580 */
-  max-height:580px;
-  perspective:1400px;
+  width: 100%;
+  max-width: 430px;
+  flex: 1;           /* 在总体布局中抢占剩余高度 */
+  display: block;    /* 关键修复：去掉 display: flex，恢复为块级元素，避免 3D 渲染冲突 */
+  min-height: 0;
+  max-height: none;
+  perspective: 1400px;
 }
 .card-flipper {
-  width:100%; height:100%;
-  position:relative;
-  transform-style:preserve-3d;
-  transition:transform 0.7s cubic-bezier(0.4,0,0.2,1);
+  width: 100%;
+  height: 100%;      /* 关键修复：强制继承父容器拉伸后的物理高度 */
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.7s cubic-bezier(0.4,0,0.2,1);
 }
+
 .card-flipper.flipped {
   transform:rotateY(180deg);
 }
 .card-face {
-  position:absolute; inset:0;
-  border-radius:var(--r-lg);
-  backface-visibility:hidden;
-  overflow:hidden;
-  border:3px solid var(--ink);
+  position: absolute; 
+  top: 0; left: 0; 
+  width: 100%; height: 100%; /* 关键修复：用 100% 替代 inset:0，这在 3D 环境中表现更稳定 */
+  border-radius: var(--r-lg);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  overflow: hidden;
+  border: 3px solid var(--ink);
   box-shadow: 6px 6px 0 var(--ink), 0 0 0 1px rgba(0,0,0,0.05);
+  background: #fff;
 }
 
-/* The colored front face — color set by problem-type class */
-.card-front {
-  background:var(--card-color, var(--c-perspective));
-  display:flex; flex-direction:column;
-  padding:18px 20px 16px;              /* was 22 — slightly tighter */
-  color:#fff;
-  position:relative;
+/* 关键修复：当卡片翻转超过 90 度（0.15秒后），直接隐藏背面，彻底干掉残留阴影和文字 */
+.card-flipper.flipped .card-front {
+  visibility: hidden;
+  transition: visibility 0s 0.15s; 
 }
-/* Subtle paper texture overlay on the colored face */
+.card-flipper:not(.flipped) .card-back {
+  visibility: hidden;
+  transition: visibility 0s 0.15s;
+}
+
+.card-front {
+  background: var(--card-color, var(--c-perspective));
+  transform: translateZ(1px); /* 关键修复4：与背面保持一致的独立触摸层 */
+  display: flex; flex-direction: column;
+  padding: 18px 20px 16px;
+  color: #fff;
+  position: relative;
+}
+
 .card-front::after {
   content:'';
   position:absolute; inset:0;
@@ -521,7 +530,6 @@ body::after {
   pointer-events:none;
 }
 
-/* Notched corner — exact replica of physical card */
 .card-corner {
   position:absolute;
   top:0; left:0;
@@ -539,10 +547,9 @@ body::after {
   letter-spacing:-1px;
 }
 
-/* Title pill — the white pill in the middle of the physical card */
 .title-pill-wrap {
   display:flex; justify-content:center;
-  margin-top:44px;                      /* card padding 18 + 44 = 62 → 8px clear of 54px corner */
+  margin-top:44px;
   margin-bottom:14px;
   flex-shrink:0;
   position:relative;
@@ -550,7 +557,7 @@ body::after {
 }
 .title-pill {
   font-family:'Fredoka', sans-serif;
-  font-size:clamp(14px, 1.5vw, 16px);   /* responsive */
+  font-size:clamp(14px, 1.5vw, 16px);
   font-weight:600;
   color:var(--card-color, var(--c-perspective));
   background:#fff;
@@ -566,33 +573,41 @@ body::after {
   box-shadow: 0 2px 0 rgba(0,0,0,0.08);
 }
 
-/* Body text area — white text on colored card */
 .body-area {
-  flex:1;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  gap:12px;                            /* was 14 */
-  overflow-y:auto;
-  padding:0 6px 6px;                   /* was 0 8 8 */
-  position:relative;
-  z-index:2;
-  min-height:0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* 关键修改1：不要用 center，改用 flex-start 保证可以向下滚动 */
+  gap: 12px;
+  overflow-y: auto;
+  padding: 0 6px 6px;
+  position: relative;
+  z-index: 2;
+  min-height: 0;
+  
+  /* 终极触屏滚动修复组合拳 */
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+  overscroll-behavior-y: contain; /* 防止滑动卡片时触发浏览器的下拉刷新 */
+  pointer-events: auto;
 }
+/* 关键修改2：用 margin 替代 center 来实现安全的垂直居中 */
+.body-area > :first-child {
+  margin-top: auto;
+}
+.body-area > :last-child {
+  margin-bottom: auto;
+}
+
 .body-bubble {
   font-family:'Fredoka', sans-serif;
-  font-size:clamp(14px, 1.7vw, 18px);  /* responsive — scales with viewport */
+  font-size:clamp(14px, 1.7vw, 18px);
   line-height:1.35;
   color:#fff;
   font-weight:600;
   text-align:center;
   letter-spacing:0.2px;
 }
-.body-bubble.solo { /* single-paragraph cards */ }
-.body-bubble.a, .body-bubble.b {
-  /* For perspective cards — both texts in same white style */
-}
-/* "vs" separator between two lens texts */
 .vs-divider {
   font-family:'Fredoka', sans-serif;
   font-size:16px; font-weight:700;
@@ -607,7 +622,6 @@ body::after {
   display:inline;
 }
 
-/* Tiny problem-type tag at bottom-left of card front */
 .card-ptype-tag {
   position:absolute;
   bottom:14px; left:14px;
@@ -629,15 +643,20 @@ body::after {
   z-index:2;
 }
 
-/* ── Card BACK ──────────────────────────────────────── */
 .card-back {
-  background:var(--paper);
-  transform:rotateY(180deg);
-  display:flex; flex-direction:column;
-  padding:18px 20px 16px;
-  gap:10px;
-  overflow-y:auto;
-  color:var(--ink);
+  background: var(--paper);
+  transform: rotateY(180deg) translateZ(1px); /* 关键修复3：增加 translateZ(1px) 强制分离触摸层 */
+  display: flex; flex-direction: column;
+  padding: 18px 20px 16px;
+  gap: 10px;
+  overflow-y: auto;
+  color: var(--ink);
+  
+  /* 终极触屏滚动修复组合拳 */
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+  overscroll-behavior-y: contain;
+  pointer-events: auto;
 }
 .card-back::after {
   content:'';
@@ -721,6 +740,7 @@ body::after {
   line-height:1.45;
   color:var(--ink);
   font-weight:500;
+  text-align: center
 }
 .back-section.sugg .back-section-text { font-style:italic; font-family:'Caveat', cursive; font-size:17px; }
 
@@ -741,6 +761,38 @@ body::after {
 }
 
 /* ════════════════════════════════════════════════════════
+   TTS CONTAINER & BUTTON (MOVED)
+   ════════════════════════════════════════════════════════ */
+.tts-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 40px;
+  margin-top: 15px;  /* 这个 15px 就是卡片底部和按钮之间的死距离 */
+  flex-shrink: 0;
+  position: relative;
+  z-index: 10;
+}
+.tts-toggle {
+  background: #fff;
+  border: 2px solid var(--ink);
+  border-radius: 12px;
+  padding: 6px 16px;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 2px 2px 0 var(--ink);
+  display: none; /* 默认隐藏，只有发声时才显示 */
+  transition: transform .1s ease, box-shadow .1s ease;
+  z-index: 10;
+}
+.tts-toggle:hover { transform: translate(-1px, -1px); box-shadow: 3px 3px 0 var(--ink); }
+.tts-toggle:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0 var(--ink); }
+
+
+/* ════════════════════════════════════════════════════════
    RIGHT PANEL — Voice / Coach
    ════════════════════════════════════════════════════════ */
 .voice-side {
@@ -750,8 +802,8 @@ body::after {
   border-left:3px dashed var(--paper-line);
   display:flex; flex-direction:column;
   align-items:center;
-  padding:18px 16px 14px;            /* was 24 18 18 */
-  gap:8px;                            /* was 10 */
+  padding:18px 16px 14px;
+  gap:8px;
   position:relative;
 }
 .voice-side::before {
@@ -803,7 +855,6 @@ body::after {
   position:relative;
   box-shadow: 3px 3px 0 var(--ink);
 }
-/* Speech-bubble tail */
 .prompt-bubble::before {
   content:'';
   position:absolute;
@@ -826,16 +877,17 @@ body::after {
 }
 
 .voice-mid {
-  display:flex; flex-direction:column;
-  align-items:center; gap:10px;
-  position:relative; z-index:1;
-  flex-shrink:0;
-  margin-top:6px;
+  display: flex; flex-direction: column;
+  align-items: center; 
+  gap: 4px;          /* 关键修改：从 10px 减小到 4px，让话筒离文字更近 */
+  position: relative; z-index: 1;
+  flex-shrink: 0;
+  margin-top: 0;     /* 关键修改：去掉顶部的 6px margin，不让它往上飘 */
 }
 
-/* Mic button — looks like a hand-drawn record button */
 .mic-ring {
-  width:96px; height:96px;
+  width:76px;   /* 从 96px 缩小到 76px */
+  height:76px;  /* 从 96px 缩小到 76px */
   border-radius:50%;
   display:flex; align-items:center; justify-content:center;
   background:#fff;
@@ -845,6 +897,8 @@ body::after {
   transition:transform .15s ease, box-shadow .15s ease;
   box-shadow: 4px 4px 0 var(--ink);
 }
+
+
 .mic-ring:hover { transform:translate(-1px,-1px); box-shadow: 5px 5px 0 var(--ink); }
 .mic-ring:active { transform:translate(2px,2px); box-shadow: 2px 2px 0 var(--ink); }
 
@@ -870,7 +924,7 @@ body::after {
 }
 
 .mic-icon {
-  font-size:36px;
+  font-size:28px;
   z-index:1;
   line-height:1;
 }
@@ -899,21 +953,30 @@ body::after {
   line-height:1.3;
 }
 
-/* ── Coach feedback stack ──────────────────────────────── */
-.voice-bottom {
-  display:flex; flex-direction:column;
-  align-items:stretch; gap:8px;
-  width:100%;
-  position:relative; z-index:1;
-  flex:1; min-height:0;
-}
-
 .coach-stack {
   display:flex; flex-direction:column;
   gap:8px;
   overflow-y:auto;
   padding-right:2px;
-  flex:1; min-height:0;
+  flex:1;
+  min-height:0;
+  width:100%;
+  margin-top:14px;
+  scroll-behavior: smooth;
+  
+  /* 关键修复：触屏优化 */
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+}
+
+.voice-bottom {
+  display: flex; flex-direction: column;
+  align-items: stretch; 
+  gap: 10px;         /* 关键修改：从 16px 减小到 10px，拉近话筒和底部按钮的距离 */
+  width: 100%;
+  position: relative; z-index: 1;
+  flex-shrink: 0;
+  margin-top: auto;  /* 把它死死推到最底 */
 }
 
 .reaction-bubble, .habit-bubble, .invite-bubble {
@@ -930,6 +993,12 @@ body::after {
   color:var(--ink);
   position:relative;
   box-shadow: 2.5px 2.5px 0 var(--ink);
+  flex-shrink: 0; /* 关键修复：强硬要求它保持完整尺寸，宁愿滚动也不许被挤扁 */
+}
+
+.qa-turn { 
+  display:flex; flex-direction:column; gap:5px; 
+  flex-shrink: 0; /* 保证 QA 气泡也不被挤压 */
 }
 .reaction-bubble { background:#e6f3e9; transform:rotate(-0.4deg); }
 .habit-bubble    { background:#fff5d8; transform:rotate(0.3deg); }
@@ -947,7 +1016,6 @@ body::after {
 .habit-bubble .bubble-lead    { color:#a17800; }
 .invite-bubble .bubble-lead   { color:var(--crayon-sky); }
 
-/* Q&A turns */
 .qa-turn { display:flex; flex-direction:column; gap:5px; }
 .qa-bubble {
   padding:9px 12px;
@@ -991,7 +1059,6 @@ body::after {
   display:none;
 }
 
-/* ── Action buttons ────────────────────────────────────── */
 .btn-row {
   display:flex; gap:8px;
   width:100%;
@@ -1063,8 +1130,8 @@ body::after {
   flex-direction:column;
   align-items:center;
   justify-content:flex-start;
-  gap:10px;                            /* was 12 */
-  padding:10px 18px 14px;              /* was 14 18 */
+  gap:10px;
+  padding:10px 18px 14px;
   overflow-y:auto;
 }
 
@@ -1077,14 +1144,14 @@ body::after {
 }
 .scan-title {
   font-family:'Fredoka', sans-serif;
-  font-size:22px;                      /* was 24 */
+  font-size:22px;
   font-weight:700;
   color:var(--ink);
   transform:rotate(-1deg);
 }
 .scan-subtitle {
   font-family:'Caveat', cursive;
-  font-size:17px;                      /* was 18 */
+  font-size:17px;
   color:var(--ink-soft);
   text-align:center;
   margin-top:-2px;
@@ -1107,12 +1174,11 @@ body::after {
 .scan-back-btn:hover { transform:translate(-1px,-1px); }
 .scan-back-btn:active { transform:translate(2px,2px); box-shadow: 1px 1px 0 var(--ink); }
 
-/* Camera viewport */
 .scan-viewport {
   position:relative;
-  width:100%; max-width:520px;          /* was 660 — narrower so it fits short screens */
+  width:100%; max-width:520px;
   aspect-ratio:4/3;
-  max-height:55vh;                       /* extra cap for short viewports */
+  max-height:55vh;
   background:#000;
   border-radius:var(--r-lg);
   overflow:hidden;
@@ -1122,7 +1188,6 @@ body::after {
 }
 #scan-video { width:100%; height:100%; object-fit:cover; display:block; }
 
-/* Hand-drawn dashed scanning frame */
 .scan-frame {
   position:absolute;
   inset:14% 10%;
@@ -1161,10 +1226,10 @@ body::after {
 
 .scan-status {
   font-family:'Patrick Hand', cursive;
-  font-size:16px;                      /* was 17 */
+  font-size:16px;
   font-weight:600;
   color:var(--ink-soft);
-  min-height:20px;                     /* was 22 */
+  min-height:20px;
   text-align:center;
   letter-spacing:0.5px;
   flex-shrink:0;
@@ -1177,7 +1242,7 @@ body::after {
   font-size:11px;
   color:var(--ink-thin);
   font-family:'Patrick Hand', cursive;
-  width:100%; max-width:520px;          /* was 660 */
+  width:100%; max-width:520px;
   min-height:32px;
   padding:6px 12px;
   background:#fff;
@@ -1194,15 +1259,14 @@ body::after {
   flex-shrink:0;
 }
 
-/* Candidate confirmation */
 .scan-candidate {
-  width:100%; max-width:520px;          /* was 660 */
+  width:100%; max-width:520px;
   background:#fff;
   border:3px solid var(--ink);
   border-radius:var(--r-lg);
-  padding:14px 16px;                   /* was 16 18 */
+  padding:14px 16px;
   display:none; flex-direction:column;
-  gap:8px;                              /* was 10 */
+  gap:8px;
   box-shadow: 5px 5px 0 var(--crayon-mint), 5px 5px 0 1.5px var(--ink);
   position:relative;
   flex-shrink:0;
@@ -1251,7 +1315,7 @@ body::after {
   display:flex; gap:8px;
   margin-top:2px;
   width:100%;
-  max-width:520px;                     /* was 660 */
+  max-width:520px;
   flex-shrink:0;
 }
 .scan-fallback input {
@@ -1439,14 +1503,13 @@ body::after {
 </head>
 <body>
 
-<!-- HOME screen -->
 <div id="home" class="screen active">
   <div class="logo-wrap">
     <div class="logo">PROMPT</div>
     <span class="logo-star">✦</span>
   </div>
   <div class="logo-sub">~ AI literacy & spoken reflection ~</div>
-  <div class="home-tagline">Read a card, say what you notice out loud, and learn to see through AI and online framing.</div>
+  <div class="home-tagline">Read a card, say what you notice out loud.</div>
 
   <div class="entry-row">
     <div class="entry-card scan" onclick="openScanner()">
@@ -1464,6 +1527,10 @@ body::after {
   </div>
 
   <div id="quickplay-drawer">
+    <div style="width: 100%; display: flex; justify-content: flex-start; max-width: 700px; margin-bottom: 0px;">
+      <button class="scan-back-btn" onclick="closeQuickPlay()">← Back</button>
+    </div>
+
     <div class="mode-title">Pick your deck ✎</div>
     <div class="mode-row">
       <div class="mode-card" data-mode="discernment" onclick="selectMode('discernment', this)">
@@ -1488,7 +1555,6 @@ body::after {
   <div class="home-hint">say what you think · no multiple choice · every answer counts</div>
 </div>
 
-<!-- SCAN screen -->
 <div id="scan" class="screen">
   <div class="scan-header">
     <button class="scan-back-btn" onclick="backToHome()">← Back</button>
@@ -1522,7 +1588,6 @@ body::after {
   </div>
 </div>
 
-<!-- GAME screen -->
 <div id="game" class="screen">
   <div class="card-side">
     <div class="game-top-bar">
@@ -1575,6 +1640,11 @@ body::after {
         </div>
       </div>
     </div>
+    
+    <div class="tts-container">
+      <button id="tts-toggle-btn" class="tts-toggle" onclick="toggleTTS()">⏸ Pause</button>
+    </div>
+
   </div>
 
   <div class="voice-side">
@@ -1583,30 +1653,30 @@ body::after {
       <div class="prompt-bubble" id="prompt-bubble">Read the card, then tap the mic and say what you notice.</div>
     </div>
 
-    <div class="voice-mid">
-      <div class="mic-ring" id="mic-ring" onclick="onMicTap()">
-        <div class="mic-icon" id="mic-icon">🎤</div>
+    <div class="coach-stack" id="coach-stack">
+      <div class="reaction-bubble" id="reaction-bubble">
+        <span class="bubble-lead">Coach Says</span>
+        <span id="reaction-text"></span>
       </div>
-      <div class="voice-status" id="voice-status">Tap to speak · up to 15s</div>
-      <div class="voice-transcript" id="voice-transcript"></div>
+      <div class="habit-bubble" id="habit-bubble">
+        <span class="bubble-lead">Try This Habit</span>
+        <span id="habit-text"></span>
+      </div>
+      <div class="invite-bubble" id="invite-bubble">
+        <span class="bubble-lead">Ask Me Anything</span>
+        <span id="invite-text"></span>
+      </div>
+      <div id="followup-thread"></div>
+      <div class="followup-counter" id="followup-counter"></div>
     </div>
 
     <div class="voice-bottom">
-      <div class="coach-stack" id="coach-stack">
-        <div class="reaction-bubble" id="reaction-bubble">
-          <span class="bubble-lead">Coach Says</span>
-          <span id="reaction-text"></span>
+      <div class="voice-mid">
+        <div class="mic-ring" id="mic-ring" onclick="onMicTap()">
+          <div class="mic-icon" id="mic-icon">🎤</div>
         </div>
-        <div class="habit-bubble" id="habit-bubble">
-          <span class="bubble-lead">Try This Habit</span>
-          <span id="habit-text"></span>
-        </div>
-        <div class="invite-bubble" id="invite-bubble">
-          <span class="bubble-lead">Ask Me Anything</span>
-          <span id="invite-text"></span>
-        </div>
-        <div id="followup-thread"></div>
-        <div class="followup-counter" id="followup-counter"></div>
+        <div class="voice-status" id="voice-status">Tap to speak · up to 15s</div>
+        <div class="voice-transcript" id="voice-transcript"></div>
       </div>
 
       <div class="btn-row" id="pre-answer-row">
@@ -1622,10 +1692,8 @@ body::after {
   </div>
 </div>
 
-<!-- Loading overlay -->
 <div id="loading"><div class="spinner"></div><div class="loading-text" id="loading-text">Thinking...</div></div>
 
-<!-- SUMMARY screen -->
 <div id="summary" class="screen">
   <div class="sum-trophy" id="sum-trophy">🏆</div>
   <div class="sum-title">Game Complete!</div>
@@ -1734,10 +1802,23 @@ function goHome(){
   showScreen('home');
   document.getElementById('start-btn').disabled = false;
   document.getElementById('quickplay-drawer').style.display = 'none';
+  // 【新增】返回主页时重新显示入口卡片
+  document.querySelector('.entry-row').style.display = 'flex';
 }
 
 function openQuickPlay(){
+  // 【新增】隐藏主入口的两个卡片
+  document.querySelector('.entry-row').style.display = 'none';
+  // 显示抽屉
   document.getElementById('quickplay-drawer').style.display = 'flex';
+  document.getElementById('home').classList.add('quickplay-active');
+}
+
+// 【新增】从 Quick Play 返回到主入口的函数
+function closeQuickPlay(){
+  document.getElementById('quickplay-drawer').style.display = 'none';
+  document.querySelector('.entry-row').style.display = 'flex';
+  document.getElementById('home').classList.remove('quickplay-active');
 }
 
 async function openScanner(){
@@ -1893,9 +1974,9 @@ function matchAgainstIndex(rawText){
     let score = 0;
     if (idHit && titleScore >= 0.25)   score = 100 + titleHits * 5 + bodyHits;
     else if (idHit && titleScore > 0)  score = 70  + titleHits * 5;
-    else if (idHit)                     score = 40;
+    else if (idHit)                    score = 40;
     else if (titleScore >= 0.5)        score = 60  + bodyHits;
-    else                                 score = 0;
+    else                               score = 0;
 
     if (score > bestScore) {
       bestScore = score;
@@ -2040,6 +2121,23 @@ async function stopAudio(){
     try { audioPlayer.pause(); audioPlayer.src = ''; } catch(e){}
     audioPlayer = null;
   }
+  // 【新增】强制隐藏按钮
+  const ttsBtn = document.getElementById('tts-toggle-btn');
+  if (ttsBtn) ttsBtn.style.display = 'none';
+}
+
+// 【新增】暂停/继续播放功能
+function toggleTTS() {
+  if (!audioPlayer) return;
+  const btn = document.getElementById('tts-toggle-btn');
+  
+  if (audioPlayer.paused) {
+    audioPlayer.play();
+    btn.textContent = '⏸ Pause';
+  } else {
+    audioPlayer.pause();
+    btn.textContent = '▶ Play';
+  }
 }
 
 async function speak(text, tone='narrator'){
@@ -2056,10 +2154,29 @@ async function speak(text, tone='narrator'){
     const url = URL.createObjectURL(blob);
     const audio = new Audio(url);
     audioPlayer = audio;
+// 【新增】显示暂停按钮并重置文字
+    const ttsBtn = document.getElementById('tts-toggle-btn');
+    if (ttsBtn) {
+      ttsBtn.style.display = 'block';
+      ttsBtn.textContent = '⏸ Pause';
+    }
+
     return new Promise(res => {
-      audio.onended = ()=>{ URL.revokeObjectURL(url); res(); };
-      audio.onerror = ()=>{ URL.revokeObjectURL(url); res(); };
-      audio.play().catch(()=>res());
+      audio.onended = ()=>{ 
+        // 【新增】声音播放完毕后隐藏按钮
+        if (ttsBtn) ttsBtn.style.display = 'none';
+        URL.revokeObjectURL(url); 
+        res(); 
+      };
+      audio.onerror = ()=>{ 
+        if (ttsBtn) ttsBtn.style.display = 'none';
+        URL.revokeObjectURL(url); 
+        res(); 
+      };
+      audio.play().catch(()=>{
+        if (ttsBtn) ttsBtn.style.display = 'none';
+        res();
+      });
     });
   } catch(e){}
 }
@@ -2421,6 +2538,11 @@ async function revealAnswer(data){
   rBubble.style.display = reaction ? 'block' : 'none';
   hBubble.style.display = habit ? 'block' : 'none';
   iBubble.style.display = 'block';
+  // 新增：给 DOM 一点渲染时间，然后强制滚动到最底部，保证最新对话完整展示
+  setTimeout(() => {
+    const stack = document.getElementById('coach-stack');
+    stack.scrollTop = stack.scrollHeight;
+  }, 50)
 
   window._nextCard = data.next_card || null;
   window._hasNext = !!data.has_next;
@@ -2473,8 +2595,12 @@ function appendQATurn(question, answer){
     </div>
   `;
   thread.appendChild(turn);
-  const stack = document.getElementById('coach-stack');
-  stack.scrollTop = stack.scrollHeight;
+  
+  // 关键替换：确保追加新 QA 后也能稳稳滚到底部
+  setTimeout(() => {
+    const stack = document.getElementById('coach-stack');
+    stack.scrollTop = stack.scrollHeight;
+  }, 50);
 }
 
 function escapeHtml(s){

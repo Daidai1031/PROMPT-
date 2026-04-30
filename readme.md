@@ -963,4 +963,4 @@ Hardware checklist:
 - [ ] HDMI cable from Thor to NLIEOPDA 7" screen
 - [ ] Logitech C270 in any USB-A port
 
-- [ ] Browser open at `http://localhost:8000` or 'http://127.0.0.1:3000' ON THOR (not LAN)
+- [ ] Browser open at `http://localhost:8000` or `http://127.0.0.1:3000` ON THOR (not LAN)
