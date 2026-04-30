@@ -97,7 +97,59 @@ HOME ─────────────────┐
 ![Scan Mode Demo](https://raw.githubusercontent.com/Daidai1031/PROMPT-/main/assets/scan%20mode.gif)
 
 
+### UI iteracted - crayon style
 
+
+<table>
+  <tr>
+    <td width="50%" align="center">
+      <img src="assets/homepage.jpg" alt="Homepage" width="400" height="260">
+      <br>
+      <sub><b>Homepage</b></sub>
+    </td>
+    <td width="50%" align="center">
+      <img src="assets/pickdeck.jpg" alt="Pick Deck" width="400" height="260">
+      <br>
+      <sub><b>Pick Deck</b></sub>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" align="center">
+      <img src="assets/scanmode_detecting.jpg" alt="Scan Mode Detecting" width="400" height="260">
+      <br>
+      <sub><b>Scan Mode: Detecting</b></sub>
+    </td>
+    <td width="50%" align="center">
+      <img src="assets/scanmode_detected.jpg" alt="Scan Mode Detected" width="400" height="260">
+      <br>
+      <sub><b>Scan Mode: Detected</b></sub>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" align="center">
+      <img src="assets/game_listen.jpg" alt="Game Listen" width="400" height="260">
+      <br>
+      <sub><b>Game Mode: Listening</b></sub>
+    </td>
+    <td width="50%" align="center">
+      <img src="assets/game_speaking.jpg" alt="Game Speaking" width="400" height="260">
+      <br>
+      <sub><b>Game Mode: Speaking</b></sub>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" align="center">
+      <img src="assets/feedback+followupQ&A.jpg" alt="Feedback and Follow-up Q&A" width="400" height="260">
+      <br>
+      <sub><b>Feedback + Follow-up Q&A</b></sub>
+    </td>
+    <td width="50%" align="center">
+      <img src="assets/summarypage.jpg" alt="Summary Page" width="400" height="260">
+      <br>
+      <sub><b>Summary Page</b></sub>
+    </td>
+  </tr>
+</table>
 
 
 ### Detailed answering loop
