@@ -959,28 +959,39 @@ result = check_answer(card, req.user_answer, llm_judge=None)
 
 ## 11. Future Directions
 
-These were considered but not implemented in v4:
+The v4 prototype proves the concept on a single Jetson AGX Thor. The natural next step is to make PROMPT! cheaper to deploy, more open to contributions, and more fun to come back to. None of these were implemented in v4; they are listed in the rough order I think they make the project more useful.
 
-### Adaptive difficulty
-Session already tracks per-mode tier distribution. The next iteration could up- or down-rank card difficulty based on the tier the child is weakest in. Hooks: `session["per_mode"]` in `server.py`.
+### Cheaper hardware tier — Pi 5 and Jetson Orin Nano
 
-### Follow-up history in summary
-Currently summary just shows the count. A foldout view of the actual Q&A threads would let parents/teachers see the child's curiosity arc.
+Thor is a developer kit; at retail it's not the device you put in a hundred classrooms. The same architecture should run on a Raspberry Pi 5 (8 GB) or a Jetson Orin Nano Super (8 GB), each roughly 1/10 the cost of Thor. The trade-off is model size: Whisper drops to `base` or `tiny.en`, Llama 3 8B becomes Llama 3.2 3B (or Phi-3 Mini), Kokoro stays as-is since it's already 82 M. The card scoring and rule engine don't care about hardware. The realistic target is "a $200 box plus a $40 webcam" — a price point a school or library can actually buy in bulk.
 
-### Multiple webcam selection
-On Jetson with multiple USB cams, `facingMode: 'environment'` is a hint, not a guarantee. A `<select>` UI driven by `navigator.mediaDevices.enumerateDevices()` would let kids pick.
+### Online platform with community-contributed cards
 
-### RAG over the references
-Each card has `references[]` with real URLs. A retrieval layer could fetch and summarize one of those when a child asks a follow-up like "is that really true?" — closing the loop between AI literacy and source-checking.
+The card pack is the bottleneck on replay value. A small web app where teachers, parents, and older kids can submit new cards — front text, problem type, scoring anchors, references — would let the deck grow without me hand-writing every entry. Submissions go through a review queue (basic moderation: age-appropriate, cites a real source, scoring anchors actually map to the rule engine families) before merging into the public pool. Cards can be filtered by language, age band, topic, and contributor. Devices fetch new card packs on connect.
 
-### Per-child profiles
-Right now sessions are anonymous. A simple "who are you?" picker on Home + per-child progress tracking would let the game adapt over time.
+### Online leaderboard and game-feel layer
 
-### Multi-language
-Whisper, Kokoro, and Llama 3 all support multiple languages. The card content and prompts would need translation, but the architecture wouldn't.
+Right now the game ends with a tip and "Play Again." Adding a leaderboard — opt-in, per-device or per-named-player — turns isolated sessions into something kids want to come back to. Local play stays the default and works offline; when the device sees the internet it uploads the session score and pulls down current rankings. Possible cuts of the leaderboard: by week, by card pack, by mode (Discernment / Usage / Mixed), by school or club. Hooks for this already exist — `_summarize_session()` in `server.py` produces exactly the payload shape a leaderboard endpoint would want.
 
-### Print-and-play card export
-A small utility script that reads the JSON files and renders printable PDF cards with the right `#NN` format and font would close the loop on physical cards. Right now we maintain the cards manually.
+### Web-only version using hosted LLM APIs
+
+Not every audience has hardware. A pure web build — same UI, same cards, same scoring rules — that calls a hosted LLM API instead of local Ollama would let anyone with a browser try the game. The Whisper and Kokoro layers swap to Web Speech API or hosted equivalents. This version becomes the "try before you buy" front door: people play in the browser, get hooked, then either keep playing online or buy/build a local box. The two versions share the card JSON and the rule engine, so adding a card on the platform updates both at once.
+
+### Game-ecosystem stitching
+
+If the four pieces above land, they fit together naturally: contributors write cards on the platform, online players try them in the web build, top scores feed the leaderboard, and the same cards sync down to the local hardware boxes. The local box is no longer a one-off install; it's a node in a larger ecosystem. That's where "AI literacy game" graduates into "AI literacy platform."
+
+### Smaller standalone improvements
+
+These were considered earlier and remain on the list:
+
+- **Adaptive difficulty.** Use the per-mode tier distribution already tracked in `session["per_mode"]` to surface the kid's weakest problem type more often.
+- **Follow-up history in summary.** A foldout of the actual Q&A threads so parents and teachers can see the kid's curiosity arc, not just the count.
+- **Multiple webcam selection.** A `<select>` driven by `navigator.mediaDevices.enumerateDevices()` for setups with more than one USB camera.
+- **RAG over the references.** Each card already carries `references[]` with real URLs. Fetching and summarizing one of them when a kid asks "is that really true?" closes the loop between AI literacy and source-checking.
+- **Per-child profiles.** Anonymous sessions today; a "who are you?" picker plus per-child progress would let the game adapt over time.
+- **Multi-language.** Whisper, Kokoro, and Llama 3 all support multiple languages. The card content and prompts would need translation, but the architecture wouldn't change.
+- **Print-and-play card export.** A small utility that turns the JSON files into printable PDFs with the right `#NN` format and font, so anyone can produce physical decks.
 
 ---
 
