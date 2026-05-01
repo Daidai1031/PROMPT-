@@ -43,10 +43,16 @@ The game is **fully on-device** — speech-to-text, LLM, text-to-speech, and OCR
 - **Latency** — no network round-trips; coach feedback arrives in 2–4 seconds.
 - **Sustainability** — no per-session API costs; the device is the entire stack.
 
+each card-type colored to match the printed deck — see [§2 UI redesign]
+(#ui-redesign--sketchbook-edition-v5) for screenshots and [§8.5]
+(#85-v5--sketchbook-ui-redesign) for the design rationale.
+
 ### Target audience
 
 - **Primary**: children age 10+ in school, library, or family settings.
 - **Secondary**: educators and parents who want to introduce AI literacy without preachy lectures.
+
+The on-screen interface (v5) is styled as a hand-drawn sketchbook with
 
 ---
 
@@ -97,59 +103,65 @@ HOME ─────────────────┐
 ![Scan Mode Demo](https://raw.githubusercontent.com/Daidai1031/PROMPT-/main/assets/scan%20mode.gif)
 
 
-### UI iteracted - crayon style
+### UI redesign — sketchbook edition (v5)
 
+In v5 the entire interface was rebuilt around a hand-drawn sketchbook
+aesthetic, with each card type colored to match the printed deck. See
+[§8.5 v5 — Sketchbook UI redesign](#85-v5--sketchbook-ui-redesign) for
+the design rationale.
 
 <table>
   <tr>
     <td width="50%" align="center">
       <img src="assets/homepage.jpg" alt="Homepage" width="400" height="260">
       <br>
-      <sub><b>Homepage</b></sub>
+      <sub><b>Home — two big entry points</b></sub>
     </td>
     <td width="50%" align="center">
       <img src="assets/pickdeck.jpg" alt="Pick Deck" width="400" height="260">
       <br>
-      <sub><b>Pick Deck</b></sub>
+      <sub><b>Quick Play — pick a deck</b></sub>
     </td>
   </tr>
   <tr>
     <td width="50%" align="center">
       <img src="assets/scanmode_detecting.jpg" alt="Scan Mode Detecting" width="400" height="260">
       <br>
-      <sub><b>Scan Mode: Detecting</b></sub>
+      <sub><b>Scan mode — searching for a card</b></sub>
     </td>
     <td width="50%" align="center">
       <img src="assets/scanmode_detected.jpg" alt="Scan Mode Detected" width="400" height="260">
       <br>
-      <sub><b>Scan Mode: Detected</b></sub>
+      <sub><b>Scan mode — card recognized</b></sub>
     </td>
   </tr>
   <tr>
     <td width="50%" align="center">
       <img src="assets/game_listen.jpg" alt="Game Listen" width="400" height="260">
       <br>
-      <sub><b>Game Mode: Listening</b></sub>
+      <sub><b>Game — coach reading the card aloud</b></sub>
     </td>
     <td width="50%" align="center">
       <img src="assets/game_speaking.jpg" alt="Game Speaking" width="400" height="260">
       <br>
-      <sub><b>Game Mode: Speaking</b></sub>
+      <sub><b>Game — child speaking their answer</b></sub>
     </td>
   </tr>
   <tr>
     <td width="50%" align="center">
       <img src="assets/feedback+followupQ&A.jpg" alt="Feedback and Follow-up Q&A" width="400" height="260">
       <br>
-      <sub><b>Feedback + Follow-up Q&A</b></sub>
+      <sub><b>Feedback bubbles + follow-up Q&A</b></sub>
     </td>
     <td width="50%" align="center">
       <img src="assets/summarypage.jpg" alt="Summary Page" width="400" height="260">
       <br>
-      <sub><b>Summary Page</b></sub>
+      <sub><b>Summary — score, breakdown, takeaway tip</b></sub>
     </td>
   </tr>
 </table>
+
+
 
 
 ### Detailed answering loop
@@ -757,6 +769,37 @@ The biggest UX leap: instead of (or in addition to) random deck mode, a child ca
   - `POST /api/append_card` — extend session deck with another scanned card
 - **Manual fallback**: text input accepts `14` or `#14` directly when OCR struggles
 - **Game-flow integration**: "Next Card →" becomes "Scan Next Card 📷" in scan sessions; tapping it returns to the scanner instead of auto-advancing
+
+### v5 — Sketchbook UI redesign
+
+The functional layers were stable by v4. v5 is the first release where the
+*look and feel* matched the spirit of the project — a kid's reflection
+notebook, not a dark-mode dev console.
+
+**What changed**:
+
+- **Cream paper background** replaces the dark navy. Subtle pencil-noise
+  texture and faint horizontal rule lines, like a school exercise book.
+- **Hand-drawn aesthetic**: every button has a hard ink outline + offset
+  marker shadow (`4px 4px 0 ink`), entry cards tilt at ±1.2°, sticky-note
+  bubbles wobble slightly. Underlines under headers are SVG squiggles, not
+  straight lines.
+- **Card colors map to problem type**, matching the printed physical decks
+  exactly:
+  - `perspective_lens_audit` → deep crimson (#7a1a1f)
+  - `affective_highjack`     → cobalt blue  (#1f3aa6)
+  - `bias_inverter`          → forest green (#1f6b2a)
+  - `task_decomposition_map` → caramel brown (#8a3a14)
+- **Faithful card reproduction**: notched white corner with the card
+  number, white pill-shaped title, white body text on the colored field —
+  the on-screen card is now visually continuous with the printed card the
+  kid was just holding.
+- **Three-font system**: Fredoka (rounded display), Caveat (handwriting),
+  Patrick Hand (pencil-print). Quicksand for body text only.
+- **Responsive sizing** with `clamp()` so the same UI fits both the 7"
+  Thor touchscreen and a Firefox window with browser chrome.
+
+See screenshots in [§2 UI redesign](#ui-redesign--sketchbook-edition-v5).
 
 ---
 
