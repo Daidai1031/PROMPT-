@@ -193,14 +193,12 @@ body::after {
 }
 
 .entry-row {
-  display: flex; 
+  display: flex;
   gap: 18px;
-  flex-wrap: wrap; 
+  flex-wrap: wrap;
   justify-content: center;
   max-width: 680px;
-  
-  /* 关键修改：把原本的 4px 改大，数值越大，卡片离上面的文字就越远 */
-  margin-top: 20px; 
+  margin-top: 20px;
 }
 
 .entry-card {
@@ -473,15 +471,15 @@ body::after {
 .card-container {
   width: 100%;
   max-width: 430px;
-  flex: 1;           /* 在总体布局中抢占剩余高度 */
-  display: block;    /* 关键修复：去掉 display: flex，恢复为块级元素，避免 3D 渲染冲突 */
+  flex: 1;
+  display: block;
   min-height: 0;
   max-height: none;
   perspective: 1400px;
 }
 .card-flipper {
   width: 100%;
-  height: 100%;      /* 关键修复：强制继承父容器拉伸后的物理高度 */
+  height: 100%;
   position: relative;
   transform-style: preserve-3d;
   transition: transform 0.7s cubic-bezier(0.4,0,0.2,1);
@@ -491,9 +489,9 @@ body::after {
   transform:rotateY(180deg);
 }
 .card-face {
-  position: absolute; 
-  top: 0; left: 0; 
-  width: 100%; height: 100%; /* 关键修复：用 100% 替代 inset:0，这在 3D 环境中表现更稳定 */
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
   border-radius: var(--r-lg);
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
@@ -503,10 +501,9 @@ body::after {
   background: #fff;
 }
 
-/* 关键修复：当卡片翻转超过 90 度（0.15秒后），直接隐藏背面，彻底干掉残留阴影和文字 */
 .card-flipper.flipped .card-front {
   visibility: hidden;
-  transition: visibility 0s 0.15s; 
+  transition: visibility 0s 0.15s;
 }
 .card-flipper:not(.flipped) .card-back {
   visibility: hidden;
@@ -515,7 +512,7 @@ body::after {
 
 .card-front {
   background: var(--card-color, var(--c-perspective));
-  transform: translateZ(1px); /* 关键修复4：与背面保持一致的独立触摸层 */
+  transform: translateZ(1px);
   display: flex; flex-direction: column;
   padding: 18px 20px 16px;
   color: #fff;
@@ -577,21 +574,18 @@ body::after {
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start; /* 关键修改1：不要用 center，改用 flex-start 保证可以向下滚动 */
+  justify-content: flex-start;
   gap: 12px;
   overflow-y: auto;
   padding: 0 6px 6px;
   position: relative;
   z-index: 2;
   min-height: 0;
-  
-  /* 终极触屏滚动修复组合拳 */
   -webkit-overflow-scrolling: touch;
   touch-action: pan-y;
-  overscroll-behavior-y: contain; /* 防止滑动卡片时触发浏览器的下拉刷新 */
+  overscroll-behavior-y: contain;
   pointer-events: auto;
 }
-/* 关键修改2：用 margin 替代 center 来实现安全的垂直居中 */
 .body-area > :first-child {
   margin-top: auto;
 }
@@ -645,14 +639,12 @@ body::after {
 
 .card-back {
   background: var(--paper);
-  transform: rotateY(180deg) translateZ(1px); /* 关键修复3：增加 translateZ(1px) 强制分离触摸层 */
+  transform: rotateY(180deg) translateZ(1px);
   display: flex; flex-direction: column;
   padding: 18px 20px 16px;
   gap: 10px;
   overflow-y: auto;
   color: var(--ink);
-  
-  /* 终极触屏滚动修复组合拳 */
   -webkit-overflow-scrolling: touch;
   touch-action: pan-y;
   overscroll-behavior-y: contain;
@@ -769,7 +761,7 @@ body::after {
   align-items: center;
   width: 100%;
   height: 40px;
-  margin-top: 15px;  /* 这个 15px 就是卡片底部和按钮之间的死距离 */
+  margin-top: 15px;
   flex-shrink: 0;
   position: relative;
   z-index: 10;
@@ -784,7 +776,7 @@ body::after {
   font-weight: 600;
   cursor: pointer;
   box-shadow: 2px 2px 0 var(--ink);
-  display: none; /* 默认隐藏，只有发声时才显示 */
+  display: none;
   transition: transform .1s ease, box-shadow .1s ease;
   z-index: 10;
 }
@@ -878,16 +870,16 @@ body::after {
 
 .voice-mid {
   display: flex; flex-direction: column;
-  align-items: center; 
-  gap: 4px;          /* 关键修改：从 10px 减小到 4px，让话筒离文字更近 */
+  align-items: center;
+  gap: 4px;
   position: relative; z-index: 1;
   flex-shrink: 0;
-  margin-top: 0;     /* 关键修改：去掉顶部的 6px margin，不让它往上飘 */
+  margin-top: 0;
 }
 
 .mic-ring {
-  width:76px;   /* 从 96px 缩小到 76px */
-  height:76px;  /* 从 96px 缩小到 76px */
+  width:76px;
+  height:76px;
   border-radius:50%;
   display:flex; align-items:center; justify-content:center;
   background:#fff;
@@ -963,20 +955,18 @@ body::after {
   width:100%;
   margin-top:14px;
   scroll-behavior: smooth;
-  
-  /* 关键修复：触屏优化 */
   -webkit-overflow-scrolling: touch;
   touch-action: pan-y;
 }
 
 .voice-bottom {
   display: flex; flex-direction: column;
-  align-items: stretch; 
-  gap: 10px;         /* 关键修改：从 16px 减小到 10px，拉近话筒和底部按钮的距离 */
+  align-items: stretch;
+  gap: 10px;
   width: 100%;
   position: relative; z-index: 1;
   flex-shrink: 0;
-  margin-top: auto;  /* 把它死死推到最底 */
+  margin-top: auto;
 }
 
 .reaction-bubble, .habit-bubble, .invite-bubble {
@@ -993,12 +983,12 @@ body::after {
   color:var(--ink);
   position:relative;
   box-shadow: 2.5px 2.5px 0 var(--ink);
-  flex-shrink: 0; /* 关键修复：强硬要求它保持完整尺寸，宁愿滚动也不许被挤扁 */
+  flex-shrink: 0;
 }
 
-.qa-turn { 
-  display:flex; flex-direction:column; gap:5px; 
-  flex-shrink: 0; /* 保证 QA 气泡也不被挤压 */
+.qa-turn {
+  display:flex; flex-direction:column; gap:5px;
+  flex-shrink: 0;
 }
 .reaction-bubble { background:#e6f3e9; transform:rotate(-0.4deg); }
 .habit-bubble    { background:#fff5d8; transform:rotate(0.3deg); }
@@ -1124,21 +1114,28 @@ body::after {
 }
 
 /* ════════════════════════════════════════════════════════
-   SCAN SCREEN
+   SCAN SCREEN — TWO-COLUMN LAYOUT
+   Left: live camera viewport + status pill
+   Right: detection panel (preview text + matched candidate + voice input)
+   Top and bottom edges of both columns align by:
+     - .scan-body uses align-items:stretch (matching column heights)
+     - status pill in left column is pushed to bottom via margin-top:auto
+     - divider in right column is pushed to bottom via margin-top:auto
    ════════════════════════════════════════════════════════ */
 #scan {
   flex-direction:column;
   align-items:center;
   justify-content:flex-start;
-  gap:10px;
-  padding:10px 18px 14px;
-  overflow-y:auto;
+  gap:14px;
+  padding:32px 44px 38px;
+  overflow:hidden;
 }
 
 .scan-header {
   display:flex; align-items:center;
   justify-content:space-between;
-  width:100%; max-width:660px;
+  width:100%;
+  max-width:1100px;
   margin-top:4px;
   flex-shrink:0;
 }
@@ -1158,27 +1155,51 @@ body::after {
   flex-shrink:0;
 }
 
-.scan-back-btn {
-  background:#fff;
-  border:2.5px solid var(--ink);
-  color:var(--ink);
-  font-family:'Patrick Hand', cursive;
-  font-size:14px; font-weight:600;
-  padding:6px 16px;
-  border-radius:18px;
-  cursor:pointer;
-  box-shadow: 2.5px 2.5px 0 var(--ink);
-  letter-spacing:0.5px;
-  transition:transform .12s ease, box-shadow .12s ease;
+/* Two-column body container ──────────────────────────── */
+.scan-body {
+  display:flex;
+  flex-direction:row;
+  gap:26px;
+  align-items:stretch;
+  justify-content:center;
+  width:100%;
+  max-width:1080px;
+  flex:1;
+  min-height:0;
+  margin-top:8px;
 }
-.scan-back-btn:hover { transform:translate(-1px,-1px); }
-.scan-back-btn:active { transform:translate(2px,2px); box-shadow: 1px 1px 0 var(--ink); }
+
+.scan-left {
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  flex:1 1 50%;
+  min-width:0;
+  max-width:500px;
+  align-items:center;
+  justify-content:flex-start;
+}
+
+.scan-right {
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  flex:1 1 50%;
+  min-width:0;
+  max-width:440px;
+  align-items:stretch;
+  justify-content:flex-start;
+  overflow-y:auto;
+  padding:2px;
+  -webkit-overflow-scrolling: touch;
+}
 
 .scan-viewport {
   position:relative;
-  width:100%; max-width:520px;
+  width:100%;
+  max-width:400px;
   aspect-ratio:4/3;
-  max-height:55vh;
+  max-height:44vh;
   background:#000;
   border-radius:var(--r-lg);
   overflow:hidden;
@@ -1233,34 +1254,64 @@ body::after {
   text-align:center;
   letter-spacing:0.5px;
   flex-shrink:0;
+  width:100%;
+  max-width:400px;
+  padding:8px 12px;
+  background:#fff;
+  border:2px solid var(--ink);
+  border-radius:14px;
+  box-shadow:2px 2px 0 var(--ink);
+  margin-top:auto;  /* pushes the pill to the bottom of the left column */
 }
-.scan-status.detecting { color:#a17800; }
-.scan-status.matched   { color:var(--good-deep); }
-.scan-status.error     { color:var(--bad); }
+.scan-status.detecting { color:#a17800; background:#fff5d8; }
+.scan-status.matched   { color:var(--good-deep); background:#e6f3e9; }
+.scan-status.error     { color:var(--bad); background:#fbe5e3; }
+
+/* Right-column section header */
+.scan-right-label {
+  font-family:'Patrick Hand', cursive;
+  font-size:12px;
+  font-weight:600;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+  color:var(--ink-soft);
+  margin-top:2px;
+  margin-bottom:-2px;
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.scan-right-label::before {
+  content:'';
+  display:inline-block;
+  width:6px; height:6px;
+  background:var(--ink-soft);
+  border-radius:50%;
+}
 
 .scan-preview-text {
-  font-size:11px;
-  color:var(--ink-thin);
+  font-size:12px;
+  color:var(--ink-soft);
   font-family:'Patrick Hand', cursive;
-  width:100%; max-width:520px;
-  min-height:32px;
-  padding:6px 12px;
+  width:100%;
+  min-height:54px;
+  padding:8px 12px;
   background:#fff;
   border:2px dashed var(--ink-thin);
-  border-radius:10px;
+  border-radius:12px;
   text-align:left;
   line-height:1.4;
   overflow:hidden;
   text-overflow:ellipsis;
   display:-webkit-box;
-  -webkit-line-clamp:2;
+  -webkit-line-clamp:3;
   -webkit-box-orient:vertical;
   letter-spacing:0.5px;
   flex-shrink:0;
 }
 
 .scan-candidate {
-  width:100%; max-width:520px;
+  width:100%;
   background:#fff;
   border:3px solid var(--ink);
   border-radius:var(--r-lg);
@@ -1284,6 +1335,7 @@ body::after {
   font-family:'Fredoka', sans-serif;
   font-size:22px; font-weight:700;
   color:var(--ink);
+  line-height:1.2;
 }
 .scan-candidate-meta {
   font-family:'Patrick Hand', cursive;
@@ -1311,38 +1363,162 @@ body::after {
 .scan-candidate-row .confirm { background:var(--crayon-mint); color:#fff; }
 .scan-candidate-row .rescan  { background:#fff; color:var(--ink-soft); }
 
-.scan-fallback {
-  display:flex; gap:8px;
-  margin-top:2px;
-  width:100%;
-  max-width:520px;
+/* Soft divider between auto-detect block and voice-input block.
+   margin-top:auto pushes this AND the voice-row below it to the
+   bottom of the right column, matching the status pill's bottom
+   position in the left column. */
+.scan-divider {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin:auto 0 2px;
+  font-family:'Caveat', cursive;
+  font-size:15px;
+  color:var(--ink-thin);
   flex-shrink:0;
 }
-.scan-fallback input {
+.scan-divider::before,
+.scan-divider::after {
+  content:'';
   flex:1;
-  padding:9px 12px;
+  height:1.5px;
+  background-image:linear-gradient(to right, var(--ink-thin) 50%, transparent 50%);
+  background-size:6px 1.5px;
+  background-repeat:repeat-x;
+  opacity:0.7;
+}
+
+/* Voice-input row: mic on the left, hint + transcript on the right */
+.scan-voice-row {
+  display:flex;
+  gap:12px;
+  align-items:center;
+  width:100%;
   background:#fff;
   border:2px solid var(--ink);
-  border-radius:10px;
+  border-radius:14px;
+  padding:10px 12px;
+  box-shadow: 2.5px 2.5px 0 var(--ink);
+  flex-shrink:0;
+  margin-bottom:4px;
+}
+.scan-mic {
+  width:54px;
+  height:54px;
+  flex-shrink:0;
+  border-radius:50%;
+  border:2.5px solid var(--ink);
+  background:var(--crayon-sky);
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  transition:transform .12s ease, box-shadow .12s ease;
+  box-shadow: 3px 3px 0 var(--ink);
+  position:relative;
+}
+.scan-mic:hover { transform:translate(-1px,-1px); box-shadow: 4px 4px 0 var(--ink); }
+.scan-mic:active { transform:translate(2px,2px); box-shadow: 1px 1px 0 var(--ink); }
+.scan-mic.recording {
+  background:var(--crayon-coral);
+  animation:mic-pulse 1.1s ease-in-out infinite;
+}
+.scan-mic.processing {
+  background:var(--crayon-yellow);
+  animation:mic-spin 1.6s linear infinite;
+}
+.scan-mic-icon {
+  font-size:24px;
+  line-height:1;
+}
+.scan-voice-info {
+  flex:1;
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+  text-align:left;
+}
+.scan-voice-status {
+  font-family:'Patrick Hand', cursive;
+  font-size:14px;
+  font-weight:600;
+  color:var(--ink-soft);
+  letter-spacing:0.3px;
+  line-height:1.3;
+}
+.scan-voice-status.listening { color:var(--crayon-coral); }
+.scan-voice-status.matched   { color:var(--good-deep); }
+.scan-voice-status.error     { color:var(--bad); }
+.scan-voice-transcript {
+  font-family:'Caveat', cursive;
+  font-size:15px;
+  color:var(--ink-thin);
+  line-height:1.3;
+  min-height:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.scan-back-btn {
+  background:#fff;
+  border:2.5px solid var(--ink);
   color:var(--ink);
   font-family:'Patrick Hand', cursive;
-  font-size:15px;
-  outline:none;
-  letter-spacing:0.5px;
-}
-.scan-fallback input:focus { border-color:var(--crayon-sky); box-shadow: 0 0 0 2px rgba(61,142,185,0.2); }
-.scan-fallback button {
-  padding:9px 20px;
-  font-family:'Fredoka', sans-serif;
   font-size:14px; font-weight:600;
-  background:var(--crayon-sky);
-  border:2px solid var(--ink);
-  border-radius:10px;
-  color:#fff;
+  padding:6px 16px;
+  border-radius:18px;
   cursor:pointer;
   box-shadow: 2.5px 2.5px 0 var(--ink);
+  letter-spacing:0.5px;
+  transition:transform .12s ease, box-shadow .12s ease;
 }
-.scan-fallback button:active { transform:translate(2px,2px); box-shadow: 1px 1px 0 var(--ink); }
+.scan-back-btn:hover { transform:translate(-1px,-1px); }
+.scan-back-btn:active { transform:translate(2px,2px); box-shadow: 1px 1px 0 var(--ink); }
+
+/* Idle placeholder shown in the right column before a match */
+.scan-empty-hint {
+  width:100%;
+  padding:14px 14px;
+  background:#fff7e0;
+  border:2px dashed var(--ink-thin);
+  border-radius:14px;
+  font-family:'Caveat', cursive;
+  font-size:17px;
+  color:var(--ink-soft);
+  text-align:center;
+  line-height:1.4;
+  flex-shrink:0;
+}
+.scan-empty-hint strong {
+  font-family:'Fredoka', sans-serif;
+  display:block;
+  font-size:15px;
+  color:var(--ink);
+  margin-bottom:4px;
+  letter-spacing:0.3px;
+}
+
+/* Stack vertically on narrow screens (e.g. portrait phones) */
+@media (max-width: 760px) {
+  .scan-body {
+    flex-direction:column;
+    align-items:center;
+  }
+  .scan-left, .scan-right {
+    flex:0 0 auto;
+    max-width:520px;
+    width:100%;
+  }
+  .scan-right {
+    overflow-y:visible;
+  }
+  #scan {
+    overflow-y:auto;
+  }
+}
 
 /* ════════════════════════════════════════════════════════
    SUMMARY SCREEN
@@ -1555,6 +1731,11 @@ body::after {
   <div class="home-hint">say what you think · no multiple choice · every answer counts</div>
 </div>
 
+<!-- ════════════════════════════════════════════════════════
+     SCAN SCREEN — restructured into two-column layout:
+     LEFT  = camera viewport + status pill
+     RIGHT = OCR preview text + matched candidate panel + manual entry
+     ════════════════════════════════════════════════════════ -->
 <div id="scan" class="screen">
   <div class="scan-header">
     <button class="scan-back-btn" onclick="backToHome()">← Back</button>
@@ -1563,28 +1744,49 @@ body::after {
   </div>
   <div class="scan-subtitle">Hold the card steady inside the box ~ I'll read the number and title.</div>
 
-  <div class="scan-viewport">
-    <video id="scan-video" autoplay playsinline muted></video>
-    <div class="scan-frame" id="scan-frame"></div>
-    <div class="scan-laser" id="scan-laser"></div>
-  </div>
-
-  <div class="scan-status" id="scan-status">Starting camera...</div>
-  <div class="scan-preview-text" id="scan-preview-text">—</div>
-
-  <div class="scan-candidate" id="scan-candidate">
-    <div class="scan-candidate-label">✓ Detected</div>
-    <div class="scan-candidate-title" id="scan-candidate-title">—</div>
-    <div class="scan-candidate-meta" id="scan-candidate-meta">—</div>
-    <div class="scan-candidate-row">
-      <button class="rescan" onclick="rescanCard()">Rescan</button>
-      <button class="confirm" onclick="confirmScan()">Yes, that's it ✓</button>
+  <div class="scan-body">
+    <!-- LEFT: live camera + status pill -->
+    <div class="scan-left">
+      <div class="scan-viewport">
+        <video id="scan-video" autoplay playsinline muted></video>
+        <div class="scan-frame" id="scan-frame"></div>
+        <div class="scan-laser" id="scan-laser"></div>
+      </div>
+      <div class="scan-status" id="scan-status">Starting camera...</div>
     </div>
-  </div>
 
-  <div class="scan-fallback">
-    <input id="scan-manual-input" type="text" placeholder="Or type the card number, e.g. 14" inputmode="numeric">
-    <button onclick="manualEntry()">Go →</button>
+    <!-- RIGHT: OCR preview + matched candidate + manual entry -->
+    <div class="scan-right">
+      <div class="scan-right-label">What I'm reading</div>
+      <div class="scan-preview-text" id="scan-preview-text">—</div>
+
+      <div class="scan-candidate" id="scan-candidate">
+        <div class="scan-candidate-label">✓ Detected</div>
+        <div class="scan-candidate-title" id="scan-candidate-title">—</div>
+        <div class="scan-candidate-meta" id="scan-candidate-meta">—</div>
+        <div class="scan-candidate-row">
+          <button class="rescan" onclick="rescanCard()">Rescan</button>
+          <button class="confirm" onclick="confirmScan()">Yes, that's it ✓</button>
+        </div>
+      </div>
+
+      <div class="scan-empty-hint" id="scan-empty-hint">
+        <strong>Waiting for a card</strong>
+        Center it inside the dashed box. The detection panel will pop up here.
+      </div>
+
+      <div class="scan-divider">or just say it</div>
+
+      <div class="scan-voice-row">
+        <div class="scan-mic" id="scan-mic" onclick="onScanMicTap()">
+          <div class="scan-mic-icon" id="scan-mic-icon">🎤</div>
+        </div>
+        <div class="scan-voice-info">
+          <div class="scan-voice-status" id="scan-voice-status">Tap and say a number or topic</div>
+          <div class="scan-voice-transcript" id="scan-voice-transcript"></div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1640,7 +1842,7 @@ body::after {
         </div>
       </div>
     </div>
-    
+
     <div class="tts-container">
       <button id="tts-toggle-btn" class="tts-toggle" onclick="toggleTTS()">⏸ Pause</button>
     </div>
@@ -1675,7 +1877,7 @@ body::after {
         <div class="mic-ring" id="mic-ring" onclick="onMicTap()">
           <div class="mic-icon" id="mic-icon">🎤</div>
         </div>
-        <div class="voice-status" id="voice-status">Tap to speak · up to 15s</div>
+        <div class="voice-status" id="voice-status">Tap to speak · tap again to stop</div>
         <div class="voice-transcript" id="voice-transcript"></div>
       </div>
 
@@ -1762,11 +1964,10 @@ let selectedMode = 'mixed';
 let audioPlayer = null;
 
 let micStream = null;
-let audioContext = null;
-let analyser = null;
-let silenceCheckTimer = null;
-let silenceStartedAt = null;
 let stopRequested = false;
+// Recording is FULLY user-controlled. There is no auto-stop timer and no
+// silence-based cutoff — kids often pause mid-thought ("uh… the wolf…
+// one") and any cap clipped them. Tap the mic to start, tap again to stop.
 
 // Scan state
 let scanIndex = null;
@@ -1802,19 +2003,15 @@ function goHome(){
   showScreen('home');
   document.getElementById('start-btn').disabled = false;
   document.getElementById('quickplay-drawer').style.display = 'none';
-  // 【新增】返回主页时重新显示入口卡片
   document.querySelector('.entry-row').style.display = 'flex';
 }
 
 function openQuickPlay(){
-  // 【新增】隐藏主入口的两个卡片
   document.querySelector('.entry-row').style.display = 'none';
-  // 显示抽屉
   document.getElementById('quickplay-drawer').style.display = 'flex';
   document.getElementById('home').classList.add('quickplay-active');
 }
 
-// 【新增】从 Quick Play 返回到主入口的函数
 function closeQuickPlay(){
   document.getElementById('quickplay-drawer').style.display = 'none';
   document.querySelector('.entry-row').style.display = 'flex';
@@ -1878,6 +2075,16 @@ function stopScanner(){
     scanStream.getTracks().forEach(t => t.stop());
     scanStream = null;
   }
+  // Tear down voice-input recording too — leaving the mic stream open
+  // after navigating away would leak the indicator and consume battery.
+  if (scanRecording) {
+    try { stopScanVoiceRecording(); } catch(e) {}
+  }
+  if (scanMicStream) {
+    try { scanMicStream.getTracks().forEach(t => t.stop()); } catch(e) {}
+    scanMicStream = null;
+  }
+  scanCleanupVoiceAudio();
 }
 
 function backToHome(){
@@ -1892,14 +2099,35 @@ function resetScanUI(){
   document.getElementById('scan-candidate').classList.remove('active');
   document.getElementById('scan-preview-text').textContent = '—';
   document.getElementById('scan-frame').className = 'scan-frame';
-  const input = document.getElementById('scan-manual-input');
-  if (input) input.value = '';
+  // Show the empty-state hint by default; it gets hidden once we have a match
+  const hint = document.getElementById('scan-empty-hint');
+  if (hint) hint.style.display = '';
+
+  // Reset voice-input row in case it was mid-recording or showed an error
+  if (scanRecording) {
+    try { stopScanVoiceRecording(); } catch(e) {}
+  }
+  scanRecording = false;
+  scanCleanupVoiceAudio();
+  scanAudioChunks = [];
+  resetScanMicBtn();
+  setScanVoiceStatus('Tap and say a number or topic', null);
+  setScanVoiceTranscript('');
 }
 
 function setScanStatus(text, cls){
   const el = document.getElementById('scan-status');
   el.textContent = text;
   el.className = 'scan-status' + (cls ? ' ' + cls : '');
+  // Hide the empty-state hint as soon as OCR has ANY positive signal —
+  // either 'detecting' (matched a number, holding for a second frame)
+  // or 'matched' (showing the candidate). Otherwise the right column
+  // would show "Waiting for a card" alongside "Looks like #14 — hold
+  // steady", which reads as broken even though OCR is working.
+  const hint = document.getElementById('scan-empty-hint');
+  if (hint) {
+    hint.style.display = (cls === 'detecting' || cls === 'matched') ? 'none' : '';
+  }
 }
 
 function startScanLoop(){
@@ -2015,6 +2243,9 @@ function showScanCandidate(card){
   document.getElementById('scan-candidate-meta').textContent =
     `${card.id}  ·  ${card.category}  ·  ${card.difficulty}`;
   document.getElementById('scan-candidate').classList.add('active');
+  // Hide the empty-state hint once we have a real candidate
+  const hint = document.getElementById('scan-empty-hint');
+  if (hint) hint.style.display = 'none';
   document.getElementById('scan-frame').className = 'scan-frame matched';
   setScanStatus(`Detected ${card.id}: ${card.title}`, 'matched');
 }
@@ -2024,6 +2255,9 @@ function rescanCard(){
   scanConsecutiveHits = 0;
   scanLastSeenId = null;
   document.getElementById('scan-candidate').classList.remove('active');
+  // Bring the placeholder back so the right column doesn't go empty
+  const hint = document.getElementById('scan-empty-hint');
+  if (hint) hint.style.display = '';
   document.getElementById('scan-frame').className = 'scan-frame';
   setScanStatus('Looking for a card...', null);
 }
@@ -2042,7 +2276,10 @@ async function confirmScan(){
 }
 
 async function manualEntry(){
-  const raw = (document.getElementById('scan-manual-input').value || '').trim();
+  // Legacy entry point kept for safety; the UI now uses voice input.
+  // Routes through the same canonicalisation as before in case anything
+  // (a hotkey, a debug call) ever calls it.
+  const raw = (document.getElementById('scan-manual-input')?.value || '').trim();
   if (!raw) return;
   const canon = '#' + raw.replace(/[^\d]/g, '').replace(/^0+/, '');
   stopScanner();
@@ -2051,6 +2288,241 @@ async function manualEntry(){
   } else {
     await startScanSession(canon);
   }
+}
+
+// ─────────────────────────────────────────────────────────────────
+// Scan-screen voice input
+// The user can tap the mic on the scan screen and say things like:
+//   "card fourteen"        → matches #14 by number
+//   "ultra gum"            → matches #14 by title
+//   "the wolf one"         → matches #11 (Wolf Return) by title keyword
+//   "twenty four"          → matches #24
+// We reuse the same /api/transcribe endpoint as the in-game mic, but
+// the recording state is kept SEPARATE from the game-screen recorder
+// (different DOM nodes, different state vars) so the two flows can
+// never collide.
+// ─────────────────────────────────────────────────────────────────
+
+// English number words (1-59 — covers all card IDs and then some).
+const SCAN_NUM_WORDS = {
+  zero:0, one:1, two:2, three:3, four:4, five:5, six:6, seven:7, eight:8, nine:9,
+  ten:10, eleven:11, twelve:12, thirteen:13, fourteen:14, fifteen:15,
+  sixteen:16, seventeen:17, eighteen:18, nineteen:19,
+  twenty:20, thirty:30, forty:40, fourty:40 /* common misspelling */, fifty:50,
+  // Ordinals — speech-to-text often outputs "the fourteenth"
+  first:1, second:2, third:3, fourth:4, fifth:5, sixth:6, seventh:7, eighth:8, ninth:9,
+  tenth:10, eleventh:11, twelfth:12, thirteenth:13, fourteenth:14, fifteenth:15,
+  sixteenth:16, seventeenth:17, eighteenth:18, nineteenth:19,
+  twentieth:20, thirtieth:30, fortieth:40, fiftieth:50,
+};
+
+let scanRecording = false;
+let scanMediaRecorder = null;
+let scanAudioChunks = [];
+let scanMicStream = null;
+// Same policy as the in-game mic: no auto-stop, no time cap. The user
+// taps the mic to start, taps again to stop. Speak as long as you want.
+
+function setScanVoiceStatus(text, cls){
+  const el = document.getElementById('scan-voice-status');
+  el.textContent = text;
+  el.className = 'scan-voice-status' + (cls ? ' ' + cls : '');
+}
+function setScanVoiceTranscript(text){
+  document.getElementById('scan-voice-transcript').textContent = text || '';
+}
+function resetScanMicBtn(){
+  const m = document.getElementById('scan-mic');
+  m.classList.remove('recording', 'processing');
+  document.getElementById('scan-mic-icon').textContent = '🎤';
+}
+
+async function onScanMicTap(){
+  if (scanRecording) {
+    stopScanVoiceRecording();
+    return;
+  }
+  await startScanVoiceRecording();
+}
+
+async function startScanVoiceRecording(){
+  try {
+    scanMicStream = await navigator.mediaDevices.getUserMedia({ audio:true });
+    scanMediaRecorder = new MediaRecorder(scanMicStream, { mimeType:'audio/webm' });
+    scanAudioChunks = [];
+    scanMediaRecorder.ondataavailable = e => { if (e.data.size > 0) scanAudioChunks.push(e.data); };
+    scanMediaRecorder.onstop = () => {
+      if (scanMicStream){ scanMicStream.getTracks().forEach(t => t.stop()); scanMicStream = null; }
+      scanCleanupVoiceAudio();
+      processScanVoiceInput();
+    };
+    scanMediaRecorder.start();
+    scanRecording = true;
+    // Silence auto-stop removed — kids might pause while choosing a card
+    // ("uh… the… volcano one"), and the 1.2s cutoff was clipping them.
+    // They tap the mic again to stop manually.
+
+    document.getElementById('scan-mic').classList.add('recording');
+    document.getElementById('scan-mic-icon').textContent = '⏹';
+    setScanVoiceStatus('🎤 Listening — tap the mic when you finish', 'listening');
+    setScanVoiceTranscript('');
+  } catch(e) {
+    setScanVoiceStatus('Mic access denied. Try the camera instead.', 'error');
+  }
+}
+
+function stopScanVoiceRecording(){
+  if (!scanMediaRecorder || scanMediaRecorder.state !== 'recording') return;
+  scanRecording = false;
+  scanCleanupVoiceAudio();
+  document.getElementById('scan-mic').classList.remove('recording');
+  document.getElementById('scan-mic').classList.add('processing');
+  document.getElementById('scan-mic-icon').textContent = '⏳';
+  setScanVoiceStatus('Transcribing…', null);
+  scanMediaRecorder.stop();
+}
+
+// No-op: the silence-detection vars this used to clear were removed
+// when we made recording fully manual. Kept as a stub so any caller
+// (stopScanner, resetScanUI) doesn't blow up.
+function scanCleanupVoiceAudio(){ /* nothing to clean — manual stop only */ }
+
+async function processScanVoiceInput(){
+  const blob = new Blob(scanAudioChunks, { type:'audio/webm' });
+  const fd = new FormData();
+  fd.append('audio', blob, 'recording.webm');
+  try {
+    const tr = await fetch(`${API}/api/transcribe`, { method:'POST', body:fd });
+    const td = await tr.json();
+    const text = (td.text || '').trim();
+
+    resetScanMicBtn();
+
+    if (!text){
+      setScanVoiceStatus("Didn't catch that — tap and try again.", 'error');
+      setScanVoiceTranscript('');
+      return;
+    }
+
+    setScanVoiceTranscript(`"${text}"`);
+
+    const card = matchScanVoiceUtterance(text);
+    if (card) {
+      setScanVoiceStatus(`Matched ${card.id}`, 'matched');
+      // Hand off to the same candidate-confirmation panel the OCR flow uses
+      showScanCandidate(card);
+    } else {
+      setScanVoiceStatus("I didn't recognize a card — try a number or the title.", 'error');
+    }
+  } catch(e){
+    resetScanMicBtn();
+    setScanVoiceStatus('Transcription failed. Try again.', 'error');
+  }
+}
+
+// Common English stopwords filtered from BOTH title words and utterance
+// tokens. Otherwise a title like "ULTRA-GUM WILL EXPLODE!" lets "will"
+// take a slot in the distinctive-words list, so a kid saying "the ultra
+// gum one" only hits 1 out of 3 (33%) instead of 1 out of 2 (50%) and
+// drops below the title-strong threshold. Keep this list TIGHT — every
+// addition risks dropping a real distinctive word from a future card.
+const SCAN_STOPWORDS = new Set([
+  'will','with','from','have','were','this','that','your','into',
+  'than','then','also','what','when','they','them','their','been',
+  'just','only','very','well','over','some','more','most','about',
+  'which','here','there','those','these','because','being','need',
+  'going','make','made','want','wants','wanted','still','really','also',
+]);
+
+// ─── Voice utterance → card matcher ────────────────────────────
+// Two passes:
+//   1) Extract a card NUMBER (digits or English number words).
+//   2) Fuzzy-match the utterance against every card title.
+//
+// Priority is NUANCED on purpose. A naive "number wins" rule would
+// mis-route "the ultra gum one" — the word "one" gets number-extracted
+// to 1, beating the (correct) title match on Ultra-Gum (#14). So:
+//   - If the title pass found a STRONG hit (score ≥ 20, i.e. ≥1 hit
+//     covering at least half the distinctive title, OR ≥2 hits anywhere),
+//     prefer the title — it's almost always intentional ("the wolf one",
+//     "ultra gum", "volcano quest", "mascot").
+//   - Otherwise fall back to the number — this still catches plain
+//     "card fourteen", "fifty two", "show me number one", and digit
+//     forms that Whisper transcribes directly.
+//   - As a last resort, return whatever weak title hit we did find.
+function matchScanVoiceUtterance(rawText){
+  if (!scanIndex || !scanIndex.length) return null;
+  const lower = rawText.toLowerCase();
+
+  // Pass A: number extraction
+  const num = extractCardNumberFromSpeech(lower);
+  const numCard = (num !== null)
+    ? scanIndex.find(c => c.id_num === String(num)) || null
+    : null;
+
+  // Pass B: fuzzy title match — keep the (card, score) pair so we can
+  // judge confidence rather than just take whatever non-null result
+  // came back.
+  const flat = lower.replace(/[^a-z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim();
+  const utteranceTokens = new Set(
+    flat
+      ? flat.split(' ').filter(w => w.length >= 4 && !SCAN_STOPWORDS.has(w))
+      : []
+  );
+  let titleCard = null;
+  let titleScore = 0;
+  if (utteranceTokens.size > 0) {
+    for (const c of scanIndex) {
+      const titleWords = c.title.toLowerCase()
+        .split(/[^a-z0-9]+/)
+        .filter(w => w.length >= 4 && !SCAN_STOPWORDS.has(w));
+      if (titleWords.length === 0) continue;
+      let titleHits = 0;
+      for (const w of titleWords) if (utteranceTokens.has(w)) titleHits++;
+      if (titleHits === 0) continue;
+      const ratio = titleHits / titleWords.length;
+      // Score: hits*10 + ratio bonus. 1 hit on a 2-word title → 20.
+      // 2 hits on a 4-word title → 30. Single hit on a 5-word title → 14.
+      const score = titleHits * 10 + Math.round(ratio * 20);
+      if (score > titleScore){
+        titleScore = score;
+        titleCard = c;
+      }
+    }
+  }
+
+  // Decide. Strong title beats number ("the ultra gum one" → #14 not #1).
+  if (titleCard && titleScore >= 20) return titleCard;
+  if (numCard) return numCard;
+  if (titleCard && titleScore >= 10) return titleCard;
+  return null;
+}
+
+function extractCardNumberFromSpeech(text){
+  // Try plain digits first — Whisper usually transcribes "card fourteen" as
+  // "card 14" already, so this catches the common case.
+  const digitMatch = text.match(/\b(\d{1,3})\b/);
+  if (digitMatch){
+    const n = parseInt(digitMatch[1], 10);
+    if (n >= 1 && n <= 200) return n;
+  }
+
+  // Fallback: English number words. Walk tokens left-to-right, combining
+  // a tens-word ("twenty") with a following ones-word ("four") into 24.
+  const tokens = text.replace(/[-_]+/g, ' ').split(/\s+/).map(t => t.replace(/[^a-z]/g, ''));
+  for (let i = 0; i < tokens.length; i++) {
+    const w = tokens[i];
+    if (!(w in SCAN_NUM_WORDS)) continue;
+    let val = SCAN_NUM_WORDS[w];
+    if (val >= 20 && val <= 50 && val % 10 === 0 && i + 1 < tokens.length) {
+      const next = tokens[i + 1];
+      if (next in SCAN_NUM_WORDS && SCAN_NUM_WORDS[next] >= 1 && SCAN_NUM_WORDS[next] <= 9) {
+        val += SCAN_NUM_WORDS[next];
+      }
+    }
+    if (val >= 1 && val <= 200) return val;
+  }
+  return null;
 }
 
 async function startScanSession(cardId){
@@ -2121,16 +2593,14 @@ async function stopAudio(){
     try { audioPlayer.pause(); audioPlayer.src = ''; } catch(e){}
     audioPlayer = null;
   }
-  // 【新增】强制隐藏按钮
   const ttsBtn = document.getElementById('tts-toggle-btn');
   if (ttsBtn) ttsBtn.style.display = 'none';
 }
 
-// 【新增】暂停/继续播放功能
 function toggleTTS() {
   if (!audioPlayer) return;
   const btn = document.getElementById('tts-toggle-btn');
-  
+
   if (audioPlayer.paused) {
     audioPlayer.play();
     btn.textContent = '⏸ Pause';
@@ -2154,7 +2624,6 @@ async function speak(text, tone='narrator'){
     const url = URL.createObjectURL(blob);
     const audio = new Audio(url);
     audioPlayer = audio;
-// 【新增】显示暂停按钮并重置文字
     const ttsBtn = document.getElementById('tts-toggle-btn');
     if (ttsBtn) {
       ttsBtn.style.display = 'block';
@@ -2162,16 +2631,15 @@ async function speak(text, tone='narrator'){
     }
 
     return new Promise(res => {
-      audio.onended = ()=>{ 
-        // 【新增】声音播放完毕后隐藏按钮
+      audio.onended = ()=>{
         if (ttsBtn) ttsBtn.style.display = 'none';
-        URL.revokeObjectURL(url); 
-        res(); 
+        URL.revokeObjectURL(url);
+        res();
       };
-      audio.onerror = ()=>{ 
+      audio.onerror = ()=>{
         if (ttsBtn) ttsBtn.style.display = 'none';
-        URL.revokeObjectURL(url); 
-        res(); 
+        URL.revokeObjectURL(url);
+        res();
       };
       audio.play().catch(()=>{
         if (ttsBtn) ttsBtn.style.display = 'none';
@@ -2219,37 +2687,27 @@ function renderCard(){
   const flipper = document.getElementById('card-flipper');
   flipper.classList.remove('flipped');
 
-  // Apply problem-type color to the card front (CSS variable cascade)
   const cardFront = document.getElementById('card-front');
   const cardColor = PTYPE_COLOR[c.problem_type] || 'var(--c-perspective)';
   cardFront.style.setProperty('--card-color', cardColor);
 
-  // Card ID (the number in the corner notch)
   const rawId = String(c.card_id || c.id || '?').replace('#', '');
   document.getElementById('card-corner-num').textContent = rawId;
   document.getElementById('card-id-display').textContent = c.card_id || c.id || '—';
   document.getElementById('card-progress-display').textContent = `${currentIdx + 1} / ${totalCards}`;
 
-  // Title pill
   document.getElementById('card-title').textContent = c.title;
 
-  // Tags at bottom of card front
   document.getElementById('card-ptype').textContent = PTYPE_LABEL[c.problem_type] || c.problem_type;
   document.getElementById('card-diff').textContent = c.difficulty || 'easy';
 
-  // Body — the white text on the colored card
   const body = document.getElementById('body-area');
   body.innerHTML = '';
   const texts = Array.isArray(c.body) ? c.body : [String(c.body||'')];
 
-  // Quote-wrap rules match the physical cards exactly:
-  //  - perspective_lens_audit: source has no quotes → we add curly quotes
-  //  - bias_inverter:          source already has quotes baked into JSON
-  //  - affective / decomp:     plain text, no quotes
   const wrapInQuotes = (c.problem_type === 'perspective_lens_audit');
 
   if (c.problem_type === 'perspective_lens_audit' && texts.length >= 2){
-    // Two lens texts separated by "vs" — matches the physical card layout
     body.appendChild(makeBubble(texts[0], 'a', wrapInQuotes));
     const vs = document.createElement('div');
     vs.className = 'vs-divider';
@@ -2260,7 +2718,6 @@ function renderCard(){
     texts.forEach((t) => body.appendChild(makeBubble(t, 'solo', wrapInQuotes)));
   }
 
-  // Progress dots
   const dotsEl = document.getElementById('dots');
   dotsEl.innerHTML = '';
   for (let i=0; i<totalCards; i++){
@@ -2272,7 +2729,6 @@ function renderCard(){
   }
   document.getElementById('score-pill').textContent = `${totalScore} pts`;
 
-  // Voice panel reset
   document.getElementById('voice-label').textContent = 'Your Turn';
   document.getElementById('prompt-bubble').textContent =
     PTYPE_QUESTION[c.problem_type] || "Say what you notice out loud.";
@@ -2283,7 +2739,7 @@ function renderCard(){
   document.getElementById('followup-thread').innerHTML = '';
   document.getElementById('followup-counter').style.display = 'none';
 
-  document.getElementById('voice-status').textContent = 'Tap to speak · up to 15s';
+  document.getElementById('voice-status').textContent = 'Tap to speak · tap again to stop';
   document.getElementById('voice-status').className = 'voice-status';
   document.getElementById('voice-transcript').textContent = '';
 
@@ -2299,8 +2755,6 @@ function makeBubble(text, variant, wrapInQuotes){
   const el = document.createElement('div');
   el.className = `body-bubble ${variant} fade-in`;
   const t = text.trim();
-  // If JSON already has straight or curly quotes baked in, leave them alone.
-  // Only perspective cards (no quotes in JSON) get wrapped in curly quotes here.
   const alreadyQuoted = /^[""''"]/.test(t);
   el.textContent = (wrapInQuotes && !alreadyQuoted) ? `"${t}"` : t;
   return el;
@@ -2324,39 +2778,8 @@ async function readCardAloud(includeWelcome=false){
   await speak(parts.join(' '), 'narrator');
 }
 
-// ── Mic + audio monitoring ──
-function cleanupAudioMonitoring(){
-  if (silenceCheckTimer){ clearInterval(silenceCheckTimer); silenceCheckTimer = null; }
-  silenceStartedAt = null;
-  if (audioContext){ try { audioContext.close(); } catch(e){} audioContext = null; }
-  analyser = null;
-}
-function getAverageVolume(dataArray){
-  let sum = 0;
-  for (let i = 0; i < dataArray.length; i++) sum += Math.abs(dataArray[i] - 128);
-  return sum / dataArray.length;
-}
-function startSilenceDetection(){
-  if (!analyser) return;
-  const dataArray = new Uint8Array(analyser.fftSize);
-  const SILENCE_THRESHOLD = 6;
-  const SILENCE_DURATION_MS = 1200;
-  const MIN_RECORDING_MS = 800;
-  const startedAt = Date.now();
-  silenceCheckTimer = setInterval(() => {
-    if (!isRecording || !mediaRecorder || mediaRecorder.state !== 'recording') return;
-    analyser.getByteTimeDomainData(dataArray);
-    const volume = getAverageVolume(dataArray);
-    const now = Date.now();
-    if (now - startedAt < MIN_RECORDING_MS) return;
-    if (volume < SILENCE_THRESHOLD){
-      if (!silenceStartedAt) silenceStartedAt = now;
-      else if (now - silenceStartedAt >= SILENCE_DURATION_MS) stopRecording();
-    } else {
-      silenceStartedAt = null;
-    }
-  }, 150);
-}
+// ── Mic recording (fully manual: tap to start, tap to stop) ──
+function cleanupAudioMonitoring(){ /* nothing to clean — manual stop only */ }
 function resetMicBtn(){
   const ring = document.getElementById('mic-ring');
   ring.className = 'mic-ring';
@@ -2386,18 +2809,14 @@ async function startRecording(){
     };
     mediaRecorder.start();
     isRecording = true;
-    audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    const source = audioContext.createMediaStreamSource(micStream);
-    analyser = audioContext.createAnalyser();
-    analyser.fftSize = 2048;
-    source.connect(analyser);
-    startSilenceDetection();
+    // Silence auto-stop removed — kids often pause mid-thought, and the
+    // 1.2s cutoff was clipping them. They tap the mic again to stop.
     document.getElementById('mic-ring').classList.add('recording');
     document.getElementById('mic-icon').textContent = '⏹';
     const st = document.getElementById('voice-status');
     st.textContent = uiPhase === 'followup'
-      ? '🎤 Ask me anything about this card...'
-      : '🎤 Listening... pause when you are done';
+      ? '🎤 Ask me anything — tap the mic when you finish'
+      : '🎤 Listening — tap the mic when you finish';
     st.className = 'voice-status highlight';
   } catch(e) {
     document.getElementById('voice-status').textContent = 'Mic access denied';
@@ -2538,7 +2957,6 @@ async function revealAnswer(data){
   rBubble.style.display = reaction ? 'block' : 'none';
   hBubble.style.display = habit ? 'block' : 'none';
   iBubble.style.display = 'block';
-  // 新增：给 DOM 一点渲染时间，然后强制滚动到最底部，保证最新对话完整展示
   setTimeout(() => {
     const stack = document.getElementById('coach-stack');
     stack.scrollTop = stack.scrollHeight;
@@ -2595,8 +3013,7 @@ function appendQATurn(question, answer){
     </div>
   `;
   thread.appendChild(turn);
-  
-  // 关键替换：确保追加新 QA 后也能稳稳滚到底部
+
   setTimeout(() => {
     const stack = document.getElementById('coach-stack');
     stack.scrollTop = stack.scrollHeight;
