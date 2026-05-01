@@ -43,10 +43,16 @@ The game is **fully on-device** — speech-to-text, LLM, text-to-speech, and OCR
 - **Latency** — no network round-trips; coach feedback arrives in 2–4 seconds.
 - **Sustainability** — no per-session API costs; the device is the entire stack.
 
+each card-type colored to match the printed deck — see [§2 UI redesign]
+(#ui-redesign--sketchbook-edition-v5) for screenshots and [§8.5]
+(#85-v5--sketchbook-ui-redesign) for the design rationale.
+
 ### Target audience
 
 - **Primary**: children age 10+ in school, library, or family settings.
 - **Secondary**: educators and parents who want to introduce AI literacy without preachy lectures.
+
+The on-screen interface (v5) is styled as a hand-drawn sketchbook with
 
 ---
 
@@ -96,6 +102,64 @@ HOME ─────────────────┐
 #### Scan Mode
 ![Scan Mode Demo](https://raw.githubusercontent.com/Daidai1031/PROMPT-/main/assets/scan%20mode.gif)
 
+
+### UI redesign — sketchbook edition (v5)
+
+In v5 the entire interface was rebuilt around a hand-drawn sketchbook
+aesthetic, with each card type colored to match the printed deck. See
+[§8.5 v5 — Sketchbook UI redesign](#85-v5--sketchbook-ui-redesign) for
+the design rationale.
+
+<table>
+  <tr>
+    <td width="50%" align="center">
+      <img src="assets/homepage.jpg" alt="Homepage" width="400" height="260">
+      <br>
+      <sub><b>Home — two big entry points</b></sub>
+    </td>
+    <td width="50%" align="center">
+      <img src="assets/pickdeck.jpg" alt="Pick Deck" width="400" height="260">
+      <br>
+      <sub><b>Quick Play — pick a deck</b></sub>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" align="center">
+      <img src="assets/scanmode_detecting.jpg" alt="Scan Mode Detecting" width="400" height="260">
+      <br>
+      <sub><b>Scan mode — searching for a card</b></sub>
+    </td>
+    <td width="50%" align="center">
+      <img src="assets/scanmode_detected.jpg" alt="Scan Mode Detected" width="400" height="260">
+      <br>
+      <sub><b>Scan mode — card recognized</b></sub>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" align="center">
+      <img src="assets/game_listen.jpg" alt="Game Listen" width="400" height="260">
+      <br>
+      <sub><b>Game — coach reading the card aloud</b></sub>
+    </td>
+    <td width="50%" align="center">
+      <img src="assets/game_speaking.jpg" alt="Game Speaking" width="400" height="260">
+      <br>
+      <sub><b>Game — child speaking their answer</b></sub>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" align="center">
+      <img src="assets/feedback+followupQ&A.jpg" alt="Feedback and Follow-up Q&A" width="400" height="260">
+      <br>
+      <sub><b>Feedback bubbles + follow-up Q&A</b></sub>
+    </td>
+    <td width="50%" align="center">
+      <img src="assets/summarypage.jpg" alt="Summary Page" width="400" height="260">
+      <br>
+      <sub><b>Summary — score, breakdown, takeaway tip</b></sub>
+    </td>
+  </tr>
+</table>
 
 
 
@@ -706,6 +770,37 @@ The biggest UX leap: instead of (or in addition to) random deck mode, a child ca
 - **Manual fallback**: text input accepts `14` or `#14` directly when OCR struggles
 - **Game-flow integration**: "Next Card →" becomes "Scan Next Card 📷" in scan sessions; tapping it returns to the scanner instead of auto-advancing
 
+### v5 — Sketchbook UI redesign
+
+The functional layers were stable by v4. v5 is the first release where the
+*look and feel* matched the spirit of the project — a kid's reflection
+notebook, not a dark-mode dev console.
+
+**What changed**:
+
+- **Cream paper background** replaces the dark navy. Subtle pencil-noise
+  texture and faint horizontal rule lines, like a school exercise book.
+- **Hand-drawn aesthetic**: every button has a hard ink outline + offset
+  marker shadow (`4px 4px 0 ink`), entry cards tilt at ±1.2°, sticky-note
+  bubbles wobble slightly. Underlines under headers are SVG squiggles, not
+  straight lines.
+- **Card colors map to problem type**, matching the printed physical decks
+  exactly:
+  - `perspective_lens_audit` → deep crimson (#7a1a1f)
+  - `affective_highjack`     → cobalt blue  (#1f3aa6)
+  - `bias_inverter`          → forest green (#1f6b2a)
+  - `task_decomposition_map` → caramel brown (#8a3a14)
+- **Faithful card reproduction**: notched white corner with the card
+  number, white pill-shaped title, white body text on the colored field —
+  the on-screen card is now visually continuous with the printed card the
+  kid was just holding.
+- **Three-font system**: Fredoka (rounded display), Caveat (handwriting),
+  Patrick Hand (pencil-print). Quicksand for body text only.
+- **Responsive sizing** with `clamp()` so the same UI fits both the 7"
+  Thor touchscreen and a Firefox window with browser chrome.
+
+See screenshots in [§2 UI redesign](#ui-redesign--sketchbook-edition-v5).
+
 ---
 
 ## 9. Troubleshooting
@@ -907,28 +1002,39 @@ result = check_answer(card, req.user_answer, llm_judge=None)
 
 ## 11. Future Directions
 
-These were considered but not implemented in v4:
+The v4 prototype proves the concept on a single Jetson AGX Thor. The natural next step is to make PROMPT! cheaper to deploy, more open to contributions, and more fun to come back to. None of these were implemented in v4; they are listed in the rough order I think they make the project more useful.
 
-### Adaptive difficulty
-Session already tracks per-mode tier distribution. The next iteration could up- or down-rank card difficulty based on the tier the child is weakest in. Hooks: `session["per_mode"]` in `server.py`.
+### Cheaper hardware tier — Pi 5 and Jetson Orin Nano
 
-### Follow-up history in summary
-Currently summary just shows the count. A foldout view of the actual Q&A threads would let parents/teachers see the child's curiosity arc.
+Thor is a developer kit; at retail it's not the device you put in a hundred classrooms. The same architecture should run on a Raspberry Pi 5 (8 GB) or a Jetson Orin Nano Super (8 GB), each roughly 1/10 the cost of Thor. The trade-off is model size: Whisper drops to `base` or `tiny.en`, Llama 3 8B becomes Llama 3.2 3B (or Phi-3 Mini), Kokoro stays as-is since it's already 82 M. The card scoring and rule engine don't care about hardware. The realistic target is "a $200 box plus a $40 webcam" — a price point a school or library can actually buy in bulk.
 
-### Multiple webcam selection
-On Jetson with multiple USB cams, `facingMode: 'environment'` is a hint, not a guarantee. A `<select>` UI driven by `navigator.mediaDevices.enumerateDevices()` would let kids pick.
+### Online platform with community-contributed cards
 
-### RAG over the references
-Each card has `references[]` with real URLs. A retrieval layer could fetch and summarize one of those when a child asks a follow-up like "is that really true?" — closing the loop between AI literacy and source-checking.
+The card pack is the bottleneck on replay value. A small web app where teachers, parents, and older kids can submit new cards — front text, problem type, scoring anchors, references — would let the deck grow without me hand-writing every entry. Submissions go through a review queue (basic moderation: age-appropriate, cites a real source, scoring anchors actually map to the rule engine families) before merging into the public pool. Cards can be filtered by language, age band, topic, and contributor. Devices fetch new card packs on connect.
 
-### Per-child profiles
-Right now sessions are anonymous. A simple "who are you?" picker on Home + per-child progress tracking would let the game adapt over time.
+### Online leaderboard and game-feel layer
 
-### Multi-language
-Whisper, Kokoro, and Llama 3 all support multiple languages. The card content and prompts would need translation, but the architecture wouldn't.
+Right now the game ends with a tip and "Play Again." Adding a leaderboard — opt-in, per-device or per-named-player — turns isolated sessions into something kids want to come back to. Local play stays the default and works offline; when the device sees the internet it uploads the session score and pulls down current rankings. Possible cuts of the leaderboard: by week, by card pack, by mode (Discernment / Usage / Mixed), by school or club. Hooks for this already exist — `_summarize_session()` in `server.py` produces exactly the payload shape a leaderboard endpoint would want.
 
-### Print-and-play card export
-A small utility script that reads the JSON files and renders printable PDF cards with the right `#NN` format and font would close the loop on physical cards. Right now we maintain the cards manually.
+### Web-only version using hosted LLM APIs
+
+Not every audience has hardware. A pure web build — same UI, same cards, same scoring rules — that calls a hosted LLM API instead of local Ollama would let anyone with a browser try the game. The Whisper and Kokoro layers swap to Web Speech API or hosted equivalents. This version becomes the "try before you buy" front door: people play in the browser, get hooked, then either keep playing online or buy/build a local box. The two versions share the card JSON and the rule engine, so adding a card on the platform updates both at once.
+
+### Game-ecosystem stitching
+
+If the four pieces above land, they fit together naturally: contributors write cards on the platform, online players try them in the web build, top scores feed the leaderboard, and the same cards sync down to the local hardware boxes. The local box is no longer a one-off install; it's a node in a larger ecosystem. That's where "AI literacy game" graduates into "AI literacy platform."
+
+### Smaller standalone improvements
+
+These were considered earlier and remain on the list:
+
+- **Adaptive difficulty.** Use the per-mode tier distribution already tracked in `session["per_mode"]` to surface the kid's weakest problem type more often.
+- **Follow-up history in summary.** A foldout of the actual Q&A threads so parents and teachers can see the kid's curiosity arc, not just the count.
+- **Multiple webcam selection.** A `<select>` driven by `navigator.mediaDevices.enumerateDevices()` for setups with more than one USB camera.
+- **RAG over the references.** Each card already carries `references[]` with real URLs. Fetching and summarizing one of them when a kid asks "is that really true?" closes the loop between AI literacy and source-checking.
+- **Per-child profiles.** Anonymous sessions today; a "who are you?" picker plus per-child progress would let the game adapt over time.
+- **Multi-language.** Whisper, Kokoro, and Llama 3 all support multiple languages. The card content and prompts would need translation, but the architecture wouldn't change.
+- **Print-and-play card export.** A small utility that turns the JSON files into printable PDFs with the right `#NN` format and font, so anyone can produce physical decks.
 
 ---
 
